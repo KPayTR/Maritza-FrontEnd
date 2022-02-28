@@ -1,0 +1,134 @@
+ion-content {
+    background: #e5e5e5;
+  }
+  .md-segment {
+    margin-bottom: 20px;
+    
+    ion-segment-button {
+      letter-spacing: normal;
+      --color-checked: #000;
+      --color: #b1b1c5;
+      --indicator-color: #f1be4b;
+      img{
+        width: 26.35px;
+        height: 19.5px;
+      }
+    }
+  }
+  .md-div {
+    margin: 10px 20px;
+  }
+  .ios-segment {
+  
+  
+    ion-segment-button {
+      font-weight: bold;
+      letter-spacing: normal;
+      --indicator-color: #f1be4b; 
+    } 
+  }
+  .currency {
+    font-weight: bold;
+    ion-label {
+      min-width: 60% !important;
+      ion-row {
+        p {
+          margin: auto 0;
+        }
+      }
+      ion-icon {
+        margin: auto 5px;
+        font-size: 12px;
+        color: #2cb139;
+      }
+      h3 {
+        font-size: 24px;
+        font-weight: bold;
+      }
+      p {
+        color: #2cb139;
+        font-size: 12px;
+      }
+    }
+  
+    ion-avatar {
+      background: linear-gradient(1800deg, #f1bf4b 50%, #ffffff 50%);
+    }
+    img {
+      padding: 1px;
+    }
+  }
+  .select-div {
+    .remove-arrow::part(icon) {
+      display: none !important;
+    }
+    margin: 10px 10px;
+    ion-item {
+      border-radius: 10px;
+      --background: #f6f5f1;
+      font-size: 12px;
+      --min-height: 40px;
+    }
+    ion-icon {
+      padding: 3px;
+    }
+  }
+  .variable-header-div {
+    margin: 10px 20px;
+    border-bottom: solid 1px #f1f1f1;
+  }
+  .variable-div {
+    ion-item {
+      border-bottom: solid 1px #f1f1f1;
+      --min-height: 22px;
+    }
+    .p1 {
+      color: #7c7f97;
+      font-size: 12px;
+      margin: 0;
+    }
+    .p2 {
+      margin: 0;
+      font-size: 12px;
+      font-weight: bold;
+    }
+  }
+  #chart {
+    max-width: 650px;
+  }
+  
+  ion-header {
+    ion-toolbar {
+    --border-width: 0px;
+    --background: white;
+    }
+  }
+  .div-varlik {
+    .up {
+      color: #2cb139;
+    }
+    .down {
+      color: #ff4747;
+    }
+    ion-icon {
+      margin: auto 5px;
+      font-size: 12px;
+    }
+    .p3 {
+      font-size: 11px;
+      margin: 0;
+    }
+    .p2 {
+      font-weight: normal;
+    }
+    ion-item {
+      border-bottom: solid 1px #f1f1f1;
+      --min-height: 40px;
+    }
+    ion-button {
+      font-weight: bold;
+    }
+  }
+  .icon-down{
+    color: #ff4747 !important;
+  }

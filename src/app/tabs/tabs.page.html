@@ -1,0 +1,35 @@
+<ion-tabs class="ion-no-border">
+  <ion-tab-bar slot="bottom">
+    <ion-button
+      class="btn1"
+      expand="block"
+      color="success" 
+      (click)="goBuy()"
+      >AL</ion-button
+    >
+    <ion-button
+      class="btn2"
+      expand="block"
+      color="danger" 
+      (click)="goSell()"
+      >SAT</ion-button
+    >
+
+    <ion-tab-button style="padding: 10px 0"   
+    tab="home/wallet">
+      <ion-icon name="wallet-outline"></ion-icon>
+      <ion-label>Cüzdanım</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button style="padding: 10px 0"  
+    tab="analysis">
+      <ion-icon name="pie-chart-outline"></ion-icon>
+      <ion-label>Analiz</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button (click)="presentModal()" style="padding: 10px 0"  >
+      <ion-icon name="cash-outline"></ion-icon>
+      <ion-label>Yatır-Çek</ion-label>
+    </ion-tab-button>
+  </ion-tab-bar>
+</ion-tabs>

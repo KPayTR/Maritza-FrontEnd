@@ -1,0 +1,49 @@
+ 
+
+<ion-content>
+  <div style="text-align: center; margin: 40px 0px;">
+    <ion-label>
+      <h4><b>1 gr Altın = 130 TRY</b></h4>
+      <ion-note style="font-size: 12px;">
+        Size özel döviz kuru 5 sn ile sabitlenmiştir.
+      </ion-note>
+    </ion-label>
+  </div>
+  <div style="text-align: center; margin-bottom: 30px;">
+
+  <img src="../../../assets/icon/loader.png" alt="" />
+
+  </div>
+
+    <ion-item style=" --background: #F6F5F1;    ;font-size: 12px; margin:0px 20px;
+    " lines="none">
+      <p slot="start">Çevrilen Ürün, Miktar</p>
+      <p slot="end" style="color: #080A1E; font-weight: bold;">Altın Satış</p>
+    </ion-item> 
+    <ion-item style=" --background: #F6F5F1;    ;font-size: 12px; margin:0px 20px;
+    " lines="none">
+      <p slot="start">Çıktı Ürün, Miktar</p>
+      <p slot="end" style="color: #080A1E; font-weight: bold;">5,000,000 TRY</p>
+    </ion-item> 
+    <ion-item style=" --background: #F6F5F1;    ;font-size: 12px; margin:0px 20px;
+    " lines="none">
+      <p slot="start">İşlem Zamanı</p>
+      <p slot="end" style="color: #080A1E; font-weight: bold;">12.01.2022</p>
+    </ion-item> 
+    <ion-item style=" --background: #F6F5F1;    ;font-size: 12px; margin:0px 20px;
+    " lines="none">
+      <p slot="start">Komisyon Hizmeti</p>
+      <p slot="end" style="color: #080A1E; font-weight: bold;">0,25 TRY</p>
+    </ion-item> 
+    <ion-item style=" --background: #F6F5F1;    ;font-size: 12px; margin:0px 20px;
+    " lines="none">
+      <p slot="start">Toplam Miktar</p>
+      <p slot="end" style="color: #080A1E; font-weight: bold;">5,000,025 TRY</p>
+    </ion-item> 
+
+  
+      <ion-button (click)="dismiss()" routerDirection="forward"  
+      [routerLink]="['/home']" style="margin: 20px;" color="warning" expand="block">ONAYLA</ion-button>
+
+  
+</ion-content>

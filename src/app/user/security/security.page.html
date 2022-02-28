@@ -1,0 +1,70 @@
+<ion-header mode="ios">
+  <ion-toolbar>
+    <ion-buttons class="p1" slot="start">
+      <ion-back-button mode="md" defaultHref="tabs/home"></ion-back-button>
+    </ion-buttons>
+  
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div    class="form-container" style="margin: 0px">
+    <ion-grid class="gap-list">
+      <ion-row style="margin-top: 0%">
+        <ion-col>
+          <h3>Güvenlik Ayarları</h3>
+        </ion-col>
+      </ion-row> 
+      <ion-row  routerDirection="forward"  
+      [routerLink]="['/credit-card/pay-card']" >
+        <ion-col>
+          <ion-item  class="username-input" detail lines="none">
+            <p slot="start">Şifre Değiştirme</p> 
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row  routerDirection="forward"  
+      [routerLink]="['/credit-card/pay-card']" >
+        <ion-col>
+          <ion-item  class="username-input" detail lines="none">
+            <p slot="start">İki Aşamalı Doğrulama</p> 
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row  routerDirection="forward"  
+      [routerLink]="['/credit-card/pay-card']" >
+        <ion-col>
+          <ion-item  class="username-input" detail lines="none">
+            <p slot="start">Ek Pin Kodu Tanımlama</p> 
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row  routerDirection="forward"  
+      [routerLink]="['/credit-card/pay-card']" >
+        <ion-col>
+          <ion-item  class="username-input" detail lines="none">
+            <p slot="start">Cihaz Yönetimi</p> 
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row  routerDirection="forward"  
+      [routerLink]="['/credit-card/pay-card']" >
+        <ion-col>
+          <ion-item  class="username-input" detail lines="none">
+            <p slot="start">Zaman Aşımı Süresi</p> 
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row  routerDirection="forward"  
+      [routerLink]="['/credit-card/pay-card']" >
+        <ion-col>
+          <ion-item  class="username-input" detail lines="none">
+            <p slot="start">Oltalama Kodu</p> 
+          </ion-item>
+        </ion-col>
+      </ion-row>
+     
+ 
+    </ion-grid>
+  </div> 
+</ion-content>

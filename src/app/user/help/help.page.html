@@ -1,0 +1,314 @@
+<ion-header mode="ios">
+  <ion-toolbar>
+    <ion-buttons class="p1" slot="start">
+      <ion-back-button mode="md" defaultHref="tabs/home"></ion-back-button>
+    </ion-buttons>
+
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+
+
+  <div class="variable-div">
+    <div class="variable-header-div">
+      <h3>Yardım Merkezi</h3>
+    </div>
+    <ion-segment scrollable class="md-segment" mode="md" value="{{boolVarlik}}" (ionChange)="segmentChanged($event)">
+      <ion-segment-button value="isi">
+        <ion-label>BİZE YAZIN</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="ceviri">
+        <ion-label>BİZİ ARAYIN</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="haber">
+        <ion-label>DESTEK ALANI</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="makale">
+        <ion-label>TALEP OLUŞTURMA</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="carpan">
+        <ion-label>BİLGİLENDİRME VİDEOLARI</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+
+    <div *ngIf="boolVarlik=='isi'" class="yazin">
+      <div class="form-container" style="margin: 10px">
+        <ion-grid class="gap-list">
+
+          <ion-row>
+            <ion-col>
+              <ion-item class="username-input" lines="none" style="margin-top: 10%;">
+                <ion-input placeholder="Konu "></ion-input>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <ion-item class="username-input" lines="none">
+                <ion-textarea rows="6" placeholder="Mesajınız"></ion-textarea>
+
+              </ion-item>
+            </ion-col>
+          </ion-row>
+
+          <ion-row style="margin-top: 50%">
+            <ion-col>
+              <ion-button size="block" color="warning" style="margin: 0">MESAJ GÖNDER</ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </div>
+    </div>
+
+    <div *ngIf="boolVarlik=='ceviri'" class="arayin">
+      <div class="form-container" style="margin: 10px">
+        <ion-grid class="gap-list">
+
+          <ion-row>
+            <ion-col>
+              <ion-item lines="none" style="margin-top: 10%;">
+                <ion-note>• Türkiye’den bize 222-22-22 telefon numarası ile ulaşabilirsiniz.
+                </ion-note>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <ion-item lines="none">
+                <ion-note>• Dış hatlardan ise bize 0800 717 71 61 telefon numarası yolu ile ulaşabilirsiniz.</ion-note>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+
+          <ion-row style="margin-top: 70%">
+            <ion-col>
+              <ion-button size="block" color="warning" style="margin: 0">HEMEN ARA</ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </div>
+    </div>
+
+    <div *ngIf="boolVarlik=='haber'" class="haber">
+      <div class="form-container" style="margin: 10px">
+        <ion-grid class="gap-list">
+          <div class="variable-header-div">
+            <h3>İşlemler </h3>
+            <h4> Genel Bilgilendirme</h4>
+          </div>
+          <ion-accordion-group style="margin-top: 20px;" value="colors">
+            <ion-accordion value="colors">
+              <ion-item slot="header">
+                <ion-label>HESAP ve ÜYELİK İŞLEMLERİ</ion-label>
+              </ion-item>
+
+              <ion-list slot="content">
+                <ion-item lines="none">
+                  <ion-note style="margin: 0px 15px;    color: #7C7F97; ">• Değerli Metaller Varlık Yönetim Platformu -
+                    Dijital Cüzdan
+                  </ion-note>
+                </ion-item>
+                <ion-item lines="none">
+                  <ion-note style="margin: 0px 15px;    color: #7C7F97; ">• Değerli Metaller
+                  </ion-note>
+                </ion-item>
+                <ion-item lines="none">
+                  <ion-note style="margin: 0px 15px;    color: #7C7F97; ">• Hesap Oluşturma ve Kimlik Doğrulama
+                  </ion-note>
+                </ion-item>
+                <ion-item lines="none">
+                  <ion-note style="margin: 0px 15px;    color: #7C7F97; ">• Hesap Oluşturma
+                  </ion-note>
+                </ion-item>
+                <ion-item lines="none">
+                  <ion-note style="margin: 0px 15px;    color: #7C7F97; ">• Kimlik Doğrulama
+                  </ion-note>
+                </ion-item>
+                <ion-item lines="none">
+                  <ion-note style="margin: 0px 15px;    color: #7C7F97; ">• E-posta Doğrulama
+                  </ion-note>
+                </ion-item>
+              </ion-list>
+            </ion-accordion>
+            <ion-accordion value="shapes">
+              <ion-item slot="header">
+                <ion-label>PİYASA İŞLEMLERİ ve KOMİSYONLAR</ion-label>
+              </ion-item>
+
+              <ion-list slot="content">
+                <ion-item lines="none">
+                  <ion-note style="margin: 0px 15px;    color: #7C7F97; ">• Değerli Metaller Varlık Yönetim Platformu -
+                    Dijital Cüzdan
+                  </ion-note>
+                </ion-item>
+                <ion-item lines="none">
+                  <ion-note style="margin: 0px 15px;    color: #7C7F97; ">• Değerli Metaller
+                  </ion-note>
+                </ion-item>
+                <ion-item lines="none">
+                  <ion-note style="margin: 0px 15px;    color: #7C7F97; ">• Hesap Oluşturma ve Kimlik Doğrulama
+                  </ion-note>
+                </ion-item>
+                <ion-item lines="none">
+                  <ion-note style="margin: 0px 15px;    color: #7C7F97; ">• Hesap Oluşturma
+                  </ion-note>
+                </ion-item>
+                <ion-item lines="none">
+                  <ion-note style="margin: 0px 15px;    color: #7C7F97; ">• Kimlik Doğrulama
+                  </ion-note>
+                </ion-item>
+                <ion-item lines="none">
+                  <ion-note style="margin: 0px 15px;    color: #7C7F97; ">• E-posta Doğrulama
+                  </ion-note>
+                </ion-item>
+              </ion-list>
+            </ion-accordion>
+            <ion-accordion value="numbers">
+              <ion-item slot="header">
+                <ion-label>YATIRMA ve ÇEKME İŞLEMLERİ</ion-label>
+              </ion-item>
+
+              <ion-list slot="content">
+                <ion-item lines="none">
+                  <ion-note style="margin: 0px 15px;    color: #7C7F97; ">• Değerli Metaller Varlık Yönetim Platformu -
+                    Dijital Cüzdan
+                  </ion-note>
+                </ion-item>
+                <ion-item lines="none">
+                  <ion-note style="margin: 0px 15px;    color: #7C7F97; ">• Değerli Metaller
+                  </ion-note>
+                </ion-item>
+                <ion-item lines="none">
+                  <ion-note style="margin: 0px 15px;    color: #7C7F97; ">• Hesap Oluşturma ve Kimlik Doğrulama
+                  </ion-note>
+                </ion-item>
+                <ion-item lines="none">
+                  <ion-note style="margin: 0px 15px;    color: #7C7F97; ">• Hesap Oluşturma
+                  </ion-note>
+                </ion-item>
+                <ion-item lines="none">
+                  <ion-note style="margin: 0px 15px;    color: #7C7F97; ">• Kimlik Doğrulama
+                  </ion-note>
+                </ion-item>
+                <ion-item lines="none">
+                  <ion-note style="margin: 0px 15px;    color: #7C7F97; ">• E-posta Doğrulama
+                  </ion-note>
+                </ion-item>
+              </ion-list>
+            </ion-accordion>
+          </ion-accordion-group>
+        </ion-grid>
+      </div>
+    </div>
+
+    <div *ngIf="boolVarlik=='makale'" class="yazin">
+      <div class="form-container" style="margin: 10px">
+        <ion-grid class="gap-list">
+
+          <ion-row>
+            <ion-col>
+              <ion-item class="username-input" lines="none" style="margin-top: 10%;">
+                <ion-input placeholder="Geri Bildirim / Öneri Başlığı "></ion-input>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <ion-item class="username-input" lines="none">
+                <ion-input placeholder="Ad"></ion-input>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <ion-item class="username-input" lines="none">
+                <ion-input placeholder="Soyad"></ion-input>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <ion-item class="username-input" lines="none">
+                <ion-input placeholder="E-posta "></ion-input>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <ion-item class="username-input" lines="none">
+                <ion-textarea rows="6" placeholder="Mesajınız"></ion-textarea>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <ion-item class="username-input" lines="none">
+                <ion-icon style="color: #7C7F97;" slot="start" name="folder-open-outline"></ion-icon>
+                <ion-input placeholder="Dosya ekle"></ion-input>
+                <span style="left:3px;color: #F1BC00;">BUL</span>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+
+              <ion-note style="    font-size: 12px;
+                ">Eklenecek dosya 10-12 MB Boyutunda ve ... formatında olmalıdır.</ion-note>
+
+            </ion-col>
+          </ion-row>
+          <ion-row style="margin-top: 10%">
+            <ion-col>
+              <ion-button size="block" color="warning" style="margin: 0">GÖNDER</ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </div>
+    </div>
+
+    <div *ngIf="boolVarlik=='carpan'" class="carpan">
+      <div class="form-container" style="margin: 10px">
+        <ion-grid class="gap-list">
+          <ion-slides pager="true"  >
+            <ion-slide style="height: 500px;">
+              <ion-label>
+                <div style="    width: 100%;
+                height: 250px; 
+                background: #F7F7F7;"></div>
+                <h1 style="    margin: 40px 30px;
+                ">Bilgilendirme Videoları</h1>
+                <h4 style="    margin: 0px 60px;    color: #7C7F97; 
+                ">Detaylar ve analizleri yorumlamak cok kolay.Lorem ipsum dolor sit amet, consectetur adipiscing elit.  </h4>
+              </ion-label> 
+            </ion-slide>
+            <ion-slide style="height: 500px;">
+              <ion-label>
+                <div style="    width: 100%;
+                height: 250px; 
+                background: #F7F7F7;"></div>
+                <h1 style="    margin: 40px 30px;
+                ">Bilgilendirme Videoları</h1>
+                <h4 style="    margin: 0px 60px;    color: #7C7F97; 
+                ">Detaylar ve analizleri yorumlamak cok kolay.Lorem ipsum dolor sit amet, consectetur adipiscing elit.   </h4>
+              </ion-label> 
+            </ion-slide>
+            <ion-slide style="height: 500px;">
+              <ion-label>
+                <div style="    width: 100%;
+                height: 250px; 
+                background: #F7F7F7;"></div>
+                <h1 style="    margin: 40px 30px;
+                ">Bilgilendirme Videoları</h1>
+                <h4 style="    margin: 0px 60px;    color: #7C7F97; 
+                ">Detaylar ve analizleri yorumlamak cok kolay.Lorem ipsum dolor sit amet, consectetur adipiscing elit. </h4>
+              </ion-label> 
+            </ion-slide>
+          </ion-slides>
+        </ion-grid>
+      </div>
+    </div>
+  </div>
+
+
+
+</ion-content>

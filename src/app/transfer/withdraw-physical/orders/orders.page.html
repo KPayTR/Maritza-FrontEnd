@@ -1,0 +1,122 @@
+<ion-header mode="ios">
+  <ion-toolbar>
+    <ion-buttons class="p1" slot="start">
+      <ion-back-button mode="md" defaultHref="tabs/home"></ion-back-button>
+    </ion-buttons>
+  
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div    class="form-container" style="margin: 10px"> 
+    <ion-grid class="gap-list">
+
+      <ion-row style="margin-top: 0%;">
+        <ion-col>
+          <h3>Fiziki Çekim </h3>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-note>Ürünleri sepete ekle</ion-note>
+        </ion-col>
+      </ion-row>
+
+      <ion-segment scrollable class="md-segment" mode="md"       value="isi"
+      (ionChange)="segmentChanged($event)">
+        <ion-segment-button value="isi"> 
+          <ion-label>ALTIN</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="ceviri"> 
+          <ion-label>SARRAFİYE</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="haber">
+           <ion-label>BİLEZİK</ion-label>
+        </ion-segment-button> 
+        <ion-segment-button value="1"> 
+          <ion-label>GÜMÜŞ</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="2"> 
+          <ion-label>PALADYUM</ion-label>
+        </ion-segment-button> 
+    </ion-segment>
+
+      <div class="list-row">
+        <ion-row  size="12"   > 
+          <ion-col size="5">
+            <div style="text-align: center;" >
+              <img    src="../../../assets/icon/bar.png" alt="" />
+              <p>15 kg Nadir Gram Külçe Gümüş</p>
+              <b>1200 TL</b> 
+            </div> 
+            <ion-button style="margin-top: 20px;" color="warning">SEPETE EKLE</ion-button> 
+          </ion-col>
+         
+          <ion-col size="5">
+            <div style="text-align: center;" >
+              <img    src="../../../assets/icon/bar.png" alt="" />
+              <p>15 kg Nadir Gram Külçe Gümüş</p>
+              <b>1200 TL</b> 
+            </div> 
+            <ion-button style="margin-top: 20px;" color="warning">SEPETE EKLE</ion-button> 
+
+          </ion-col>
+        
+        </ion-row>
+
+        <ion-row  size="12"   > 
+          <ion-col size="5">
+            <div style="text-align: center;" >
+              <img    src="../../../assets/icon/bar.png" alt="" />
+              <p>15 kg Nadir Gram Külçe Gümüş</p>
+              <b>1200 TL</b> 
+            </div> 
+            <ion-button style="margin-top: 20px;" color="warning">SEPETE EKLE</ion-button> 
+
+          </ion-col>
+         
+          <ion-col size="5">
+            <div style="text-align: center;" >
+              <img    src="../../../assets/icon/bar.png" alt="" />
+              <p>15 kg Nadir Gram Külçe Gümüş</p>
+              <b>1200 TL</b> 
+            </div> 
+            <ion-button style="margin-top: 20px;" color="warning">SEPETE EKLE</ion-button>  
+          </ion-col> 
+        </ion-row>
+         
+        <ion-row  size="12"   > 
+          <ion-col size="5">
+            <div style="text-align: center;" >
+              <img    src="../../../assets/icon/bar.png" alt="" />
+              <p>15 kg Nadir Gram Külçe Gümüş</p>
+              <b>1200 TL</b> 
+            </div> 
+            <ion-button style="margin-top: 20px;" color="warning">SEPETE EKLE</ion-button> 
+
+          </ion-col>
+         
+          <ion-col size="5">
+            <div style="text-align: center;" >
+              <img    src="../../../assets/icon/bar.png" alt="" />
+              <p>15 kg Nadir Gram Külçe Gümüş</p>
+              <b>1200 TL</b> 
+            </div> 
+            <ion-button style="margin-top: 20px;" color="warning">SEPETE EKLE</ion-button>  
+          </ion-col> 
+        </ion-row>
+      
+      </div>
+ 
+</ion-grid></div>
+</ion-content>
+<ion-footer>
+  <ion-button 
+  routerDirection="forward"  
+  [routerLink]="['../orders-address']"
+    size="full" 
+    color="warning" 
+    style="margin: 0" 
+    >SİPARİŞ OLUŞTUR</ion-button
+  >
+</ion-footer>

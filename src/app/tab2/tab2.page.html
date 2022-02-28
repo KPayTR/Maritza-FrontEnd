@@ -1,0 +1,831 @@
+<ion-header mode="ios"  >
+  <ion-toolbar>
+    <ion-buttons class="p1" slot="start">
+      <ion-back-button mode="md" defaultHref="tabs/home"></ion-back-button>
+    </ion-buttons>
+    <ion-buttons slot="primary">
+      <ion-button>
+        <ion-icon slot="icon-only" name="qr-code-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title>
+      <img src="../../../assets/icon/yatirimim.png" alt="" />
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+   
+ 
+  <div     class="variable-div">
+    <div class="variable-header-div"> 
+      <h3>Analiz</h3> 
+    </div>
+    <ion-segment scrollable class="md-segment" mode="md"       value="{{boolVarlik}}"
+    (ionChange)="segmentChanged($event)">
+      <ion-segment-button value="isi"> 
+        <ion-label>ISI HARİTASI</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="ceviri"> 
+        <ion-label>ÇEVİRİCİ</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="haber">
+         <ion-label>HABERLER</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="makale">
+         <ion-label>MAKALELER</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="carpan">
+        <ion-label>ÇARPANLAR</ion-label>
+     </ion-segment-button>
+     <ion-segment-button value="metal">
+      <ion-label>METAL BOZDURMA İNDİKATÖRÜ</ion-label>
+      </ion-segment-button>
+       <ion-segment-button value="anket">
+        <ion-label>ANKET</ion-label>
+     </ion-segment-button>
+     <ion-segment-button value="takvim">
+      <ion-label>EKONOMİK TAKVİM</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="model">
+      <ion-label>MODEL PORTFÖY OLUŞTURMA</ion-label>
+    </ion-segment-button> 
+  </ion-segment>
+
+  <div *ngIf="boolVarlik=='isi'">
+    <ion-segment scrollable class="ios-segment"  mode="ios" value="tumu">
+      <ion-segment-button value="tumu"> 
+        <ion-label>Tümü</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="cevirici"> 
+        <ion-label>Yükselen</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="haber">
+         <ion-label>Düşen</ion-label>
+      </ion-segment-button> 
+  </ion-segment>
+      <div   id="chart2" style="text-align: center; margin-top: 30px;">
+        <img src="../../../assets/icon/chart4.png" alt="" /> 
+      </div>
+    </div>
+  </div>
+  
+  <div  *ngIf="boolVarlik=='ceviri'">
+    <ion-item lines="none">
+      <ion-note style="font-size: 11px;
+      line-height: 12px;
+      text-align: center;
+      letter-spacing: -0.248px;
+      color: #7C7F97;" slot="start">
+        Son Güncelleme 11:15
+      </ion-note>
+      <ion-segment style="    max-width: 120px;     font-weight: none; 
+
+      " slot="end"  class="ios-segment"  mode="ios" value="cevirici">
+        <ion-segment-button value="tumu"> 
+          <ion-label>Alış</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="cevirici"> 
+          <ion-label>Satış</ion-label>
+        </ion-segment-button> 
+    </ion-segment>
+    </ion-item>
+ 
+    <div class="up" style="height: 15%;margin: 25px;
+    background: #F6F5F1;
+    border-radius: 10px;">
+      <ion-row>
+        <ion-col style="font-size: 30px; padding: 0px 0px 0px 15px" size="8"
+          >{{display}}</ion-col
+        >
+        <ion-col size="4">
+          <ion-label>
+            <ion-select
+              class="custom-options"
+              interface="popover"
+              value="TRY"
+              placeholder="Seçiniz"
+              (ionChange)="selectChangeMain($event)"
+            >
+              <ion-select-option
+               
+                value="TRY"
+                >TRY</ion-select-option
+              >
+            </ion-select>
+       
+          </ion-label>
+        </ion-col>
+      </ion-row>
+    </div>
+    <div class="up" style="height: 15%; margin: 25px;
+    background: #F6F5F1;
+    border-radius: 10px;">
+      <ion-row>
+        <ion-col
+          text-wrap
+          style="font-size: 30px; padding: 0px 0px 0px 15px"
+          size="8"
+          >{{calDisplay | number: '.2'}}</ion-col
+        >
+  
+        <ion-col size="4">
+          <ion-label>
+            <ion-select
+              class="custom-options"
+              placeholder="Seçiniz"
+              value="ALTIN"
+              (ionChange)="selectChange($event)"
+              interface="popover"
+            >
+              <ion-select-option
+               
+                value="ALTIN"
+                >ALTIN</ion-select-option
+              >
+            </ion-select>
+          </ion-label>
+        </ion-col>
+      </ion-row>
+    </div>
+    <div class="down" style="height: 55%">
+      <ion-row>
+        <ion-col (click)="key('1')">1</ion-col>
+        <ion-col (click)="key('2')">2</ion-col>
+        <ion-col (click)="key('3')">3</ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col (click)="key('4')">4</ion-col>
+        <ion-col (click)="key('5')">5</ion-col>
+        <ion-col (click)="key('6')">6</ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col (click)="key('7')">7</ion-col>
+        <ion-col (click)="key('8')">8</ion-col>
+        <ion-col (click)="key('9')">9</ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col (click)="key(',')">.</ion-col>
+        <ion-col (click)="key('0')">0</ion-col>
+        <ion-col (click)="key('x')">←</ion-col>
+      </ion-row>
+    </div>
+  </div>
+
+  <div  *ngIf="boolVarlik=='haber'" class="haber">
+    <ion-item lines="none">
+      <h5>
+        İpuçları ve Haberler
+      </h5>
+    </ion-item>
+    <ion-item class="border" lines="none"> 
+      <ion-label>
+        <ion-item class="small-item" lines="none">
+          <p class="smallB" slot="start"><b>HABER </b> 29 ARALIK</p>
+          <p class="small" slot="end">00:01:26</p>
+        </ion-item>
+ 
+        <h2 class="ion-text-wrap">
+          ALTIN VE GÜMÜŞ PIYASALARINDA HAFIF BASKI GÖRÜLÜYOR
+        </h2>
+        <p class="ion-text-wrap desc">
+          Nymex ham petrol fiyatı hafif gerileyerek varil başına 73 $ seviyesinden işlem görüyor. Bu arada 10 yıllık ABD Hazine tahvil getirisi ise %1.481 seviyesinde.
+        </p>
+      </ion-label>
+    
+    </ion-item>
+    <ion-item class="border" lines="none"> 
+      <ion-label>
+        <ion-item class="small-item" lines="none">
+          <p class="smallB" slot="start"><b>HABER </b> 29 ARALIK</p>
+          <p class="small" slot="end">00:01:26</p>
+        </ion-item>
+ 
+        <h2 class="ion-text-wrap">
+          ALTIN VE GÜMÜŞ PIYASALARINDA HAFIF BASKI GÖRÜLÜYOR
+        </h2>
+        <p class="ion-text-wrap desc">
+          Nymex ham petrol fiyatı hafif gerileyerek varil başına 73 $ seviyesinden işlem görüyor. Bu arada 10 yıllık ABD Hazine tahvil getirisi ise %1.481 seviyesinde.
+        </p>
+      </ion-label>
+    
+    </ion-item>
+    <ion-item class="border" lines="none"> 
+      <ion-label>
+        <ion-item class="small-item" lines="none">
+          <p class="smallB" slot="start"><b>HABER </b> 29 ARALIK</p>
+          <p class="small" slot="end">00:01:26</p>
+        </ion-item>
+ 
+        <h2 class="ion-text-wrap">
+          ALTIN VE GÜMÜŞ PIYASALARINDA HAFIF BASKI GÖRÜLÜYOR
+        </h2>
+        <p class="ion-text-wrap desc">
+          Nymex ham petrol fiyatı hafif gerileyerek varil başına 73 $ seviyesinden işlem görüyor. Bu arada 10 yıllık ABD Hazine tahvil getirisi ise %1.481 seviyesinde.
+        </p>
+      </ion-label>
+    
+    </ion-item>
+    <ion-item class="border" lines="none"> 
+      <ion-label>
+        <ion-item class="small-item" lines="none">
+          <p class="smallB" slot="start"><b>HABER </b> 29 ARALIK</p>
+          <p class="small" slot="end">00:01:26</p>
+        </ion-item>
+ 
+        <h2 class="ion-text-wrap">
+          ALTIN VE GÜMÜŞ PIYASALARINDA HAFIF BASKI GÖRÜLÜYOR
+        </h2>
+        <p class="ion-text-wrap desc">
+          Nymex ham petrol fiyatı hafif gerileyerek varil başına 73 $ seviyesinden işlem görüyor. Bu arada 10 yıllık ABD Hazine tahvil getirisi ise %1.481 seviyesinde.
+        </p>
+      </ion-label>
+    
+    </ion-item>
+  </div>
+ 
+  <div  *ngIf="boolVarlik=='makale'" class="haber">
+    <ion-item lines="none">
+      <h5>
+        İpuçları ve Haberler
+      </h5>
+    </ion-item>
+    <ion-item class="border" lines="none" detail="false"  routerDirection="forward"  [routerLink]="['news-detail']"> 
+      <ion-label>
+        <ion-item class="small-item" lines="none">
+          <p class="smallB" slot="start"><b>HABER </b> 29 ARALIK</p>
+          <p class="small" slot="end">00:01:26</p>
+        </ion-item>
+        <img src="../../../assets/icon/makale.png" alt="" />
+        <h2 class="ion-text-wrap">
+          ALTIN VE GÜMÜŞ PIYASALARINDA HAFIF BASKI GÖRÜLÜYOR
+        </h2>
+        <p class="ion-text-wrap desc">
+          Nymex ham petrol fiyatı hafif gerileyerek varil başına 73 $ seviyesinden işlem görüyor. Bu arada 10 yıllık ABD Hazine tahvil getirisi ise %1.481 seviyesinde.
+        </p>
+      </ion-label>
+    
+    </ion-item> 
+    <ion-item class="border" lines="none" detail="false"  routerDirection="forward"  [routerLink]="['news-detail']"> 
+      <ion-label>
+        <ion-item class="small-item" lines="none">
+          <p class="smallB" slot="start"><b>HABER </b> 29 ARALIK</p>
+          <p class="small" slot="end">00:01:26</p>
+        </ion-item>
+        <img src="../../../assets/icon/makale.png" alt="" />
+        <h2 class="ion-text-wrap">
+          ALTIN VE GÜMÜŞ PIYASALARINDA HAFIF BASKI GÖRÜLÜYOR
+        </h2>
+        <p class="ion-text-wrap desc">
+          Nymex ham petrol fiyatı hafif gerileyerek varil başına 73 $ seviyesinden işlem görüyor. Bu arada 10 yıllık ABD Hazine tahvil getirisi ise %1.481 seviyesinde.
+        </p>
+      </ion-label>
+    
+    </ion-item> 
+    <ion-item class="border" lines="none" detail="false"  routerDirection="forward"  [routerLink]="['news-detail']"> 
+      <ion-label>
+        <ion-item class="small-item" lines="none">
+          <p class="smallB" slot="start"><b>HABER </b> 29 ARALIK</p>
+          <p class="small" slot="end">00:01:26</p>
+        </ion-item>
+        <img src="../../../assets/icon/makale.png" alt="" />
+        <h2 class="ion-text-wrap">
+          ALTIN VE GÜMÜŞ PIYASALARINDA HAFIF BASKI GÖRÜLÜYOR
+        </h2>
+        <p class="ion-text-wrap desc">
+          Nymex ham petrol fiyatı hafif gerileyerek varil başına 73 $ seviyesinden işlem görüyor. Bu arada 10 yıllık ABD Hazine tahvil getirisi ise %1.481 seviyesinde.
+        </p>
+      </ion-label>
+    
+    </ion-item> 
+    <ion-item class="border" lines="none" detail="false"  routerDirection="forward"  [routerLink]="['news-detail']"> 
+      <ion-label>
+        <ion-item class="small-item" lines="none">
+          <p class="smallB" slot="start"><b>HABER </b> 29 ARALIK</p>
+          <p class="small" slot="end">00:01:26</p>
+        </ion-item>
+        <img src="../../../assets/icon/makale.png" alt="" />
+        <h2 class="ion-text-wrap">
+          ALTIN VE GÜMÜŞ PIYASALARINDA HAFIF BASKI GÖRÜLÜYOR
+        </h2>
+        <p class="ion-text-wrap desc">
+          Nymex ham petrol fiyatı hafif gerileyerek varil başına 73 $ seviyesinden işlem görüyor. Bu arada 10 yıllık ABD Hazine tahvil getirisi ise %1.481 seviyesinde.
+        </p>
+      </ion-label>
+    
+    </ion-item> 
+  </div>
+
+  <div  *ngIf="boolVarlik=='carpan'" class="carpan">  
+    <ion-segment scrollable class="md-btn-segment"  mode="md" value="cevirici">
+      <ion-segment-button value="tumu"> 
+        <ion-label>Platin/Gümüş</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="cevirici"> 
+        <ion-label>Platin/Paladyum</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="haber">
+         <ion-label>Paladyum/Gümüş</ion-label>
+      </ion-segment-button>  
+  </ion-segment>
+  <div style="text-align:center;    margin-top: 50px  ">
+    <img src="../../../assets/icon/chart5.png" alt="" /> 
+
+  </div>
+
+  </div>
+
+  <div  *ngIf="boolVarlik=='metal'" class="metal" >
+    <p style="    margin: 0px 28px;
+    font-size: 11px; font-weight: bold; margin-top: 10px;
+    line-height: 12px;">Metal</p>
+    <div class="up" style="height: 15%; margin: 25px; margin-top: 20px;
+    background: #F6F5F1;
+    border-radius: 10px;">
+      <ion-row> 
+        <ion-col>
+          <ion-label>
+            <ion-select
+              class="custom-options"
+              interface="popover"
+              value="Altın"
+              placeholder="Seçiniz"
+              (ionChange)="selectChangeMain($event)"
+            >
+              <ion-select-option
+               
+                value="Altın"
+                >Altın</ion-select-option
+              >
+            </ion-select>
+       
+          </ion-label>
+        </ion-col>
+      </ion-row>
+    </div>
+    <p style="    margin: 0px 28px;
+    font-size: 11px; font-weight: bold;
+    line-height: 12px;">Ayar</p>
+    <div class="up" style="height: 15%; margin: 25px; margin-top: 20px;
+    background: #F6F5F1;
+    border-radius: 10px;">
+   
+      <ion-row> 
+        <ion-col >
+          <ion-label>
+            <ion-select
+              class="custom-options"
+              placeholder="Seçiniz"
+              value="24 K"
+              (ionChange)="selectChange($event)"
+              interface="popover"
+            >
+              <ion-select-option
+               
+                value="24 K"
+                >24 K</ion-select-option
+              >
+            </ion-select>
+          </ion-label>
+        </ion-col>
+      </ion-row>
+    </div>
+
+    <p style="    margin: 0px 28px;
+    font-size: 11px; font-weight: bold; margin-top: 20px;
+    line-height: 12px;">Miktar</p> 
+      
+      <ion-item lines="none">
+        <ion-range min="0" max="500"value="250"   color="warning" [pin]="true"></ion-range>
+        <ion-label slot="end">500 gr</ion-label>
+      </ion-item>
+
+      <div style="
+      margin-top: 25px;
+      border-top: 1px solid #F2F2F2;
+  ">
+        <p style="margin: 0px 28px;
+        font-size: 12px;
+        font-weight: 600;
+        margin-top: 40px;
+        line-height: 12px;"
+        >Yukarıda girilen bilgiler doğrultusunda nakit teklifimiz:</p>
+        <div class="up" >
+          <ion-item lines="none" style="height: 15%; margin: 25px; margin-top: 20px;
+          --background: #F6F5F1;
+          border-radius: 10px;">
+            39,062.00 TL 
+          </ion-item> 
+        </div>
+      </div>
+  </div>
+
+  <div  *ngIf="boolVarlik=='takvim'" class="haber">
+    <ion-segment scrollable class="md-btn-segment"  mode="md" value="cevirici">
+      <ion-segment-button value="tumu"> 
+        <ion-label>Bu Hafta</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="cevirici"> 
+        <ion-label>Gelecek Hafta</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="haber">
+         <ion-label>Bu Ay</ion-label>
+      </ion-segment-button> 
+      <ion-segment-button value="haber1">
+        <ion-label>Gelcek Ay</ion-label>
+     </ion-segment-button> 
+  </ion-segment>
+    <div style="margin-top: 20px;">
+      <ion-item class="border" lines="none" style="margin-bottom: 0px;"> 
+        <ion-label>
+          <ion-item class="small-item" lines="none">
+            <p class="smallB" slot="start">00:01:26 - 29 ARALIK 2022 Pazartesi</p>
+            
+          </ion-item>
+   
+          <h2 class="ion-text-wrap" style="margin-top: 0px;">
+            JP-Öncü Göstergeler Endeksi
+          </h2> 
+          <!-- <p class="ion-text-wrap desc">
+            Nymex ham petrol fiyatı hafif gerileyerek varil başına 73 $ seviyesinden işlem görüyor. Bu arada 10 yıllık ABD Hazine tahvil getirisi ise %1.481 seviyesinde.
+          </p> -->
+        </ion-label>
+      
+      </ion-item>
+      <ion-item class="border" lines="none" style="margin-top: 0px;"> 
+        <ion-label>
+          
+          <ion-row style="font-weight:500; ">
+            <ion-col size="4">
+              <ion-label>
+                <p style="font-size: 12px;
+                line-height: 14px; 
+                 color: #000000;">Önceki</p>
+                <p style="font-size: 14px;
+                line-height: 16px;   letter-spacing: 0.5px; color: #000000;">1.70</p>
+              </ion-label>
+            </ion-col>
+            <ion-col size="4">
+              <p style="font-size: 12px;
+              line-height: 14px; 
+               color: #000000;">Açıklanan</p>
+              <p>-</p>
+            </ion-col>
+            <ion-col size="4"> 
+                <p style="font-size: 12px;
+                line-height: 14px; 
+                 color: #000000;">Beklenen</p>
+                <p>-</p></ion-col>
+          </ion-row>
+          <!-- <p class="ion-text-wrap desc">
+            Nymex ham petrol fiyatı hafif gerileyerek varil başına 73 $ seviyesinden işlem görüyor. Bu arada 10 yıllık ABD Hazine tahvil getirisi ise %1.481 seviyesinde.
+          </p> -->
+        </ion-label>
+      
+      </ion-item>
+    </div>
+  
+    <div style="margin-top: 20px;">
+      <ion-item class="border" lines="none" style="margin-bottom: 0px;"> 
+        <ion-label>
+          <ion-item class="small-item" lines="none">
+            <p class="smallB" slot="start">00:01:26 - 29 ARALIK 2022 Pazartesi</p>
+            
+          </ion-item>
+   
+          <h2 class="ion-text-wrap" style="margin-top: 0px;">
+            JP-Öncü Göstergeler Endeksi
+          </h2> 
+          <!-- <p class="ion-text-wrap desc">
+            Nymex ham petrol fiyatı hafif gerileyerek varil başına 73 $ seviyesinden işlem görüyor. Bu arada 10 yıllık ABD Hazine tahvil getirisi ise %1.481 seviyesinde.
+          </p> -->
+        </ion-label>
+      
+      </ion-item>
+      <ion-item class="border" lines="none" style="margin-top: 0px;"> 
+        <ion-label>
+          
+          <ion-row style="font-weight:500; ">
+            <ion-col size="4">
+              <ion-label>
+                <p style="font-size: 12px;
+                line-height: 14px; 
+                 color: #000000;">Önceki</p>
+                <p style="font-size: 14px;
+                line-height: 16px;   letter-spacing: 0.5px; color: #000000;">1.70</p>
+              </ion-label>
+            </ion-col>
+            <ion-col size="4">
+              <p style="font-size: 12px;
+              line-height: 14px; 
+               color: #000000;">Açıklanan</p>
+              <p>-</p>
+            </ion-col>
+            <ion-col size="4"> 
+                <p style="font-size: 12px;
+                line-height: 14px; 
+                 color: #000000;">Beklenen</p>
+                <p>-</p></ion-col>
+          </ion-row>
+          <!-- <p class="ion-text-wrap desc">
+            Nymex ham petrol fiyatı hafif gerileyerek varil başına 73 $ seviyesinden işlem görüyor. Bu arada 10 yıllık ABD Hazine tahvil getirisi ise %1.481 seviyesinde.
+          </p> -->
+        </ion-label>
+      
+      </ion-item>
+    </div>
+
+    <div style="margin-top: 20px;">
+      <ion-item class="border" lines="none" style="margin-bottom: 0px;"> 
+        <ion-label>
+          <ion-item class="small-item" lines="none">
+            <p class="smallB" slot="start">00:01:26 - 29 ARALIK 2022 Pazartesi</p>
+            
+          </ion-item>
+   
+          <h2 class="ion-text-wrap" style="margin-top: 0px;">
+            JP-Öncü Göstergeler Endeksi
+          </h2> 
+          <!-- <p class="ion-text-wrap desc">
+            Nymex ham petrol fiyatı hafif gerileyerek varil başına 73 $ seviyesinden işlem görüyor. Bu arada 10 yıllık ABD Hazine tahvil getirisi ise %1.481 seviyesinde.
+          </p> -->
+        </ion-label>
+      
+      </ion-item>
+      <ion-item class="border" lines="none" style="margin-top: 0px;"> 
+        <ion-label>
+          
+          <ion-row style="font-weight:500; ">
+            <ion-col size="4">
+              <ion-label>
+                <p style="font-size: 12px;
+                line-height: 14px; 
+                 color: #000000;">Önceki</p>
+                <p style="font-size: 14px;
+                line-height: 16px;   letter-spacing: 0.5px; color: #000000;">1.70</p>
+              </ion-label>
+            </ion-col>
+            <ion-col size="4">
+              <p style="font-size: 12px;
+              line-height: 14px; 
+               color: #000000;">Açıklanan</p>
+              <p>-</p>
+            </ion-col>
+            <ion-col size="4"> 
+                <p style="font-size: 12px;
+                line-height: 14px; 
+                 color: #000000;">Beklenen</p>
+                <p>-</p></ion-col>
+          </ion-row>
+          <!-- <p class="ion-text-wrap desc">
+            Nymex ham petrol fiyatı hafif gerileyerek varil başına 73 $ seviyesinden işlem görüyor. Bu arada 10 yıllık ABD Hazine tahvil getirisi ise %1.481 seviyesinde.
+          </p> -->
+        </ion-label>
+      
+      </ion-item>
+    </div>
+
+    <div style="margin-top: 20px;">
+      <ion-item class="border" lines="none" style="margin-bottom: 0px;"> 
+        <ion-label>
+          <ion-item class="small-item" lines="none">
+            <p class="smallB" slot="start">00:01:26 - 29 ARALIK 2022 Pazartesi</p>
+            
+          </ion-item>
+   
+          <h2 class="ion-text-wrap" style="margin-top: 0px;">
+            JP-Öncü Göstergeler Endeksi
+          </h2> 
+          <!-- <p class="ion-text-wrap desc">
+            Nymex ham petrol fiyatı hafif gerileyerek varil başına 73 $ seviyesinden işlem görüyor. Bu arada 10 yıllık ABD Hazine tahvil getirisi ise %1.481 seviyesinde.
+          </p> -->
+        </ion-label>
+      
+      </ion-item>
+      <ion-item class="border" lines="none" style="margin-top: 0px;"> 
+        <ion-label>
+          
+          <ion-row style="font-weight:500; ">
+            <ion-col size="4">
+              <ion-label>
+                <p style="font-size: 12px;
+                line-height: 14px; 
+                 color: #000000;">Önceki</p>
+                <p style="font-size: 14px;
+                line-height: 16px;   letter-spacing: 0.5px; color: #000000;">1.70</p>
+              </ion-label>
+            </ion-col>
+            <ion-col size="4">
+              <p style="font-size: 12px;
+              line-height: 14px; 
+               color: #000000;">Açıklanan</p>
+              <p>-</p>
+            </ion-col>
+            <ion-col size="4"> 
+                <p style="font-size: 12px;
+                line-height: 14px; 
+                 color: #000000;">Beklenen</p>
+                <p>-</p></ion-col>
+          </ion-row>
+          <!-- <p class="ion-text-wrap desc">
+            Nymex ham petrol fiyatı hafif gerileyerek varil başına 73 $ seviyesinden işlem görüyor. Bu arada 10 yıllık ABD Hazine tahvil getirisi ise %1.481 seviyesinde.
+          </p> -->
+        </ion-label>
+      
+      </ion-item>
+    </div>
+
+    <div style="margin-top: 20px;">
+      
+      <ion-item class="border" lines="none" style="margin-bottom: 0px;"> 
+        <ion-label>
+          <ion-item class="small-item" lines="none">
+            <p class="smallB" slot="start">00:01:26 - 29 ARALIK 2022 Pazartesi</p>
+            
+          </ion-item>
+   
+          <h2 class="ion-text-wrap" style="margin-top: 0px;">
+            JP-Öncü Göstergeler Endeksi
+          </h2> 
+          <!-- <p class="ion-text-wrap desc">
+            Nymex ham petrol fiyatı hafif gerileyerek varil başına 73 $ seviyesinden işlem görüyor. Bu arada 10 yıllık ABD Hazine tahvil getirisi ise %1.481 seviyesinde.
+          </p> -->
+        </ion-label>
+      
+      </ion-item>
+      <ion-item class="border" lines="none" style="margin-top: 0px;"> 
+        <ion-label>
+          
+          <ion-row style="font-weight:500; ">
+            <ion-col size="4">
+              <ion-label>
+                <p style="font-size: 12px;
+                line-height: 14px; 
+                 color: #000000;">Önceki</p>
+                <p style="font-size: 14px;
+                line-height: 16px;   letter-spacing: 0.5px; color: #000000;">1.70</p>
+              </ion-label>
+            </ion-col>
+            <ion-col size="4">
+              <p style="font-size: 12px;
+              line-height: 14px; 
+               color: #000000;">Açıklanan</p>
+              <p>-</p>
+            </ion-col>
+            <ion-col size="4"> 
+                <p style="font-size: 12px;
+                line-height: 14px; 
+                 color: #000000;">Beklenen</p>
+                <p>-</p></ion-col>
+          </ion-row>
+          <!-- <p class="ion-text-wrap desc">
+            Nymex ham petrol fiyatı hafif gerileyerek varil başına 73 $ seviyesinden işlem görüyor. Bu arada 10 yıllık ABD Hazine tahvil getirisi ise %1.481 seviyesinde.
+          </p> -->
+        </ion-label>
+      
+      </ion-item>
+    </div>
+  </div>
+
+  <div  *ngIf="boolVarlik=='model'" class="metal">
+    <ion-item style=" --background: #F6F5F1;;margin: 25px; border-radius: 10px;" lines="none">
+      <p slot="start"> 1.308,10</p>
+      <p slot="end" style="color: #7C7F97  ;">TRY</p>
+    </ion-item> 
+
+    <ion-row>
+      <ion-col size="3" style="text-align:start ;">
+       <p style="   
+           margin: 10px 0px 0px 28px;
+           font-size: 12px;
+           font-weight: bold;
+           line-height: 12px;
+       ">Altın</p></ion-col>
+      <ion-col size="9"  style="text-align:start ;">
+        <ion-item style="    font-size: 12px;  " lines="none">
+        <ion-range style="padding: 0px;" min="0" max="500"value="250"   color="warning" [pin]="true"></ion-range>
+        <ion-label slot="end">%25</ion-label>
+      </ion-item>
+    </ion-col>
+    </ion-row>
+   
+    <ion-row style="border-bottom: 1px solid #E7E7E7;    padding-bottom: 20px; ">
+      <ion-col size="6">
+        <ion-item style=" --background: #F6F5F1;;margin-left: 20px; border-radius: 10px;font-size: 12px;
+        " lines="none">
+          <p slot="start">10</p>
+          <p slot="end" style="color: #080A1E  ;">gr</p>
+        </ion-item> 
+      </ion-col>
+      <ion-col size="6">
+        <ion-item style=" --background: #F6F5F1;;margin-right: 20px; border-radius: 10px;font-size: 12px;
+        " lines="none">
+          <p slot="start"> 308,10</p>
+          <p slot="end" style="color: #080A1E  ;">TRY</p>
+        </ion-item> 
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col size="3" style="text-align:start ;">
+       <p style="   
+           margin: 10px 0px 0px 28px;
+           font-size: 12px;
+           font-weight: bold;
+           line-height: 12px;
+       ">Gümüş</p></ion-col>
+      <ion-col size="9"  style="text-align:start ;">
+        <ion-item style="    font-size: 12px;  " lines="none">
+        <ion-range style="padding: 0px;" min="0" max="500"value="250"   color="warning" [pin]="true"></ion-range>
+        <ion-label slot="end">%25</ion-label>
+      </ion-item>
+    </ion-col>
+    </ion-row>
+   
+    <ion-row style="border-bottom: 1px solid #E7E7E7;    padding-bottom: 20px; ">
+      <ion-col size="6">
+        <ion-item style=" --background: #F6F5F1;;margin-left: 20px; border-radius: 10px;font-size: 12px;
+        " lines="none">
+          <p slot="start">10</p>
+          <p slot="end" style="color: #080A1E  ;">gr</p>
+        </ion-item> 
+      </ion-col>
+      <ion-col size="6">
+        <ion-item style=" --background: #F6F5F1;;margin-right: 20px; border-radius: 10px;font-size: 12px;
+        " lines="none">
+          <p slot="start"> 308,10</p>
+          <p slot="end" style="color: #080A1E  ;">TRY</p>
+        </ion-item> 
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col size="3" style="text-align:start ;">
+       <p style="   
+           margin: 10px 0px 0px 28px;
+           font-size: 12px;
+           font-weight: bold;
+           line-height: 12px;
+       ">Paladyum</p></ion-col>
+      <ion-col size="9"  style="text-align:start ;">
+        <ion-item style="    font-size: 12px;  " lines="none">
+        <ion-range style="padding: 0px;" min="0" max="500"value="250"   color="warning" [pin]="true"></ion-range>
+        <ion-label slot="end">%25</ion-label>
+      </ion-item>
+    </ion-col>
+    </ion-row>
+   
+    <ion-row style="border-bottom: 1px solid #E7E7E7;    padding-bottom: 20px; ">
+      <ion-col size="6">
+        <ion-item style=" --background: #F6F5F1;;margin-left: 20px; border-radius: 10px;font-size: 12px;
+        " lines="none">
+          <p slot="start">10</p>
+          <p slot="end" style="color: #080A1E  ;">gr</p>
+        </ion-item> 
+      </ion-col>
+      <ion-col size="6">
+        <ion-item style=" --background: #F6F5F1;;margin-right: 20px; border-radius: 10px;font-size: 12px;
+        " lines="none">
+          <p slot="start"> 308,10</p>
+          <p slot="end" style="color: #080A1E  ;">TRY</p>
+        </ion-item> 
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col size="3" style="text-align:start ;">
+       <p style="   
+           margin: 10px 0px 0px 28px;
+           font-size: 12px;
+           font-weight: bold;
+           line-height: 12px;
+       ">Platin</p></ion-col>
+      <ion-col size="9"  style="text-align:start ;">
+        <ion-item style="    font-size: 12px;  " lines="none">
+        <ion-range style="padding: 0px;" min="0" max="500"value="250"   color="warning" [pin]="true"></ion-range>
+        <ion-label slot="end">%25</ion-label>
+      </ion-item>
+    </ion-col>
+    </ion-row>
+   
+    <ion-row style="border-bottom: 1px solid #E7E7E7;    padding-bottom: 20px; ">
+      <ion-col size="6">
+        <ion-item style=" --background: #F6F5F1;;margin-left: 20px; border-radius: 10px;font-size: 12px;
+        " lines="none">
+          <p slot="start">10</p>
+          <p slot="end" style="color: #080A1E  ;">gr</p>
+        </ion-item> 
+      </ion-col>
+      <ion-col size="6">
+        <ion-item style=" --background: #F6F5F1;;margin-right: 20px; border-radius: 10px;font-size: 12px;
+        " lines="none">
+          <p slot="start"> 308,10</p>
+          <p slot="end" style="color: #080A1E  ;">TRY</p>
+        </ion-item> 
+      </ion-col>
+    </ion-row>
+
+
+  </div>
+</ion-content>
+ 

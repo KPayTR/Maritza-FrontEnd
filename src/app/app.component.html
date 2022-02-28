@@ -1,0 +1,149 @@
+<ion-app>
+  <ion-split-pane contentId="main">
+    <ion-menu  contentId="main"  >
+      <ion-header> 
+      </ion-header>
+      <ion-content>
+        <ion-content>
+          <ion-item style="  padding-top: 30px; "   lines="none">
+            <ion-icon style=" font-size: 20px;"  slot="end" name="notifications"></ion-icon> 
+          <ion-icon style=" font-size: 20px;"  slot="end" name="moon"></ion-icon>
+
+          </ion-item>
+          <ion-list id="yatir-list">
+            <ion-item class="padT" lines="none">
+              <ion-label>ya****@*****.com</ion-label>
+            </ion-item>
+            <ion-item class="padB" lines="none">
+              <ion-note
+                >ID: 1223344 <ion-icon name="copy-outline"></ion-icon
+              ></ion-note>
+            </ion-item>
+  
+            <ion-item lines="none">
+              <ion-note>YATIR</ion-note>
+            </ion-item>
+            <ion-menu-toggle
+              auto-hide="false"
+              *ngFor="let p of yatirPages; let i = index"
+            >
+              <ion-item
+                routerDirection="root"
+                [routerLink]="[p.url]"
+                detail="false"
+                routerLinkActive="selected"
+              >
+                <ion-icon slot="start" [ios]="p.icon" [md]="p.icon"></ion-icon>
+                <ion-label>{{ p.title }}</ion-label>
+              </ion-item>
+            </ion-menu-toggle>
+          </ion-list>
+  
+          <ion-list id="cek-list">
+            <ion-item lines="none">
+              <ion-note>ÇEK</ion-note>
+            </ion-item>
+            <ion-menu-toggle
+              auto-hide="false"
+              *ngFor="let p of cekPages; let i = index"
+            >
+              <ion-item
+                routerDirection="root"
+                [routerLink]="[p.url]"
+                detail="false"
+                routerLinkActive="selected"
+              >
+                <ion-icon slot="start" [ios]="p.icon" [md]="p.icon"></ion-icon>
+                <ion-label>{{ p.title }}</ion-label>
+              </ion-item>
+            </ion-menu-toggle>
+          </ion-list>
+  
+          <ion-list id="islemler-list">
+            <ion-item lines="none">
+              <ion-note>İŞLEMLER</ion-note>
+            </ion-item>
+            <ion-menu-toggle
+              auto-hide="false"
+              *ngFor="let p of islemPages; let i = index"
+            >
+              <ion-item
+                routerDirection="root"
+                [routerLink]="[p.url]"
+                detail="false"
+                routerLinkActive="selected"
+              >
+                <ion-icon slot="start" [ios]="p.icon" [md]="p.icon"></ion-icon>
+                <ion-label>{{ p.title }}</ion-label>
+              </ion-item>
+            </ion-menu-toggle>
+          </ion-list>
+  
+          <ion-list id="hesabim-list">
+            <ion-item lines="none">
+              <ion-note>HESABIM</ion-note>
+            </ion-item>
+            <ion-menu-toggle
+              auto-hide="false"
+              *ngFor="let p of hesapPages; let i = index"
+            >
+              <ion-item
+                routerDirection="root"
+                [routerLink]="[p.url]"
+                detail="false"
+                routerLinkActive="selected"
+              >
+                <ion-icon slot="start" [ios]="p.icon" [md]="p.icon"></ion-icon>
+                <ion-label>{{ p.title }}</ion-label>
+              </ion-item>
+            </ion-menu-toggle>
+          </ion-list>
+  
+          <ion-list id="yardim-list">
+            <ion-item lines="none">
+              <ion-note>YARDIM</ion-note>
+            </ion-item>
+            <ion-menu-toggle
+              auto-hide="false"
+              *ngFor="let p of yardimPages; let i = index"
+            >
+              <ion-item
+                routerDirection="root"
+                [routerLink]="[p.url]"
+                detail="false"
+                lines="none"
+                routerLinkActive="selected"
+              >
+                <ion-icon slot="start" [ios]="p.icon" [md]="p.icon"></ion-icon>
+                <ion-label>{{ p.title }}</ion-label>
+              </ion-item>
+            </ion-menu-toggle>
+          </ion-list>
+  
+          <ion-menu-toggle
+            auto-hide="false"
+            
+          >
+            <div>
+              <ion-button
+                menuClose
+                [routerLink]="['/auth/login']"
+                routerDirection="root"
+                routerLinkActive="selected"
+                color="light"
+                expand="block"
+              >
+                ÇIKIŞ YAP
+              </ion-button>
+            </div>
+          </ion-menu-toggle>
+        </ion-content>
+      </ion-content>
+    </ion-menu>
+
+  <ion-router-outlet  id="main"></ion-router-outlet>
+
+  </ion-split-pane>
+
+
+</ion-app>

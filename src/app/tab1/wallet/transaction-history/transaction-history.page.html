@@ -1,0 +1,203 @@
+<ion-header mode="ios" >
+  <ion-toolbar>
+    <ion-buttons class="p1" slot="start">
+      <ion-back-button mode="md" defaultHref="tabs/home/wallet"></ion-back-button>
+    </ion-buttons>
+    <ion-buttons slot="primary">
+      <ion-button>
+        <ion-icon slot="icon-only" name="qr-code-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title>
+      <img src="../../../assets/icon/yatirimim.png" alt="" />
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+   
+ 
+  <div     class="variable-div">
+    <div class="variable-header-div">
+      <h3>İşlem Geçmişi</h3>
+    </div>
+    <div class="select-div">
+      <ion-grid>
+        <ion-row>
+          <ion-col size="6">
+            <ion-item lines="none">
+              <ion-icon name="time-outline"></ion-icon>
+              <ion-select value="enable" interface="action-sheet">
+                <ion-select-option value="enable">Tüm İşlemler</ion-select-option>
+                <ion-select-option value="mute">15 Dakika</ion-select-option>
+                <ion-select-option value="mute_week"
+                  >30 Dakika</ion-select-option
+                >
+                <ion-select-option value="mute_year">1 Saat</ion-select-option>
+              </ion-select>
+            </ion-item>
+          </ion-col>
+          <ion-col size="6">
+            <ion-item lines="none">
+              <ion-icon name="options-outline"></ion-icon>
+              <ion-select
+              (ionChange)="candleChange()"
+                class="remove-arrow"
+                value="enable"
+                interface="action-sheet"
+              >
+                <ion-select-option value="enable">Miktar</ion-select-option>
+                <ion-select-option value="mute">Cizgi Grafik</ion-select-option> 
+              </ion-select>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+    <ion-grid>
+      <ion-row>  
+        <ion-col size="12"> 
+          <ion-item lines="none">
+            <p style="font-weight: bold" class="p1" slot="start">
+              72gr Altın Alındı
+            </p>
+          <div>
+            <p class="p3" >
+              <ion-icon class="down" name="caret-up"></ion-icon>
+              ALTIN = 897,88 TL </p>
+          </div>
+          
+            <p class="p2" slot="end">13:00 | 12.01.2022</p>
+          </ion-item>
+          <ion-item lines="none">
+            <p style="font-weight: bold" class="p1" slot="start">
+              1gr Altın Satıldı
+            </p>
+          
+            <div>
+              <p class="p3" >
+                <ion-icon class="up" name="caret-down"></ion-icon>
+                ALTIN = 897,88 TL </p>
+            </div>
+
+            <p class="p2" slot="end">13:00 | 12.01.2022</p>
+          </ion-item>
+          <ion-item lines="none">
+            <p style="font-weight: bold" class="p1" slot="start">
+              12gr Altın Alındı
+            </p>
+            <div>
+              <p class="p3" >
+                <ion-icon class="down" name="caret-down"></ion-icon>
+                ALTIN = 897,88 TL </p>
+            </div>
+
+            <p class="p2" slot="end">13:00 | 12.01.2022</p>
+          </ion-item>
+          <ion-item lines="none">
+            <p style="font-weight: bold" class="p1" slot="start">
+              1gr Altın Satıldı
+            </p>
+          
+            <div>
+              <p class="p3" >
+                <ion-icon class="up" name="caret-down"></ion-icon>
+                ALTIN = 897,88 TL </p>
+            </div>
+
+            <p class="p2" slot="end">13:00 | 12.01.2022</p>
+          </ion-item>
+          <ion-item lines="none">
+            <p style="font-weight: bold" class="p1" slot="start">
+              12gr Altın Alındı
+            </p>
+            <div>
+              <p class="p3" >
+                <ion-icon class="down" name="caret-down"></ion-icon>
+                ALTIN = 897,88 TL </p>
+            </div>
+
+            <p class="p2" slot="end">13:00 | 12.01.2022</p>
+          </ion-item>
+          <ion-item lines="none">
+            <p style="font-weight: bold" class="p1" slot="start">
+              1gr Altın Satıldı
+            </p>
+          
+            <div>
+              <p class="p3" >
+                <ion-icon class="up" name="caret-down"></ion-icon>
+                ALTIN = 897,88 TL </p>
+            </div>
+
+            <p class="p2" slot="end">13:00 | 12.01.2022</p>
+          </ion-item>
+          <ion-item lines="none">
+            <p style="font-weight: bold" class="p1" slot="start">
+              12gr Altın Alındı
+            </p>
+            <div>
+              <p class="p3" >
+                <ion-icon class="down" name="caret-down"></ion-icon>
+                ALTIN = 897,88 TL </p>
+            </div>
+
+            <p class="p2" slot="end">13:00 | 12.01.2022</p>
+          </ion-item>
+          <ion-item lines="none">
+            <p style="font-weight: bold" class="p1" slot="start">
+              12gr Altın Alındı
+            </p>
+            <div>
+              <p class="p3" >
+                <ion-icon class="up" name="caret-up"></ion-icon>
+                ALTIN = 897,88 TL </p>
+            </div>
+
+            <p class="p2" slot="end">13:00 | 12.01.2022</p>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+ 
+
+    <div class="variable-header-div">
+      <h4>VARLIK DURUMU</h4>
+    </div>
+    <div class="select-div">
+      <ion-grid>
+        <ion-row>
+          <ion-col size="5">
+            <ion-item lines="none">
+              <ion-icon name="calendar-outline"></ion-icon>
+              <ion-select value="enable" interface="action-sheet">
+                <ion-select-option value="enable">Haftalik</ion-select-option>
+                <ion-select-option value="mute">15 Dakika</ion-select-option>
+                <ion-select-option value="mute_week"
+                  >30 Dakika</ion-select-option
+                >
+                <ion-select-option value="mute_year">Haftalik</ion-select-option>
+              </ion-select>
+            </ion-item>
+          </ion-col> 
+        </ion-row>
+      </ion-grid>
+    </div>
+    <div   id="chart2" style="text-align: center;">
+      <img src="../../../assets/icon/chart1.png" alt="" />
+
+      <!-- <apx-chart
+        [series]="chartOptions2.series2"
+        [chart]="chartOptions2.chart"
+        [xaxis]="chartOptions2.xaxis"
+        [stroke]="chartOptions2.stroke"
+        [tooltip]="chartOptions2.tooltip"
+        [dataLabels]="chartOptions2.dataLabels"
+      ></apx-chart> -->
+    </div>
+  </div>
+
+
+</ion-content>
+
+ 

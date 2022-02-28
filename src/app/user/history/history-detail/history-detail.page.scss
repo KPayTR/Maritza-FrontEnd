@@ -1,0 +1,29 @@
+ion-toolbar {
+    --background: white;
+    border: 0px !important;
+    border-bottom-color: transparent !important;
+    background-image: none !important;
+    border-bottom: none !important;
+    --border-width: 0 !important;
+  }
+ion-item{
+  --padding-start: 10px;
+  border-bottom: solid 1px #E8E8E8;
+}
+.p-left{
+    p{
+      color: black;
+      font-size: 14px;
+    }
+    ion-note{
+      color: #4A4D67  ;
+      font-size: 14px; 
+    }
+}
+.p-right{
+  p {
+    font-weight: bold;
+    color: black;
+    font-size: 15px;  
+  }
+}

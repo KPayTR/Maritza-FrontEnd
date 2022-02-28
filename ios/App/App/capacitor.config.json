@@ -1,0 +1,6 @@
+{
+	"appId": "com.kpay.yatirimim",
+	"appName": "Yatirim",
+	"webDir": "www",
+	"bundledWebRuntime": false
+}

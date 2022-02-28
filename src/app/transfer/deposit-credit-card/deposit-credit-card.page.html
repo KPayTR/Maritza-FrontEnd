@@ -1,0 +1,55 @@
+<ion-header mode="ios">
+  <ion-toolbar>
+    <ion-buttons class="p1" slot="start">
+      <ion-back-button mode="md" defaultHref="tabs/home"></ion-back-button>
+    </ion-buttons>
+  
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div    class="form-container" style="margin: 10px">
+    <ion-grid class="gap-list">
+      <ion-row style="margin-top: 10%">
+        <ion-col>
+          <h3>Kredi Kartı ile Para Yatır</h3>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-note>Hesabınıza yatırmak istediğiniz miktarı girin. </ion-note>
+        </ion-col>
+      </ion-row>
+      <ion-row style="margin-top: 15%">
+        <ion-col>
+          <ion-item class="username-input" lines="none">
+            <ion-input 
+              type="tel" 
+              (ionChange)="phoneChange()" 
+              placeholder="Tutar"
+              [(ngModel)]="phone"
+            ></ion-input>
+            <span style="padding-left: 3px">TRY</span> 
+
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    
+      <ion-row style="margin-top: 35%">
+        <ion-col>
+          <ion-button
+          disabled={{buttonDisabled}}
+          routerDirection="forward"  
+          [routerLink]="['choose-card']"
+            size="block" 
+            color="warning" 
+            style="margin: 0"
+           
+            >DEVAM</ion-button
+          >
+        </ion-col>
+      </ion-row>
+ 
+    </ion-grid>
+  </div> 
+</ion-content>

@@ -1,0 +1,827 @@
+<ion-header mode="ios"  >
+  <ion-toolbar>
+    <ion-buttons class="p1" slot="start">
+      <ion-menu-button auto-hide="false"></ion-menu-button>
+    </ion-buttons>
+    <ion-buttons slot="primary">
+      <ion-button (click)="start()">
+        <ion-icon slot="icon-only" name="qr-code-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title>
+      <img src="../../../assets/icon/yatirimim.png" alt="" />
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-segment  (ionChange)="segmentChanged($event)" class="md-segment" mode="md" value="altin">
+    <ion-segment-button value="altin">
+      <img src="../../../assets/icon/altin.png" alt="" />
+      <ion-label>ALTIN</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="gumus">
+      <img src="../../../assets/icon/gumus.png" alt="" />
+      <ion-label>GÜMÜŞ</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="paladyum">
+      <img src="../../../assets/icon/paladyum.png" alt="" />
+      <ion-label>PALADYUM</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="platin">
+      <img src="../../../assets/icon/platin.png" alt="" />
+      <ion-label>PLATİN</ion-label>
+    </ion-segment-button>
+    
+  </ion-segment>
+
+  <!-- <div class="md-div">
+    <ion-segment
+      class="ios-segment"
+      mode="ios"
+      value="{{boolVarlik}}"
+      (ionChange)="segmentChanged($event)"
+    >
+      <ion-segment-button value="altin">
+        <ion-label>ALTIN</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="varliklarim">
+        <ion-label>VARLIKLARIM</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </div> -->
+
+  <div *ngIf="boolVarlik=='altin'">
+    <ion-item class="currency" lines="none"  >
+      <ion-label class="p1" slot="start">
+        <ion-row>
+          <h3>1.308,10 TL</h3>
+          <ion-icon name="caret-up"></ion-icon>
+          <p>(%1.25)</p>
+        </ion-row>
+        <p>+20,00 TL/0,2 Gram</p>
+      </ion-label>
+      <ion-avatar slot="end">
+        <img src="../../../assets/icon/alarm.png" />
+      </ion-avatar>
+    </ion-item>
+
+    <div class="select-div">
+      <ion-grid>
+        <ion-row>
+          <ion-col size="6">
+            <ion-item lines="none">
+              <ion-icon name="time-outline"></ion-icon>
+              <ion-select value="enable" interface="action-sheet">
+                <ion-select-option value="enable">5 Dakika</ion-select-option>
+                <ion-select-option value="mute">15 Dakika</ion-select-option>
+                <ion-select-option value="mute_week"
+                  >30 Dakika</ion-select-option
+                >
+                <ion-select-option value="mute_year">1 Saat</ion-select-option>
+              </ion-select>
+            </ion-item>
+          </ion-col>
+          <ion-col size="6">
+            <ion-item lines="none">
+              <ion-icon name="stats-chart-outline"></ion-icon>
+              <ion-select
+              (ionChange)="candleChange()"
+                class="remove-arrow"
+                value="enable"
+                interface="action-sheet"
+              >
+                <ion-select-option value="enable">Mum Grafik</ion-select-option>
+                <ion-select-option value="mute">Cizgi Grafik</ion-select-option> 
+              </ion-select>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+    <div *ngIf="candle" id="chart" style="text-align: center;">
+      <img src="../../../assets/icon/chart7.png" />
+
+  
+    </div>
+    <div *ngIf="!candle" id="chart2">
+ 
+    </div>
+
+    <div class="variable-header-div">
+      <h3>PİYASA VERİLERİ</h3>
+    </div>
+    <div class="variable-div">
+      <ion-grid>
+        <ion-row>
+          <ion-col size="6">
+            <ion-item lines="none">
+              <p class="p1" slot="start">Alış</p>
+              <p class="p2" slot="end">1.909,21</p>
+            </ion-item>
+            <ion-item lines="none">
+              <p class="p1" slot="start">Açılış</p>
+              <p class="p2" slot="end">1.909,21</p>
+            </ion-item>
+            <ion-item lines="none">
+              <p class="p1" slot="start">Düşük</p>
+              <p class="p2" slot="end">1.909,21</p>
+            </ion-item>
+            <ion-item lines="none">
+              <p class="p1" slot="start">52Düşük</p>
+              <p class="p2" slot="end">-</p>
+            </ion-item>
+            <ion-item lines="none">
+              <p class="p1" slot="start">Taban</p>
+              <p class="p2" slot="end">-</p>
+            </ion-item>
+            <ion-item lines="none">
+              <p class="p1" slot="start">Hacim Adet</p>
+              <p class="p2" slot="end">0</p>
+            </ion-item>
+            <ion-item lines="none">
+              <p class="p1" slot="start">Net Değişim %</p>
+              <p class="p2" slot="end">0,02</p>
+            </ion-item>
+            <ion-item lines="none">
+              <p class="p1" slot="start">AOF</p>
+              <p class="p2" slot="end">1.909.21</p>
+            </ion-item>
+          </ion-col>
+          <ion-col size="6">
+            <ion-item lines="none">
+              <p class="p1" slot="start">Satış</p>
+              <p class="p2" slot="end">1.909,21</p>
+            </ion-item>
+            <ion-item lines="none">
+              <p class="p1" slot="start">Ö.Gün Kapanış</p>
+              <p class="p2" slot="end">1.909,21</p>
+            </ion-item>
+            <ion-item lines="none">
+              <p class="p1" slot="start">Yüksek</p>
+              <p class="p2" slot="end">1.909,21</p>
+            </ion-item>
+            <ion-item lines="none">
+              <p class="p1" slot="start">52Yüksek</p>
+              <p class="p2" slot="end">-</p>
+            </ion-item>
+            <ion-item lines="none">
+              <p class="p1" slot="start">Tavan</p>
+              <p class="p2" slot="end">-</p>
+            </ion-item>
+            <ion-item lines="none">
+              <p class="p1" slot="start">Hacim TL</p>
+              <p class="p2" slot="end">0</p>
+            </ion-item>
+            <ion-item lines="none">
+              <p class="p1" slot="start">Net Değişim</p>
+              <p class="p2" slot="end">0,02</p>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+    <div class="variable-header-div">
+      <h3>BEKLENTİ</h3>
+    </div>
+    <div class="select-div">
+      <ion-grid>
+        <ion-row>
+          <ion-col size="6">
+            <ion-item lines="none">
+              <ion-icon name="trending-up-outline"></ion-icon>
+              <div
+                style="
+                  color: #16c784;
+                  font-weight: bold;
+                  font-size: 12px;
+                  margin: auto;
+                "
+              >
+                <p>Artar (29)</p>
+              </div>
+            </ion-item>
+          </ion-col>
+          <ion-col size="6">
+            <ion-item lines="none">
+              <ion-icon name="trending-down-outline"></ion-icon>
+              <div
+                style="
+                  color: #ff4747;
+                  font-weight: bold;
+                  font-size: 12px;
+                  margin: auto;
+                "
+              >
+                <p>Azalır (26)</p>
+              </div>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+  </div>
+  <div *ngIf="boolVarlik=='gumus'">
+    <ion-item class="currency" lines="none"  >
+      <ion-label class="p1" slot="start">
+        <ion-row>
+          <h3>806,70 TL</h3>
+          <ion-icon class="icon-down" name="caret-down"></ion-icon>
+          <p class="icon-down">(%0.10x)</p>
+        </ion-row>
+        <p class="icon-down">-3,00 TL/0,1 Gram</p>
+      </ion-label>
+      <ion-avatar slot="end">
+        <img src="../../../assets/icon/alarm.png" />
+      </ion-avatar>
+    </ion-item>
+
+    <div class="select-div">
+      <ion-grid>
+        <ion-row>
+          <ion-col size="6">
+            <ion-item lines="none">
+              <ion-icon name="time-outline"></ion-icon>
+              <ion-select value="enable" interface="action-sheet">
+                <ion-select-option value="enable">5 Dakika</ion-select-option>
+                <ion-select-option value="mute">15 Dakika</ion-select-option>
+                <ion-select-option value="mute_week"
+                  >30 Dakika</ion-select-option
+                >
+                <ion-select-option value="mute_year">1 Saat</ion-select-option>
+              </ion-select>
+            </ion-item>
+          </ion-col>
+          <ion-col size="6">
+            <ion-item lines="none">
+              <ion-icon name="stats-chart-outline"></ion-icon>
+              <ion-select
+              (ionChange)="candleChange()"
+                class="remove-arrow"
+                value="enable"
+                interface="action-sheet"
+              >
+                <ion-select-option value="enable">Mum Grafik</ion-select-option>
+                <ion-select-option value="mute">Cizgi Grafik</ion-select-option> 
+              </ion-select>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+    <div *ngIf="candle" id="chart" style="text-align: center;">
+      <img src="../../../assets/icon/chart7.png" />
+
+  
+    </div>
+    <div *ngIf="!candle" id="chart2">
+ 
+    </div>
+
+    <div class="variable-header-div">
+      <h3>PİYASA VERİLERİ</h3>
+    </div>
+    <div class="variable-div">
+      <ion-grid>
+        <ion-row>
+          <ion-col size="6">
+            <ion-item lines="none">
+              <p class="p1" slot="start">Alış</p>
+              <p class="p2" slot="end">806,70</p>
+            </ion-item>
+            <ion-item lines="none">
+              <p class="p1" slot="start">Açılış</p>
+              <p class="p2" slot="end">806,70</p>
+
+            </ion-item>
+            <ion-item lines="none">
+              <p class="p1" slot="start">Düşük</p>
+              <p class="p2" slot="end">806,70</p>
+
+            </ion-item>
+            <ion-item lines="none">
+              <p class="p1" slot="start">52Düşük</p>
+              <p class="p2" slot="end">-</p>
+            </ion-item>
+            <ion-item lines="none">
+              <p class="p1" slot="start">Taban</p>
+              <p class="p2" slot="end">-</p>
+            </ion-item>
+            <ion-item lines="none">
+              <p class="p1" slot="start">Hacim Adet</p>
+              <p class="p2" slot="end">0</p>
+            </ion-item>
+            <ion-item lines="none">
+              <p class="p1" slot="start">Net Değişim %</p>
+              <p class="p2" slot="end">0,02</p>
+            </ion-item>
+            <ion-item lines="none">
+              <p class="p1" slot="start">AOF</p>
+              <p class="p2" slot="end">806,70</p>
+
+            </ion-item>
+          </ion-col>
+          <ion-col size="6">
+            <ion-item lines="none">
+              <p class="p1" slot="start">Satış</p>
+              <p class="p2" slot="end">806,70</p>
+
+            </ion-item>
+            <ion-item lines="none">
+              <p class="p1" slot="start">Ö.Gün Kapanış</p>
+              <p class="p2" slot="end">806,70</p>
+
+            </ion-item>
+            <ion-item lines="none">
+              <p class="p1" slot="start">Yüksek</p>
+              <p class="p2" slot="end">806,70</p>
+
+            </ion-item>
+            <ion-item lines="none">
+              <p class="p1" slot="start">52Yüksek</p>
+              <p class="p2" slot="end">-</p>
+            </ion-item>
+            <ion-item lines="none">
+              <p class="p1" slot="start">Tavan</p>
+              <p class="p2" slot="end">-</p>
+            </ion-item>
+            <ion-item lines="none">
+              <p class="p1" slot="start">Hacim TL</p>
+              <p class="p2" slot="end">0</p>
+            </ion-item>
+            <ion-item lines="none">
+              <p class="p1" slot="start">Net Değişim</p>
+              <p class="p2" slot="end">0,02</p>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+    <div class="variable-header-div">
+      <h3>BEKLENTİ</h3>
+    </div>
+    <div class="select-div">
+      <ion-grid>
+        <ion-row>
+          <ion-col size="6">
+            <ion-item lines="none">
+              <ion-icon name="trending-up-outline"></ion-icon>
+              <div
+                style="
+                  color: #16c784;
+                  font-weight: bold;
+                  font-size: 12px;
+                  margin: auto;
+                "
+              >
+                <p>Artar (29)</p>
+              </div>
+            </ion-item>
+          </ion-col>
+          <ion-col size="6">
+            <ion-item lines="none">
+              <ion-icon name="trending-down-outline"></ion-icon>
+              <div
+                style="
+                  color: #ff4747;
+                  font-weight: bold;
+                  font-size: 12px;
+                  margin: auto;
+                "
+              >
+                <p>Azalır (26)</p>
+              </div>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+  </div>
+  <div *ngIf="boolVarlik=='paladyum'">
+    <ion-item class="currency" lines="none"  >
+      <ion-label class="p1" slot="start">
+        <ion-row>
+          <h3>2305,00 TL</h3>
+          <ion-icon name="caret-up"></ion-icon>
+          <p>(%0.5)</p>
+        </ion-row>
+        <p>+11,00 TL/0,1 Gram</p>
+      </ion-label>
+      <ion-avatar slot="end">
+        <img src="../../../assets/icon/alarm.png" />
+      </ion-avatar>
+    </ion-item>
+
+    <div class="select-div">
+      <ion-grid>
+        <ion-row>
+          <ion-col size="6">
+            <ion-item lines="none">
+              <ion-icon name="time-outline"></ion-icon>
+              <ion-select value="enable" interface="action-sheet">
+                <ion-select-option value="enable">5 Dakika</ion-select-option>
+                <ion-select-option value="mute">15 Dakika</ion-select-option>
+                <ion-select-option value="mute_week"
+                  >30 Dakika</ion-select-option
+                >
+                <ion-select-option value="mute_year">1 Saat</ion-select-option>
+              </ion-select>
+            </ion-item>
+          </ion-col>
+          <ion-col size="6">
+            <ion-item lines="none">
+              <ion-icon name="stats-chart-outline"></ion-icon>
+              <ion-select
+              (ionChange)="candleChange()"
+                class="remove-arrow"
+                value="enable"
+                interface="action-sheet"
+              >
+                <ion-select-option value="enable">Mum Grafik</ion-select-option>
+                <ion-select-option value="mute">Cizgi Grafik</ion-select-option> 
+              </ion-select>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+    <div *ngIf="candle" id="chart" style="text-align: center;">
+      <img src="../../../assets/icon/chart7.png" />
+
+  
+    </div>
+    <div *ngIf="!candle" id="chart2">
+ 
+    </div>
+
+    <div class="variable-header-div">
+      <h3>PİYASA VERİLERİ</h3>
+    </div>
+    <div class="variable-div">
+      <ion-grid>
+        <ion-row>
+          <ion-col size="6">
+            <ion-item lines="none">
+              <p class="p1" slot="start">Alış</p>
+              <p class="p2" slot="end">2305,00</p>
+            </ion-item>
+            <ion-item lines="none">
+              <p class="p1" slot="start">Açılış</p>
+              <p class="p2" slot="end">2305,00</p>
+
+            </ion-item>
+            <ion-item lines="none">
+              <p class="p1" slot="start">Düşük</p>
+              <p class="p2" slot="end">2305,00</p>
+
+            </ion-item>
+            <ion-item lines="none">
+              <p class="p1" slot="start">52Düşük</p>
+              <p class="p2" slot="end">-</p>
+            </ion-item>
+            <ion-item lines="none">
+              <p class="p1" slot="start">Taban</p>
+              <p class="p2" slot="end">-</p>
+            </ion-item>
+            <ion-item lines="none">
+              <p class="p1" slot="start">Hacim Adet</p>
+              <p class="p2" slot="end">0</p>
+            </ion-item>
+            <ion-item lines="none">
+              <p class="p1" slot="start">Net Değişim %</p>
+              <p class="p2" slot="end">0,02</p>
+            </ion-item>
+            <ion-item lines="none">
+              <p class="p1" slot="start">AOF</p>
+              <p class="p2" slot="end">2305,00</p>
+
+            </ion-item>
+          </ion-col>
+          <ion-col size="6">
+            <ion-item lines="none">
+              <p class="p1" slot="start">Satış</p>
+              <p class="p2" slot="end">2305,00</p>
+
+            </ion-item>
+            <ion-item lines="none">
+              <p class="p1" slot="start">Ö.Gün Kapanış</p>
+              <p class="p2" slot="end">2305,00</p>
+
+            </ion-item>
+            <ion-item lines="none">
+              <p class="p1" slot="start">Yüksek</p>
+              <p class="p2" slot="end">2305,00</p>
+
+            </ion-item>
+            <ion-item lines="none">
+              <p class="p1" slot="start">52Yüksek</p>
+              <p class="p2" slot="end">-</p>
+            </ion-item>
+            <ion-item lines="none">
+              <p class="p1" slot="start">Tavan</p>
+              <p class="p2" slot="end">-</p>
+            </ion-item>
+            <ion-item lines="none">
+              <p class="p1" slot="start">Hacim TL</p>
+              <p class="p2" slot="end">0</p>
+            </ion-item>
+            <ion-item lines="none">
+              <p class="p1" slot="start">Net Değişim</p>
+              <p class="p2" slot="end">0,02</p>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+    <div class="variable-header-div">
+      <h3>BEKLENTİ</h3>
+    </div>
+    <div class="select-div">
+      <ion-grid>
+        <ion-row>
+          <ion-col size="6">
+            <ion-item lines="none">
+              <ion-icon name="trending-up-outline"></ion-icon>
+              <div
+                style="
+                  color: #16c784;
+                  font-weight: bold;
+                  font-size: 12px;
+                  margin: auto;
+                "
+              >
+                <p>Artar (29)</p>
+              </div>
+            </ion-item>
+          </ion-col>
+          <ion-col size="6">
+            <ion-item lines="none">
+              <ion-icon name="trending-down-outline"></ion-icon>
+              <div
+                style="
+                  color: #ff4747;
+                  font-weight: bold;
+                  font-size: 12px;
+                  margin: auto;
+                "
+              >
+                <p>Azalır (26)</p>
+              </div>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+  </div>
+  <div *ngIf="boolVarlik=='platin'">
+    <ion-item class="currency" lines="none"  >
+      <ion-label class="p1" slot="start">
+        <ion-row>
+          <h3>806,70 TL</h3>
+          <ion-icon name="caret-up"></ion-icon>
+          <p>(%0.25)</p>
+        </ion-row>
+        <p>+6,00 TL/0,1 Gram</p>
+      </ion-label>
+      <ion-avatar slot="end">
+        <img src="../../../assets/icon/alarm.png" />
+      </ion-avatar>
+    </ion-item>
+
+    <div class="select-div">
+      <ion-grid>
+        <ion-row>
+          <ion-col size="6">
+            <ion-item lines="none">
+              <ion-icon name="time-outline"></ion-icon>
+              <ion-select value="enable" interface="action-sheet">
+                <ion-select-option value="enable">5 Dakika</ion-select-option>
+                <ion-select-option value="mute">15 Dakika</ion-select-option>
+                <ion-select-option value="mute_week"
+                  >30 Dakika</ion-select-option
+                >
+                <ion-select-option value="mute_year">1 Saat</ion-select-option>
+              </ion-select>
+            </ion-item>
+          </ion-col>
+          <ion-col size="6">
+            <ion-item lines="none">
+              <ion-icon name="stats-chart-outline"></ion-icon>
+              <ion-select
+              (ionChange)="candleChange()"
+                class="remove-arrow"
+                value="enable"
+                interface="action-sheet"
+              >
+                <ion-select-option value="enable">Mum Grafik</ion-select-option>
+                <ion-select-option value="mute">Cizgi Grafik</ion-select-option> 
+              </ion-select>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+    <div *ngIf="candle" id="chart" style="text-align: center;">
+      <img src="../../../assets/icon/chart7.png" />
+
+  
+    </div>
+    <div *ngIf="!candle" id="chart2">
+ 
+    </div>
+
+    <div class="variable-header-div">
+      <h3>PİYASA VERİLERİ</h3>
+    </div>
+    <div class="variable-div">
+      <ion-grid>
+        <ion-row>
+          <ion-col size="6">
+            <ion-item lines="none">
+              <p class="p1" slot="start">Alış</p>
+              <p class="p2" slot="end">806,70</p>
+            </ion-item>
+            <ion-item lines="none">
+              <p class="p1" slot="start">Açılış</p>
+              <p class="p2" slot="end">806,70</p>
+
+            </ion-item>
+            <ion-item lines="none">
+              <p class="p1" slot="start">Düşük</p>
+              <p class="p2" slot="end">806,70</p>
+
+            </ion-item>
+            <ion-item lines="none">
+              <p class="p1" slot="start">52Düşük</p>
+              <p class="p2" slot="end">-</p>
+            </ion-item>
+            <ion-item lines="none">
+              <p class="p1" slot="start">Taban</p>
+              <p class="p2" slot="end">-</p>
+            </ion-item>
+            <ion-item lines="none">
+              <p class="p1" slot="start">Hacim Adet</p>
+              <p class="p2" slot="end">0</p>
+            </ion-item>
+            <ion-item lines="none">
+              <p class="p1" slot="start">Net Değişim %</p>
+              <p class="p2" slot="end">0,02</p>
+            </ion-item>
+            <ion-item lines="none">
+              <p class="p1" slot="start">AOF</p>
+              <p class="p2" slot="end">806,70</p>
+
+            </ion-item>
+          </ion-col>
+          <ion-col size="6">
+            <ion-item lines="none">
+              <p class="p1" slot="start">Satış</p>
+              <p class="p2" slot="end">806,70</p>
+
+            </ion-item>
+            <ion-item lines="none">
+              <p class="p1" slot="start">Ö.Gün Kapanış</p>
+              <p class="p2" slot="end">806,70</p>
+
+            </ion-item>
+            <ion-item lines="none">
+              <p class="p1" slot="start">Yüksek</p>
+              <p class="p2" slot="end">806,70</p>
+
+            </ion-item>
+            <ion-item lines="none">
+              <p class="p1" slot="start">52Yüksek</p>
+              <p class="p2" slot="end">-</p>
+            </ion-item>
+            <ion-item lines="none">
+              <p class="p1" slot="start">Tavan</p>
+              <p class="p2" slot="end">-</p>
+            </ion-item>
+            <ion-item lines="none">
+              <p class="p1" slot="start">Hacim TL</p>
+              <p class="p2" slot="end">0</p>
+            </ion-item>
+            <ion-item lines="none">
+              <p class="p1" slot="start">Net Değişim</p>
+              <p class="p2" slot="end">0,02</p>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+    <div class="variable-header-div">
+      <h3>BEKLENTİ</h3>
+    </div>
+    <div class="select-div">
+      <ion-grid>
+        <ion-row>
+          <ion-col size="6">
+            <ion-item lines="none">
+              <ion-icon name="trending-up-outline"></ion-icon>
+              <div
+                style="
+                  color: #16c784;
+                  font-weight: bold;
+                  font-size: 12px;
+                  margin: auto;
+                "
+              >
+                <p>Artar (29)</p>
+              </div>
+            </ion-item>
+          </ion-col>
+          <ion-col size="6">
+            <ion-item lines="none">
+              <ion-icon name="trending-down-outline"></ion-icon>
+              <div
+                style="
+                  color: #ff4747;
+                  font-weight: bold;
+                  font-size: 12px;
+                  margin: auto;
+                "
+              >
+                <p>Azalır (26)</p>
+              </div>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+  </div>
+
+  <div *ngIf="boolVarlik=='varliklarim'" class="div-varlik">
+    <ion-item class="currency" lines="none" >
+      <ion-label class="p1" slot="start">
+        <ion-row>
+          <h3>120.308,10 TL</h3>
+        </ion-row>
+        <p style="color: #9c9c9c">23 Gram</p>
+      </ion-label>
+    </ion-item>
+
+    <div id="chart2">
+ 
+    </div>
+    <div class="variable-header-div">
+      <h3>SON İŞLEMLERİM</h3>
+    </div>
+    <div class="variable-div">
+      <ion-grid>
+        <ion-row>
+          <ion-col size="12">
+            <ion-item lines="none">
+              <p style="font-weight: bold" class="p1" slot="start">
+                12 Gram Altın Alındı
+              </p>
+              <ion-icon class="up" name="caret-up"></ion-icon>
+              <p class="p3">Alış: 12 TL</p>
+
+              <p class="p2" slot="end">12.01.2022/19:23</p>
+            </ion-item>
+            <ion-item lines="none">
+              <p style="font-weight: bold" class="p1" slot="start">
+                1 Gram Altın Satıldı
+              </p>
+              <ion-icon class="down" name="caret-down"></ion-icon>
+              <p class="p3">Satış: 12 TL</p>
+
+              <p class="p2" slot="end">12.01.2022/19:23</p>
+            </ion-item>
+            <ion-item lines="none">
+              <p style="font-weight: bold" class="p1" slot="start">
+                34 Gram Altın Satıldı
+              </p>
+              <ion-icon class="down" name="caret-down"></ion-icon>
+              <p class="p3">Satış: 12 TL</p>
+
+              <p class="p2" slot="end">12.01.2022/19:23</p>
+            </ion-item>
+            <ion-item lines="none">
+              <p style="font-weight: bold" class="p1" slot="start">
+                72 Gram Altın Alındı
+              </p>
+              <ion-icon class="up" name="caret-up"></ion-icon>
+              <p class="p3">Alış: 12 TL</p>
+
+              <p class="p2" slot="end">12.01.2022/19:23</p>
+            </ion-item>
+            <ion-item lines="none">
+              <p style="font-weight: bold" class="p1" slot="start">
+                4 Gram Altın Satıldı
+              </p>
+              <ion-icon class="down" name="caret-down"></ion-icon>
+              <p class="p3">Satış: 12 TL</p>
+
+              <p class="p2" slot="end">12.01.2022/19:23</p>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+    <div>
+      <ion-button expand="block" color="warning">İŞLEM GEÇMİŞİ</ion-button>
+    </div>
+  </div>
+</ion-content>
