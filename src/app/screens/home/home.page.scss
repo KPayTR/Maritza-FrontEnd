@@ -119,4 +119,61 @@ ion-content {
         margin-top: 16px;
         padding: 0 56px 0 16px;
     }
+
+    .market-container {
+        padding: 16px;
+        margin-top: 4px;
+
+        h3 {
+            font-size: 1em;
+            font-weight: 600;
+            margin: 0;
+            padding-bottom: 6px;
+            border-bottom: solid 1px #f1f1f1;
+        }
+
+        .market-data {
+            margin-top: 16px;
+
+            ion-row {
+                ion-col:first-child {
+                    padding-right: 8px;
+                }
+                ion-col:last-child {
+                    padding-left: 8px;
+                }
+            }
+
+            .market-value {
+                border-bottom: solid 1px #f1f1f1;
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                padding-top: 4px;
+                padding-bottom: 6px;
+
+                .label {
+                    color: #7c7f97;
+                    font-size: 12px;
+                    margin: 0;
+                }
+
+                .value {
+                    margin: 0;
+                    font-size: 12px;
+                    font-weight: bold;
+                }
+            }
+        }
+    }
+
+    .survey-container {
+        padding: 16px;
+
+        h3 {
+            font-size: 1em;
+            font-weight: 600;
+            margin: 0;
+        }
+    }
 }

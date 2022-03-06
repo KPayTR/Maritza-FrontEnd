@@ -37,6 +37,13 @@ ion-button {
     font-size: 14px;
 }
 
+ion-action-sheet {
+    .action-sheet-button {
+        font-size: 16px !important;
+    }
+}
+
+
 .text-muted {
     color: var(--ion-color-medium);
 }
