@@ -13,9 +13,9 @@ ion-content {
 
         .asset-segment {
             ion-segment-button {
-                --color-checked: #000;
+                --color-checked: var(--ion-text-color);
                 --color: #b1b1c5;
-                --indicator-color: #f1be4b;
+                --indicator-color: var(--ion-color-primary);
                 --padding-start: 0;
                 --padding-end: 0;
                 text-transform: none;

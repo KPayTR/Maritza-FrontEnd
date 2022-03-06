@@ -1,0 +1,35 @@
+.analysis-pages-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+
+    .tabbar {
+
+        ion-segment {
+            ion-segment-button {
+                --color-checked: var(--ion-text-color);
+                --indicator-color: var(--ion-color-primary);
+                --indicator-height: 4px;
+                min-height: 34px;
+
+                ion-label {
+                    font-weight: 600;
+                    letter-spacing: normal;
+                    margin-top: 6px;
+                    margin-bottom: 6px;
+                }
+            }
+        }
+    }
+
+    .router-container {
+        flex: 1;
+        ion-router-outlet {
+            position: relative;
+            height: 100%;
+            width: 100%;
+            display: block;
+        }
+    }
+}

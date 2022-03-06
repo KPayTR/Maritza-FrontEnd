@@ -1,16 +1,57 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/app/home"></ion-back-button>
+    </ion-buttons>
     <ion-title>
-      Analizler
+      <img src="../../../assets/img/branding/logo-sm.svg">
     </ion-title>
+    <ion-buttons slot="end">
+      <ion-button class="ion-menu-button">
+        <img src="../../../assets/img/icon/qrCode.svg">
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Analizler</ion-title>
-    </ion-toolbar>
-  </ion-header>
+
+<ion-content>
+  <div class="analysis-pages-container">
+    <div class="tabbar">
+      <ion-segment scrollable mode="md" [value]="currentUrl"  (ionChange)="onSegmentChange($event)">
+        <ion-segment-button value="/app/analysis/heat-map" >
+          <ion-label>ISI HARİTASI</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="/app/analysis/calculator">
+          <ion-label>ÇEVİRİCİ</ion-label>
+        </ion-segment-button>
+        <ion-segment-button>
+          <ion-label>HABERLER</ion-label>
+        </ion-segment-button>
+        <ion-segment-button>
+          <ion-label>MAKALELER</ion-label>
+        </ion-segment-button>
+        <ion-segment-button>
+          <ion-label>ÇARPANLAR</ion-label>
+        </ion-segment-button>
+        <ion-segment-button>
+          <ion-label>METAL BOZDURMA İNDİKATÖRÜ</ion-label>
+        </ion-segment-button>
+        <ion-segment-button>
+          <ion-label>ANKET</ion-label>
+        </ion-segment-button>
+        <ion-segment-button>
+          <ion-label>EKONOMİK TAKVİM</ion-label>
+        </ion-segment-button>
+        <ion-segment-button>
+          <ion-label>MODEL PORTFÖY OLUŞTURMA</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+    </div>
+    <div class="router-container">
+      <ion-router-outlet id="analysis"></ion-router-outlet>
+    </div>
+  </div>
+
 
 </ion-content>
