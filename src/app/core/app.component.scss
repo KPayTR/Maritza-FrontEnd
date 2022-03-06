@@ -1,0 +1,44 @@
+.user-info {
+    --inner-border-width: 0;
+    margin-top: 1em;
+
+    .user-id {
+        display: flex;
+        align-items: center;
+        p {
+            display: inline-block;
+            font-size: 0.86em;
+        }
+        ion-button{
+            --padding-start:0;
+            --padding-end: 0;
+            --padding-top:0;
+            --padding-bottom: 0;
+            display: inline-block;
+            padding: 0;
+            margin: 0;
+            width: 2em;
+            height: 2em;
+            margin-left: .2em;
+        }
+    }
+}
+
+ion-menu {
+    ion-list {
+        ion-list-header {
+            color: var(--ion-color-medium);
+            font-size: 12px;
+            min-height: 32px;
+            font-weight: 500;
+        }
+        ion-icon {
+            font-size: 16px;
+            color: var(--ion-color-text);
+            margin-inline-end: 10px;
+        }
+        .list-items {
+            transition: max-height 0.3s ease-out;
+        }
+    }
+}

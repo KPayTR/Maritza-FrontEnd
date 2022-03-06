@@ -1,5 +1,7 @@
 {
-  "name": "Yatırım Trade",
-  "integrations": {},
+  "name": "yatirimim-trade",
+  "integrations": {
+    "capacitor": {}
+  },
   "type": "angular"
 }

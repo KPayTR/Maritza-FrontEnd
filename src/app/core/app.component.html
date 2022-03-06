@@ -1,0 +1,40 @@
+<ion-app>
+  <ion-split-pane contentId="main-content">
+    <ion-menu contentId="main-content" type="overlay">
+      <ion-content>
+        <ion-item class="user-info">
+          <ion-label>
+            <h2>ya****@*****.com</h2>
+            <div class="user-id">
+              <p class="text-muted">ID: 1223344</p>
+              <ion-button fill="outlined" color="light">
+                <img src="../../assets/img/icon/copy.svg">
+              </ion-button>
+            </div>
+          </ion-label>
+          <ion-button fill="clear" color="light">
+            <img src="../../assets/img/icon/notification.svg">
+          </ion-button>
+          <ion-button fill="clear" color="light">
+            <img src="../../assets/img/icon/toggleTheme.svg">
+          </ion-button>
+        </ion-item>
+        <ion-list id="labels-list" *ngFor="let menuItem of menuItems">
+          <ion-list-header *ngIf="menuItem.header" (click)="openSegment(menuItem.id)">{{menuItem.header}}</ion-list-header>
+          <div class="list-items" [style.max-height]="activeSideMenuId == menuItem.id ? '1000px':'0'">
+            <ion-menu-toggle auto-hide="false" *ngFor="let p of menuItem.items; let i = index">
+              <ion-item routerDirection="root" [routerLink]="[p.url]" lines="none" detail="false"
+                routerLinkActive="selected">
+                <ion-icon slot="start" [ios]="p.icon + '-outline'" [md]="p.icon + '-outline'"></ion-icon>
+                <ion-label>{{ p.title }}</ion-label>
+                <img src="../../assets/img/icon/chevronForward.svg" slot="end">
+              </ion-item>
+            </ion-menu-toggle>
+          </div>
+        </ion-list>
+
+      </ion-content>
+    </ion-menu>
+    <ion-router-outlet id="main-content"></ion-router-outlet>
+  </ion-split-pane>
+</ion-app>

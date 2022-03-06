@@ -1,0 +1,122 @@
+ion-content {
+    .segment-container {
+        ::before {
+            content: " ";
+            display: block;
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 2px;
+            background-color: #f1f1f1;
+        }
+
+        .asset-segment {
+            ion-segment-button {
+                --color-checked: #000;
+                --color: #b1b1c5;
+                --indicator-color: #f1be4b;
+                --padding-start: 0;
+                --padding-end: 0;
+                text-transform: none;
+
+                &::part(indicator) {
+                    z-index: 9;
+                }
+
+                img {
+                    margin-top: 6px;
+                    margin-bottom: 2px;
+                }
+
+                ion-label {
+                    margin: 0;
+                    font-size: 12px;
+                    letter-spacing: normal;
+                    margin-bottom: 6px;
+                    width: 100%;
+                }
+            }
+        }
+    }
+
+    .price-container {
+        padding-top: 30px;
+        padding-bottom: 30px;
+        padding-left: 16px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        font-weight: 600;
+
+        h3 {
+            font-size: 1.5em;
+            margin: 0;
+        }
+
+        p {
+            margin: 0;
+            font-size: 0.87em;
+        }
+
+        .price {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-end;
+
+            .price-change {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                margin-left: 0.8em;
+                padding-bottom: 4px;
+            }
+        }
+        .price-info {
+            margin-top: 4px;
+        }
+    }
+
+    .select-container {
+        display: flex;
+        flex-direction: row;
+        padding-left: 16px;
+        padding-right: 16px;
+
+        ion-item {
+            --background: #f6f5f1;
+            --min-height: 30px;
+            --padding-start: 10px;
+            --padding-end: 0;
+            font-size: 12px;
+            border-radius: 10px;
+            margin-right: 16px;
+
+            img {
+                margin-right: 0.8em;
+            }
+
+            ion-select {
+                --padding-end: 0;
+                width: 8em;
+
+                &::part(icon) {
+                    display: none !important;
+                }
+
+                &::part(text) {
+                    padding-right: 1.4em;
+                    background-image: url(../../../assets/img/icon/chevronBottom.svg);
+                    background-position: right;
+                    background-repeat: no-repeat;
+                }
+            }
+        }
+    }
+
+    .chart-container {
+        margin-top: 16px;
+        padding: 0 56px 0 16px;
+    }
+}

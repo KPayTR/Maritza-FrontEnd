@@ -1,0 +1,28 @@
+ion-tab-bar {
+    --border-style: none;
+    --background: white;
+    --min-height: 60px !important;
+
+    height: 4em;
+    border: 0px !important;
+    border-top-color: transparent !important;
+    background-image: none !important;
+    border-top: none !important;
+    box-shadow: 0px -1px 1px rgba(0, 0, 0, 0.1);
+
+    ion-tab-button {
+        color: var(--ion-text-color);
+        &.tab-selected {
+            color: var(--ion-color-primary);
+        }
+
+        img {
+            height: 24px;
+        }
+
+        ion-label {
+            margin-top: 4px;
+            white-space: nowrap;
+        }
+    }
+}

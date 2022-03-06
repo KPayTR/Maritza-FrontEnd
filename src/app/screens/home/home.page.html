@@ -1,0 +1,80 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-toggle class="ion-menu-button">
+        <img src="../../../assets/img/icon/menu.svg">
+      </ion-menu-toggle>
+    </ion-buttons>
+    <ion-title>
+      <img src="../../../assets/img/branding/logo-sm.svg">
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button class="ion-menu-button">
+        <img src="../../../assets/img/icon/qrCode.svg">
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="segment-container">
+    <ion-segment (ionChange)="segmentChanged($event)" class="asset-segment" mode="md" [value]="selectedSegment">
+      <ion-segment-button value="gold">
+        <img src="../../../assets/img/icon/assetGold.svg" />
+        <ion-label>Altın</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="silver">
+        <img src="../../../assets/img/icon/assetSilver.svg" />
+        <ion-label>Gümüş</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="palladium">
+        <img src="../../../assets/img/icon/assetPalladium.svg" />
+        <ion-label>Paladyum</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="platin">
+        <img src="../../../assets/img/icon/assetPlatin.svg" />
+        <ion-label>Platin</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </div>
+  <div class="price-container">
+    <div>
+      <div class="price">
+        <h3>1.308,10 TL</h3>
+        <div class="price-change  text-success">
+          <ion-icon name="caret-up"></ion-icon>
+          <p>(%1.25)</p>
+        </div>
+      </div>
+      <div class="price-info text-success">
+        <p>+20,00 TL/0,2 Gram</p>
+      </div>
+    </div>
+    <ion-button slot="end" fill="clear" size="normal">
+      <img src="../../../assets/img/icon/alarm.svg" />
+    </ion-button>
+  </div>
+  <div class="select-container">
+    <ion-item lines="none">
+      <img src="../../../assets/img/icon/clock.svg" />
+      <ion-select (ionChange)="timeRangeChange($event)" [(ngModel)]="selectedTimeRange" interface="action-sheet">
+        <ion-select-option value="5">5 Dakika</ion-select-option>
+        <ion-select-option value="15">15 Dakika</ion-select-option>
+        <ion-select-option value="30">30 Dakika</ion-select-option>
+        <ion-select-option value="60">1 Saat</ion-select-option>
+      </ion-select> 
+    </ion-item>
+    <ion-item lines="none">
+      <img src="../../../assets/img/icon/chart.svg" />
+      <ion-select (ionChange)="chartTypeChange($event)" [(ngModel)]="selectedChartType" interface="action-sheet">
+        <ion-select-option value="candle">Mum Grafik</ion-select-option>
+        <ion-select-option value="line">Cizgi Grafik</ion-select-option>
+      </ion-select>
+    </ion-item>
+  </div>
+
+  <div class="chart-container">
+    <app-candle-chart></app-candle-chart>
+  </div>
+
+</ion-content>
