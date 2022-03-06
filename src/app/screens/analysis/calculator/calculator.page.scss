@@ -1,0 +1,13 @@
+.ios-segment {
+    --background: #fdfdfd;
+    border: solid 1px #C3CDDB;
+    border-radius: 50px;
+    margin: 16px; 
+    ion-segment-button { 
+      letter-spacing: normal;
+      --indicator-color: #f1be4b; 
+      --border-radius: 100px;
+      margin: 0px;
+
+    } 
+  }
