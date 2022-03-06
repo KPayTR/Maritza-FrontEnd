@@ -1,13 +1,35 @@
- <ion-content>
-  <ion-segment scrollable class="ios-segment"  mode="ios" value="all">
-    <ion-segment-button value="all"> 
-      <ion-label>Tümü</ion-label>
-    </ion-segment-button>
-    <ion-segment-button value="high"> 
-      <ion-label>Yükselen</ion-label>
-    </ion-segment-button>
-    <ion-segment-button value="low">
-       <ion-label>Düşen</ion-label>
-    </ion-segment-button> 
-  </ion-segment> 
+<ion-content>
+
+
+  <div class="content">
+
+    <ion-segment class="ios-segment" mode="ios" value="all" (ionChange)="onSegmentChange($event)">
+      <ion-segment-button value="all">
+        <ion-label>Tümü</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="high">
+        <ion-label>Yükselen</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="low">
+        <ion-label>Düşen</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+
+    <div class="heat-map-container">
+      <ng-container *ngFor="let item of data">
+        <div class="heat-map-item {{item.class}}" *ngIf="selectedSegment == 'all' || (selectedSegment == 'high' && item.diffValue > 0) || (selectedSegment == 'low' && item.diffValue < 0)">
+          <div class="heat-map-item-inner">
+            <div class="symbol">
+              <p>{{item.symbol}}</p>
+              <p>{{item.price.toFixed(2)}}</p>
+            </div>
+            <div class="diff">
+              <p>{{item.diffValue.toFixed(2)}}</p>
+              <p>%{{item.diffPercent.toFixed(2)}}</p>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
 </ion-content>

@@ -57,6 +57,11 @@ const routes: Routes = [
       }
     ]
   },
+  {
+    path: '',
+    redirectTo: '/app/analysis/heat-map',
+    pathMatch: 'full'
+  }
 ];
 
 @NgModule({
