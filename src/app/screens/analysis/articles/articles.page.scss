@@ -1,0 +1,38 @@
+.articles{
+    h5{
+        font-size: 15px;
+        line-height: 16px;
+        font-weight: bold;
+        color: #080A1E;
+    }
+    .small-item{
+        --padding-start: 0px;
+        border: none;
+        margin: 0px;
+    }
+    .smallB{
+        font-size: 10px;
+        color: black;
+    }
+    .small{
+        font-size: 10px;
+        color: #7C7F97  ;
+    }
+    .border{
+        border: solid 1px #ECECEC;
+        margin: 20px;
+    }
+    h2{
+        margin-top: 10px;
+
+        font-weight: bold;
+    }
+    .desc{
+        margin-top: 10px;
+
+        font-size: 14px;
+        line-height: 16px;
+        letter-spacing: 0.5px; 
+        color: #333333;
+    }
+  }

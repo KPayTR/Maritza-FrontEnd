@@ -1,13 +1,66 @@
 <ion-content>
-  <ion-item lines="none">  
-    <ion-segment style="    max-width: 120px;     font-weight: none;  
-    " slot="end"  class="ios-segment"  mode="ios" value="cevirici">
-      <ion-segment-button value="tumu"> 
+  <ion-item lines="none">
+    <ion-segment
+      style="max-width: 120px; font-weight: none"
+      slot="end"
+      class="ios-segment"
+      mode="ios"
+      value="cevirici"
+    >
+      <ion-segment-button value="tumu">
         <ion-label>Alış</ion-label>
       </ion-segment-button>
-      <ion-segment-button value="cevirici"> 
+      <ion-segment-button value="cevirici">
         <ion-label>Satış</ion-label>
-      </ion-segment-button> 
-  </ion-segment>
-  </ion-item> 
+      </ion-segment-button>
+    </ion-segment>
+  </ion-item>
+
+  <ion-item lines="none">
+    <ion-label> Çevirilen </ion-label>
+  </ion-item>
+  <div class="input">
+    <ion-row>
+      <ion-col class="first" size="9">
+        <ion-input placeholder="0" (ionChange)="calc()"  [(ngModel)]="num"></ion-input>  
+      </ion-col>
+      <ion-col class="last" size="3">
+        <ion-select
+          class="custom-options"
+          interface="popover"
+          value="USD"
+          placeholder="Seçiniz"
+          (ionChange)="selectChangeMain($event)"
+        >
+          <ion-select-option value="TRY">TRY</ion-select-option>
+          <ion-select-option value="USD">USD</ion-select-option>
+          <ion-select-option value="GBP">GBP</ion-select-option>
+        </ion-select>
+      </ion-col>
+    </ion-row>
+  </div>
+
+  <ion-item lines="none">
+    <ion-label> Çeviri </ion-label>
+  </ion-item>
+  <div class="input">
+    <ion-row>
+      <ion-col class="first" size="9">
+        <ion-input placeholder="0" (ionChange)="calc()"  [(ngModel)]="res"></ion-input> 
+      </ion-col>
+      <ion-col class="last" size="3">
+        <ion-select
+          class="custom-options"
+          interface="popover"
+          value="TRY"
+          placeholder="Seçiniz"
+          (ionChange)="selectChangeMain($event)"
+        >
+          <ion-select-option value="TRY">TRY</ion-select-option>
+          <ion-select-option value="USD">USD</ion-select-option>
+          <ion-select-option value="GBP">GBP</ion-select-option>
+        </ion-select>
+      </ion-col>
+    </ion-row>
+  </div>
 </ion-content>

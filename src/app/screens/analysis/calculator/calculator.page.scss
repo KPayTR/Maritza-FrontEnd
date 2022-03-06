@@ -2,12 +2,37 @@
     --background: #fdfdfd;
     border: solid 1px #C3CDDB;
     border-radius: 50px;
-    margin: 16px; 
+    
+    margin-top: 24px;
     ion-segment-button { 
       letter-spacing: normal;
       --indicator-color: #f1be4b; 
       --border-radius: 100px;
-      margin: 0px;
-
+      margin: 0px; 
     } 
   }
+  .input{
+   
+    margin: 16px;
+    background: #F6F5F1;
+    border-radius: 5px;
+    .first{
+        font-size: 14px;  
+        ion-input{
+            color: #080A1E;
+            font-size: 16px; 
+            margin-left: 10px;
+            letter-spacing: normal; 
+        }
+    } 
+    .last{
+        text-align: end;
+    }
+
+  }    
+  ion-label{
+    color: #080A1E;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: normal; 
+}
