@@ -4,7 +4,7 @@ import { AnalysisPage } from './analysis.page';
 
 const routes: Routes = [
   {
-    path: '',
+    path: 'item',
     component: AnalysisPage,
     children: [
       {
@@ -59,7 +59,7 @@ const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: '/app/analysis/heat-map',
+    redirectTo: '/app/analysis/item/heat-map',
     pathMatch: 'full'
   }
 ];

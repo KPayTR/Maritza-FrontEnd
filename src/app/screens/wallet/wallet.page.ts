@@ -89,7 +89,7 @@ export class Wallet {
           }
         }
       },
-      labels: ["Team A", "Team B", "Team C", "Team D", "Team E"],
+      labels: this.assets.map(x => x.symbol),
       responsive: [
         {
           breakpoint: 480,
