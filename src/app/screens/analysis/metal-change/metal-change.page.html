@@ -1,9 +1,68 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>metal-change</ion-title>
-  </ion-toolbar>
-</ion-header>
-
+ 
 <ion-content>
+  <div   class="content" >
+    <p class="p1">Metal</p>
+    <div class="up" >
+      <ion-row> 
+        <ion-col>
+          <ion-label>
+            <ion-select
+              class="custom-options"
+              interface="popover"
+              value="Altın"
+              placeholder="Seçiniz"
+              (ionChange)="selectChangeMain($event)"
+            >
+              <ion-select-option
+               
+                value="Altın"
+                >Altın</ion-select-option
+              >
+            </ion-select>
+       
+          </ion-label>
+        </ion-col>
+      </ion-row>
+    </div>
+    <p class="p1">Ayar</p>
+    <div class="up"  >
+   
+      <ion-row> 
+        <ion-col >
+          <ion-label>
+            <ion-select
+              class="custom-options"
+              placeholder="Seçiniz"
+              value="24 K"
+              (ionChange)="selectChange($event)"
+              interface="popover"
+            >
+              <ion-select-option
+               
+                value="24 K"
+                >24 K</ion-select-option
+              >
+            </ion-select>
+          </ion-label>
+        </ion-col>
+      </ion-row>
+    </div>
 
+    <p class="p1">Miktar</p> 
+      
+      <ion-item lines="none">
+        <ion-range min="0" max="500"value="250"   color="warning" [pin]="true"></ion-range>
+        <ion-label slot="end">500 gr</ion-label>
+      </ion-item>
+
+      <div class="d1" >
+        <p class="p2"  
+        >Yukarıda girilen bilgiler doğrultusunda nakit teklifimiz:</p>
+        <div  >
+          <ion-item lines="none" class="item"  >
+            39,062.00 TL 
+          </ion-item> 
+        </div>
+      </div>
+  </div>
 </ion-content>

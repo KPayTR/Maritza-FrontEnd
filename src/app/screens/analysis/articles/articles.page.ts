@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ModalController } from '@ionic/angular';
+import { DetailsPage } from './details/details.page';
 
 @Component({
   selector: 'app-articles',
@@ -6,10 +8,20 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./articles.page.scss'],
 })
 export class ArticlesPage implements OnInit {
+  constructor(
+    private modalCtrl: ModalController
 
-  constructor() { }
+  ) { }
 
   ngOnInit() {
   }
-
+  async presentModal() {
+    const modal = await this.modalCtrl.create({
+      component: DetailsPage,
+      breakpoints: [1, 1, 1, 1],
+      initialBreakpoint: 1,
+      swipeToClose: true
+    });
+    await modal.present();
+  }
 }

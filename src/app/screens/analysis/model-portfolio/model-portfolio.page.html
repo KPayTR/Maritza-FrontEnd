@@ -1,9 +1,140 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>model-portfolio</ion-title>
-  </ion-toolbar>
-</ion-header>
-
+ 
 <ion-content>
+  <div   class="content">
+    <ion-item   lines="none">
+      <p slot="start"> 1.308,10</p>
+      <p slot="end" style="color: #7C7F97  ;">TRY</p>
+    </ion-item> 
 
+    <ion-row>
+      <ion-col size="3" style="text-align:start ;">
+       <p class="header">Altın</p></ion-col>
+      <ion-col size="9"  style="text-align:start ;">
+        <ion-item  class="no-color"  lines="none">
+        <ion-range style="padding: 0px;" min="0" max="500"value="250"   color="warning" [pin]="true"></ion-range>
+        <ion-label slot="end">%25</ion-label>
+      </ion-item>
+    </ion-col>
+    </ion-row>
+   
+    <ion-row style="border-bottom: 1px solid #E7E7E7;    padding-bottom: 20px; ">
+      <ion-col size="6">
+        <ion-item  lines="none">
+          <p slot="start">10</p>
+          <p slot="end" style="color: #080A1E  ;">gr</p>
+        </ion-item> 
+      </ion-col>
+      <ion-col size="6">
+        <ion-item  lines="none">
+          <p slot="start"> 308,10</p>
+          <p slot="end" style="color: #080A1E  ;">TRY</p>
+        </ion-item> 
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col size="3" style="text-align:start ;">
+       <p class="header">Gümüş</p></ion-col>
+      <ion-col size="9"  style="text-align:start ;">
+        <ion-item class="no-color" lines="none">
+        <ion-range style="padding: 0px;" min="0" max="500"value="250"   color="warning" [pin]="true"></ion-range>
+        <ion-label slot="end">%25</ion-label>
+      </ion-item>
+    </ion-col>
+    </ion-row>
+   
+    <ion-row style="border-bottom: 1px solid #E7E7E7;    padding-bottom: 20px; ">
+      <ion-col size="6">
+        <ion-item   lines="none">
+          <p slot="start">10</p>
+          <p slot="end" style="color: #080A1E  ;">gr</p>
+        </ion-item> 
+      </ion-col>
+      <ion-col size="6">
+        <ion-item  lines="none">
+          <p slot="start"> 308,10</p>
+          <p slot="end" style="color: #080A1E  ;">TRY</p>
+        </ion-item> 
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col size="3" style="text-align:start ;">
+       <p class="header">Paladyum</p></ion-col>
+      <ion-col size="9"  style="text-align:start ;">
+        <ion-item  class="no-color" lines="none">
+        <ion-range style="padding: 0px;" min="0" max="500"value="250"   color="warning" [pin]="true"></ion-range>
+        <ion-label slot="end">%25</ion-label>
+      </ion-item>
+    </ion-col>
+    </ion-row>
+   
+    <ion-row style="border-bottom: 1px solid #E7E7E7;    padding-bottom: 20px; ">
+      <ion-col size="6">
+        <ion-item   lines="none">
+          <p slot="start">10</p>
+          <p slot="end" style="color: #080A1E  ;">gr</p>
+        </ion-item> 
+      </ion-col>
+      <ion-col size="6">
+        <ion-item   lines="none">
+          <p slot="start"> 308,10</p>
+          <p slot="end" style="color: #080A1E  ;">TRY</p>
+        </ion-item> 
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col size="3" style="text-align:start ;">
+       <p class="header">Platin</p></ion-col>
+      <ion-col size="9"  style="text-align:start ;">
+        <ion-item class="no-color"  lines="none">
+        <ion-range style="padding: 0px;" min="0" max="500"value="250"   color="warning" [pin]="true"></ion-range>
+        <ion-label slot="end">%25</ion-label>
+      </ion-item>
+    </ion-col>
+    </ion-row>
+   
+    <ion-row style="   padding-bottom: 20px; ">
+      <ion-col size="6">
+        <ion-item  lines="none">
+          <p slot="start">10</p>
+          <p slot="end" style="color: #080A1E  ;">gr</p>
+        </ion-item> 
+      </ion-col>
+      <ion-col size="6">
+        <ion-item   lines="none">
+          <p slot="start"> 308,10</p>
+          <p slot="end" style="color: #080A1E  ;">TRY</p>
+        </ion-item> 
+      </ion-col>
+    </ion-row>
+
+    <div class="footer">
+        <img src="../../../../assets/img/icon/model.svg" alt="">
+        <h4>Eğer yatırım yapsaydın</h4>
+        <h3>13.308,10 TL</h3>
+
+        <ion-segment scrollable class="md-btn-segment"  mode="md" value="cevirici">
+          <ion-segment-button value="tumu"> 
+            <ion-label>1 Yıl</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="cevirici"> 
+            <ion-label>2 Yıl</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="haber">
+             <ion-label>3 Yıl</ion-label>
+          </ion-segment-button> 
+          <ion-segment-button value="haber1">
+            <ion-label>4 Yıl</ion-label>
+         </ion-segment-button> 
+      </ion-segment>
+
+        <p class="p1">Yatırım Miktarı</p>  
+        <ion-item class="no-color" lines="none">
+          <ion-range min="0" max="800"value="400"   color="warning" [pin]="true"></ion-range>
+          <ion-label slot="end">$800</ion-label>
+        </ion-item>
+    </div>
+  </div>
 </ion-content>

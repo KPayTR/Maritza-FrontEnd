@@ -1,14 +1,23 @@
-.news{
-    h5{
-        font-size: 15px;
-        line-height: 16px;
-        font-weight: bold;
-        color: #080A1E;
+.content {
+    padding: 16px;
+    ion-item{
+        --min-height:0px;
+        --padding-top: 0px;
+        --padding-start: 0px;
+        --padding-end: 0px;
+        --inner-padding-end: 0;
+      
+        padding-inline-end: 0px; 
+        font-size: 14px;
     }
+    ion-label{
+        margin: 0px;
+    } 
     .small-item{
         --padding-start: 0px;
         border: none;
-        margin: 0px;
+        margin-bottom: 16px;
+
     }
     .smallB{
         font-size: 10px;
@@ -19,17 +28,17 @@
         color: #7C7F97  ;
     }
     .border{
+        padding: 16px;
         border: solid 1px #ECECEC;
-        margin: 20px;
+        margin-bottom: 16px;
+   
     }
     h2{
-        margin-top: 10px;
-
+        margin-top: 10px; 
         font-weight: bold;
     }
     .desc{
-        margin-top: 10px;
-
+        margin-top: 10px; 
         font-size: 14px;
         line-height: 16px;
         letter-spacing: 0.5px; 
