@@ -1,0 +1,40 @@
+<ion-header mode="ios">
+  <ion-toolbar>
+    <ion-buttons class="p1" slot="start">
+      <ion-back-button mode="md" defaultHref="app/home"></ion-back-button>
+    </ion-buttons>
+  
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div    class="form-container" style="margin: 16px">
+    <ion-grid class="gap-list">
+      <ion-row style="margin-top: 20%">
+        <ion-col style="text-align: center;">
+          <img   src="../../../assets/icon/tick.png" alt="" /> 
+          
+        </ion-col>
+      </ion-row>
+      <ion-row style="margin-top: 5%; text-align: center;" >
+        <ion-col>
+          <h3>Siparişiniz İşleme Alındı!</h3>
+          <p style="  margin: 0px 20px;  font-size: 14px;
+          ">İşleminizin gerçekleşmesi 24 saat içinde olacaktır.</p>
+        </ion-col>
+      </ion-row>
+ 
+ 
+    </ion-grid>
+  </div> 
+</ion-content>
+<ion-footer>
+  <ion-button
+  routerDirection="forward"  
+[routerLink]="['../../../home']" 
+    size="full" 
+    color="warning" 
+    style="margin: 0" 
+    >ANASAYFAYA DÖN</ion-button
+  >
+</ion-footer>

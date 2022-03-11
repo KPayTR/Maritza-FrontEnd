@@ -1,0 +1,28 @@
+.stepper-div {
+    background: #f0efe9;
+    margin: 0 1.5px;
+    width: 36px;
+    height: 8px;
+    border-radius: 10px;
+  }
+  .stepper-div-color {
+    background: #f1bf4b 50%;
+  }
+  .stepper-div-half-color {
+    background: linear-gradient(90deg, #f1bf4b 50%, #f0efe9 50%);
+  }
+  ion-slide{
+    padding: 64px 16px 16px 16px;
+  }
+  .centered {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    min-height: 100vh;
+  }
+  ion-icon{
+    position: absolute;
+    bottom: 50px;
+    font-size: 40px;
+  }

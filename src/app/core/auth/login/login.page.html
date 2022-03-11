@@ -1,0 +1,80 @@
+<ion-header mode="ios"  >
+  <ion-toolbar>
+    <ion-buttons class="p1" slot="start">
+      <ion-back-button mode="md" defaultHref="app/home"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="form-container" style="margin: 10px">
+    <ion-grid class="gap-list">
+      <ion-row style="margin-top: 10%">
+        <ion-col>
+          <h3>Giriş Yap</h3>
+        </ion-col>
+      </ion-row>
+
+      <ion-row style="margin-top: 15%">
+        <ion-col>
+          <ion-item class="username-input" lines="none">
+            <span style="padding-right: 3px">+90</span>
+            <span style="padding-right: 3px; color: #d2d6e1">|</span>
+            <ion-input
+              maxlength="12"
+              type="tel"
+              mask="000 000 0000"
+              placeholder="555 111 2233"
+              [(ngModel)]="phone"
+            ></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-item lines="none" class="username-input">
+            <ion-input
+              [(ngModel)]="password"
+              type="password"
+              name="password"
+              placeholder="Lütfen bir şifre belirleyin"
+            >
+            </ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row style="margin-top: 5%">
+        <ion-col
+          style="
+            text-align: end;
+            font-weight: bold;
+            font-size: 14px;
+            line-height: 18px;
+          "
+        >
+          <a (click)="openReset()">Şifremi Unuttum </a>
+        </ion-col>
+      </ion-row>
+      <ion-row style="margin-top: 15%">
+        <ion-col>
+          <ion-button
+            routerDirection="forward"
+            size="block"
+            color="warning"
+            [routerLink]="['../login-approve']"
+            style="margin: 0"
+            >GİRİŞ YAP</ion-button
+          >
+        </ion-col>
+      </ion-row>
+      <ion-row style="margin-top: 5%">
+        <ion-col style="text-align: center; font-size: 14px; line-height: 18px">
+          <p>
+            Yatirimim.com’a kayıtlı mısın?
+            <a [routerLink]="['../choose-individual']">Kayıt Ol </a>
+          </p>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+</ion-content>

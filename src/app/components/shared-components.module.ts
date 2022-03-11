@@ -9,6 +9,7 @@ import { CandleChartComponent } from './candle-chart/candle-chart.component';
 import { GaugeChartComponent } from './gauge-chart/gauge-chart.component';
 import { LineChartComponent } from './line-chart/line-chart.component';
 import { PieChartComponent } from './pie-chart/pie-chart.component';
+import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
 
 @NgModule({
     declarations: [
@@ -17,7 +18,8 @@ import { PieChartComponent } from './pie-chart/pie-chart.component';
         CandleChartComponent,
         GaugeChartComponent,
         LineChartComponent,
-        PieChartComponent
+        PieChartComponent,
+        PrivacyPolicyComponent
     ],
     imports: [
         FormsModule,
@@ -31,7 +33,9 @@ import { PieChartComponent } from './pie-chart/pie-chart.component';
         CandleChartComponent,
         GaugeChartComponent,
         LineChartComponent,
-        PieChartComponent
+        PieChartComponent,
+        PrivacyPolicyComponent
+
     ]
 })
 export class SharedComponentsModule {

@@ -1,0 +1,82 @@
+<ion-header mode="ios">
+  <ion-toolbar>
+    <ion-buttons class="p1" slot="start">
+      <ion-back-button mode="md" defaultHref="app/home"></ion-back-button>
+    </ion-buttons>
+  
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div    class="form-container" style="margin: 10px">
+    <ion-grid class="gap-list">
+      <ion-row style="margin-top: 0%">
+        <ion-col>
+          <h3>Banka Hesaplarım</h3>
+        </ion-col>
+      </ion-row
+      > 
+      <ion-row    style="margin-top: 15%">
+        <ion-col>
+          <ion-item   class="username-input" lines="none" routerDirection="forward"  
+          [routerLink]="['account-detail']">
+            <img slot="start" src="../../../assets/icon/bank/fiba.png" alt="" /> 
+            <ion-label>
+              <p  style="    color: black;
+              font-weight: bold;">Ev - Fibabanka </p>
+              <ion-note style="    font-size: 12px;
+              ">TR99 9999 9999 9999 9999 99</ion-note>
+            </ion-label>
+          
+          </ion-item>
+        </ion-col>
+      </ion-row>
+     
+      <ion-row    style="margin-top: 2%">
+        <ion-col>
+          <ion-item   class="username-input" lines="none" routerDirection="forward"  
+          [routerLink]="['account-detail']">
+            <img slot="start" src="../../../assets/icon/bank/garanti.png" alt="" /> 
+            <ion-label>
+              <p  style="    color: black;
+              font-weight: bold;">Yeni Hesap - Garanti BBVA </p>
+              <ion-note style="    font-size: 12px;
+              ">TR99 9999 9999 9999 9999 99</ion-note>
+            </ion-label>
+         
+            
+          </ion-item>
+        </ion-col>
+      </ion-row>
+ 
+      <ion-row  style="margin-top: 2%"  routerDirection="forward"  
+      [routerLink]="['account-detail']">
+        <ion-col>
+          <ion-item   class="username-input" lines="none">
+            <img slot="start" src="../../../assets/icon/bank/halk.png" alt="" /> 
+            <ion-label>
+              <p  style="    color: black;
+              font-weight: bold;">Halkm - Halkbank </p>
+              <ion-note style="    font-size: 12px;
+              ">TR99 9999 9999 9999 9999 99</ion-note>
+            </ion-label>
+         
+           
+          </ion-item>
+        </ion-col>
+      </ion-row>
+ 
+ 
+    </ion-grid>
+  </div> 
+</ion-content>
+<ion-footer>
+  <ion-button 
+  size="full" 
+  color="warning" 
+  style="margin: 0"
+  routerDirection="forward"  
+[routerLink]="['account-create']"
+  >YENİ BANKA HESABI EKLE</ion-button
+>
+</ion-footer>

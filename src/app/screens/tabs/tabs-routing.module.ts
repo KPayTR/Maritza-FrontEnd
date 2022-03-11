@@ -26,7 +26,7 @@ const routes: Routes = [
       {
         path: 'transfer',
         loadChildren: () => import('../transfer/transfer.module').then(m => m.TransferPageModule)
-      },
+      }, 
       {
         path: '',
         redirectTo: '/app/home',
@@ -38,7 +38,8 @@ const routes: Routes = [
     path: '',
     redirectTo: '/app/home',
     pathMatch: 'full'
-  }
+  },
+
 ];
 
 @NgModule({

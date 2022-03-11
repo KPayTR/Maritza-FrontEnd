@@ -1,0 +1,43 @@
+ 
+<ion-content>
+ 
+      <ion-slides style="    height: 100%;
+      "  >
+        <ion-slide  style="height: 100%; background: #F1BC00 ; padding: 0 !important;"> 
+         <div class="centered" >  
+            <img   src="../../../assets/img/branding/black.png">
+            <img   src="../../../assets/img/branding/name.png"> 
+         </div> 
+         <ion-icon (click)="slideNext()"  name="arrow-forward-outline"></ion-icon>
+        </ion-slide>
+        <ion-slide style="height: 100%;"> 
+          <ion-label> 
+            <div style="    width: 100%;
+            height: 300px; 
+            background: #F7F7F7;"></div>
+            <h1 style="    margin: 40px 30px;
+            ">Altın birikimine başla</h1>
+            <h4 style="    margin: 0px 60px;    color: #7C7F97; 
+            ">Detaylar ve analizleri yorumlamak cok kolay.Lorem ipsum dolor sit amet, consectetur adipiscing elit.  </h4>
+               <ion-button   (click)="slideNext()"   size="block" color="warning"  
+               style="margin: 90px 8px">GEÇ</ion-button>
+          </ion-label> 
+       
+        </ion-slide>
+        <ion-slide style="height: 100%;"> 
+          <ion-label> 
+            <div style="    width: 100%;
+            height: 300px; 
+            background: #F7F7F7;"></div>
+            <h1 style="    margin: 40px 30px;
+            ">Altın birikimine başla</h1>
+            <h4 style="    margin: 0px 60px;    color: #7C7F97; 
+            ">Detaylar ve analizleri yorumlamak cok kolay.Lorem ipsum dolor sit amet, consectetur adipiscing elit.  </h4>
+               <ion-button     routerDirection="forward" [routerLink]="['login']"  size="block" color="warning"  
+               style="margin: 90px 8px">GEÇ</ion-button>
+          </ion-label> 
+       
+        </ion-slide>
+      </ion-slides>
+ 
+</ion-content>

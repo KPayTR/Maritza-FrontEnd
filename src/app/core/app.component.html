@@ -21,7 +21,7 @@
         </ion-item>
         <ion-list id="labels-list" *ngFor="let menuItem of menuItems">
           <ion-list-header *ngIf="menuItem.header" (click)="openSegment(menuItem.id)">{{menuItem.header}}</ion-list-header>
-          <div class="list-items" [style.max-height]="activeSideMenuId == menuItem.id ? '1000px':'0'">
+          <div class="list-items"  >
             <ion-menu-toggle auto-hide="false" *ngFor="let p of menuItem.items; let i = index">
               <ion-item routerDirection="root" [routerLink]="[p.url]" lines="none" detail="false"
                 routerLinkActive="selected">

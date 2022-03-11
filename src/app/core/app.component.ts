@@ -27,10 +27,10 @@ export class AppComponent {
       header: 'YATIR',
       collapsable: true,
       items: [
-        { title: "KREDİ KARTI İLE", url: "/transfer/deposit-credit-card", icon: "card" },
-        { title: "HAVALE / EFT", url: "/transfer/deposit-eft", icon: "library" },
-        { title: "FİZİKİ YATIR", url: "/transfer/deposit-pyhsical", icon: "server" },
-        { title: "KAYITLI KARTLARIM", url: "/transfer/deposit-credit-card/choose-card", icon: "wallet" },
+        { title: "KREDİ KARTI İLE", url: "app/transfer/deposit-credit-card", icon: "card" },
+        { title: "HAVALE / EFT", url: "app/transfer/deposit-eft", icon: "library" },
+        { title: "FİZİKİ YATIR", url: "app/transfer/deposit-pyhsical", icon: "server" },
+        { title: "KAYITLI KARTLARIM", url: "app/transfer/deposit-credit-card/choose-card", icon: "wallet" },
       ]
     },
     {
@@ -38,9 +38,9 @@ export class AppComponent {
       header: 'ÇEK',
       collapsable: true,
       items: [
-        { title: "HESABA ÇEKİM", url: "/transfer/withdraw-account", icon: "library" },
-        { title: "FİZİKİ ÇEKİM", url: "/transfer/withdraw-physical", icon: "server" },
-        { title: "BANKA HESAPLARIM", url: "/user/profile/bank-account", icon: "wallet" },
+        { title: "HESABA ÇEKİM", url: "app/transfer/withdraw-account", icon: "library" },
+        { title: "FİZİKİ ÇEKİM", url: "app/transfer/withdraw-pyhsical", icon: "server" },
+        { title: "BANKA HESAPLARIM", url: "user/profile/bank-account", icon: "wallet" },
       ]
     },
     {
@@ -48,8 +48,8 @@ export class AppComponent {
       header: 'İŞLEMLER',
       collapsable: true,
       items: [
-        { title: "İŞLEM GEÇMİŞİ", url: "/user/history", icon: "timer" },
-        { title: "İŞLEM LİMİTLERİM", url: "/user/transaction-limits", icon: "reader" },
+        { title: "İŞLEM GEÇMİŞİ", url: "user/history", icon: "timer" },
+        { title: "İŞLEM LİMİTLERİM", url: "user/transaction-limits", icon: "reader" },
       ]
     },
     {
@@ -57,10 +57,10 @@ export class AppComponent {
       header: 'HESABIM',
       collapsable: true,
       items: [
-        { title: "KİMLİK DOĞRULAMA", url: "/auth/login", icon: "id-card" },
-        { title: "ŞİFRE DEĞİŞTİRME", url: "/user/password-change", icon: "key" },
-        { title: "KİŞİSEL BİLGİLERİM", url: "/user/profile", icon: "person-circle" },
-        { title: "BİLDİRİM AYARLARI", url: "/user/notifications/notification-setting", icon: "notifications" },
+        { title: "KİMLİK DOĞRULAMA", url: "auth/login", icon: "id-card" },
+        { title: "ŞİFRE DEĞİŞTİRME", url: "user/password-change", icon: "key" },
+        { title: "KİŞİSEL BİLGİLERİM", url: "user/profile", icon: "person-circle" },
+        { title: "BİLDİRİM AYARLARI", url: "user/notifications/notification-setting", icon: "notifications" },
         { title: "BLOG", url: "/tabs/home", icon: "create" },
       ]
     },
@@ -69,10 +69,10 @@ export class AppComponent {
       header: 'YARDIM',
       collapsable: true,
       items: [
-        { title: "YARDIM MERKEZİ", url: "/user/help", icon: "call" },
-        { title: "DİL SEÇENEĞİ", url: "/user/language", icon: "language" },
+        { title: "YARDIM MERKEZİ", url: "user/help", icon: "call" },
+        { title: "DİL SEÇENEĞİ", url: "user/language", icon: "language" },
         { title: "SÖZLEŞMELER", url: "/tabs/home", icon: "receipt" },
-        { title: "GÜVENLİK AYARLARI", url: "/user/security", icon: "shield-checkmark" },
+        { title: "GÜVENLİK AYARLARI", url: "user/security", icon: "shield-checkmark" },
       ]
     },
     {
@@ -80,7 +80,7 @@ export class AppComponent {
       header: '',
       collapsable: false,
       items: [
-        { title: "ÇIKIŞ YAP", url: "/auth/login", icon: "exit" },
+        { title: "ÇIKIŞ YAP", url: "/auth", icon: "exit" },
       ]
     }
   ]

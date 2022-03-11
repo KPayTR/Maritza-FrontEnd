@@ -1,0 +1,55 @@
+<ion-content>
+  <ion-list>
+    <ion-item lines="none">
+      <ion-note>YATIR</ion-note>
+    </ion-item>
+    <ion-item
+      detail
+      (click)="dismiss()"
+      routerDirection="forward"
+      [routerLink]="['app/transfer/deposit-credit-card']"
+    >
+      <ion-icon slot="start" name="card-outline"></ion-icon>
+      <ion-label>KREDİ KARTI İLE</ion-label>
+    </ion-item>
+    <ion-item
+      detail
+      (click)="dismiss()"
+      routerDirection="forward"
+      [routerLink]="['app/transfer/deposit-eft']" 
+    >
+      <ion-icon slot="start" name="library-outline"></ion-icon>
+      <ion-label>HAVALE / EFT</ion-label>
+    </ion-item>
+    <ion-item
+      detail
+      (click)="dismiss()"
+      routerDirection="forward"
+      [routerLink]="['app/transfer/deposit-pyhsical']"
+    >
+      <ion-icon slot="start" name="server-outline"></ion-icon>
+      <ion-label>FİZİKİ YATIR</ion-label>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-note>ÇEK</ion-note>
+    </ion-item>
+    <ion-item
+      detail
+      (click)="dismiss()"
+      routerDirection="forward"
+      [routerLink]="['app/transfer/withdraw-account']"
+    >
+      <ion-icon slot="start" name="library-outline"></ion-icon>
+      <ion-label>HESABA ÇEKİM</ion-label>
+    </ion-item>
+    <ion-item
+      (click)="dismiss()"
+      detail
+      routerDirection="forward"
+      [routerLink]="['app/transfer/withdraw-pyhsical']"
+    >
+      <ion-icon slot="start" name="server-outline"></ion-icon>
+      <ion-label>FİZİKİ ÇEKİM</ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>

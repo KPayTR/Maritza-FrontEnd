@@ -134,15 +134,15 @@ export class Wallet {
   }
 
   goBuy(){
-    this.router.navigate(['/buySell/buy'])
+    this.router.navigate(['app/trade/buy'])
   }
   goSell(){
-    this.router.navigate(['/buySell/sell'])
-  }
-  goWithdraw(){
-    this.router.navigate(['/transfer/deposit-credit-card'])
+    this.router.navigate(['app/trade/sell'])
   }
   goDeposit(){
-    this.router.navigate(['/transfer/withdraw-account'])
+    this.router.navigate(['app/transfer/deposit-credit-card'])
+  }
+  goWithdraw(){
+    this.router.navigate(['app/transfer/withdraw-account'])
   }
 }

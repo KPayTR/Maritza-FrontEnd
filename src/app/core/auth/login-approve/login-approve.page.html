@@ -1,0 +1,75 @@
+<ion-header mode="ios">
+  <ion-toolbar>
+    <ion-buttons class="p1" slot="start">
+      <ion-back-button mode="md" defaultHref="tabs/home"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="form-container" style="margin: 10px">
+    <ion-grid class="gap-list">
+      <ion-row style="margin-top: 10%">
+        <ion-col>
+          <h3 style="margin-bottom: 0">Mobil Onay</h3>
+        </ion-col>
+      </ion-row>
+      <ion-row style="margin-top: 0">
+        <ion-col style="text-align: start; font-size: 14px; line-height: 18px">
+          <p style="color: #1a2e57">
+            Yeni kod gönderilecek
+            <a>00:16 </a>
+          </p>
+        </ion-col>
+      </ion-row>
+      <ion-row style="margin-top: 5%; color: #1c3254">
+        <ion-col style="text-align: center; font-size: 14px; line-height: 18px">
+          <p style="font-weight: bold">Onay Kodu Gönderildi</p>
+          <p>+90 533 111 22 33</p>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-input maxlength="1" type="number" name="password" value="9">
+          </ion-input>
+        </ion-col>
+        <ion-col>
+          <ion-input maxlength="1" type="number" name="password" value="4">
+          </ion-input>
+        </ion-col>
+        <ion-col>
+          <ion-input maxlength="1" type="number" name="password" value="4">
+          </ion-input>
+        </ion-col>
+        <ion-col>
+          <ion-input maxlength="1" type="number" name="password" value="3">
+          </ion-input>
+        </ion-col>
+      </ion-row>
+      <ion-row style="margin-top: 15%">
+        <ion-col style="text-align: center; font-size: 14px; line-height: 18px">
+          <p></p>
+          <ion-button
+            fill="outline"
+            color="medium"
+            size="block"
+            style="margin: 0"
+            >YENİDEN KOD GÖNDER</ion-button
+          >
+        </ion-col>
+      </ion-row>
+      <ion-row style="margin-top: 5%">
+        <ion-col>
+          <ion-button
+            routerDirection="forward"
+            size="block"
+            color="warning"
+            [routerLink]="['../../app/home']"
+            style="margin: 0"
+            >HESABI OLUŞTUR</ion-button
+          >
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+</ion-content>

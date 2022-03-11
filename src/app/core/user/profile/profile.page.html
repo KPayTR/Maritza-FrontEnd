@@ -1,0 +1,68 @@
+<ion-header mode="ios">
+  <ion-toolbar>
+    <ion-buttons class="p1" slot="start">
+      <ion-back-button slot="start" mode="md" defaultHref="app/home"></ion-back-button>
+    </ion-buttons>
+
+  </ion-toolbar>
+</ion-header>
+
+
+
+<ion-content>
+  <div style="margin: 16px;">
+    <div style="text-align: start; margin: 20px 0px 0px 0px;">
+      <ion-item lines="none">
+        <h4><b>Kişisel Bilgiler</b></h4>
+      </ion-item>
+    </div>
+  
+  
+    <div class="profile">
+      <div class="avatar">
+        <img
+          [src]="profilePictureUrl == null || profilePictureUrl.length == 0 ? '../../../../assets/svg/avatar.png' : profilePictureUrl"
+          alt="" />
+        <div (click)="presentActionSheet()" class="options">
+          <img src="../../../../assets/svg/add.svg" alt="Icon" />
+        </div>
+      </div>
+    </div>
+
+  <ion-item style=" --background: #F6F5F1;    ;font-size: 12px; 
+  " lines="none">
+  <p slot="start">Ad</p>
+  <p slot="end" style="color: #080A1E; font-weight: bold;">Hande Türkmen</p>
+</ion-item>
+<ion-item style=" --background: #F6F5F1;    ;font-size: 12px; 
+  " lines="none">
+  <p slot="start">E-posta</p>
+  <p slot="end" style="color: #080A1E; font-weight: bold;">hturkmen@gmail.com</p>
+</ion-item>
+<ion-item style=" --background: #F6F5F1;    ;font-size: 12px; 
+  " lines="none">
+  <p slot="start">Telefon</p>
+  <p slot="end" style="color: #080A1E; font-weight: bold;">+905398282288</p>
+</ion-item>
+<ion-item style=" --background: #F6F5F1;    ;font-size: 12px; 
+  " lines="none">
+  <p slot="start">Üyelik Tarihi</p>
+  <p slot="end" style="color: #080A1E; font-weight: bold;">13/01/2021</p>
+</ion-item>
+<ion-item style=" --background: #F6F5F1;    ;font-size: 12px; 
+  " lines="none">
+  <p slot="start">Adres</p>
+  <p slot="end" style="color: #080A1E; font-weight: bold;">Türkiye</p>
+</ion-item>
+  </div>
+
+
+ 
+
+</ion-content>
+<ion-footer>
+  <ion-button routerDirection="forward" [routerLink]="['profile-approve']" size="full" color="medium"
+  fill="outline" style="margin: 0"  >ÇIKIŞ YAP</ion-button>
+  <ion-button routerDirection="forward" [routerLink]="['profile-edit']" size="full" color="warning"
+  style="margin: 0"  >DÜZENLE</ion-button>
+</ion-footer>

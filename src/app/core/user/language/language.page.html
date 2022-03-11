@@ -1,0 +1,47 @@
+<ion-header mode="ios">
+  <ion-toolbar>
+    <ion-buttons class="p1" slot="start">
+      <ion-back-button mode="md" defaultHref="app/home"></ion-back-button>
+    </ion-buttons>
+  
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div    class="form-container" style="margin: 16px">
+    <ion-grid class="gap-list">
+      <ion-row >
+        <ion-col>
+          <h3>Dil Seçeneği</h3>
+        </ion-col>
+      </ion-row> 
+      <ion-row    style="margin-top: 32px">
+        <ion-col>
+          <ion-item  class="username-input" lines="none">
+            <p slot="start">İngilizce</p> 
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row    style="margin-top: 8px">
+        <ion-col>
+          <ion-item class="username-input active" lines="none">
+            <p slot="start">Türkçe</p> 
+          </ion-item>
+        </ion-col>
+      </ion-row>
+ 
+ 
+    </ion-grid>
+  </div> 
+</ion-content>
+<ion-footer>
+  <ion-button
+  routerDirection="forward"  
+ [routerLink]="['../../home']" 
+    size="full" 
+    color="warning" 
+    style="margin: 0"
+   
+    >DEĞİŞİKLİKLERİ KAYDET</ion-button
+  >
+</ion-footer>
