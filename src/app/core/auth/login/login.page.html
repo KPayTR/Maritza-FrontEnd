@@ -58,10 +58,9 @@
       <ion-row style="margin-top: 15%">
         <ion-col>
           <ion-button
-            routerDirection="forward"
             size="block"
-            color="warning"
-            [routerLink]="['../login-approve']"
+            color="warning" 
+            (click)="login()"
             style="margin: 0"
             >GİRİŞ YAP</ion-button
           >
