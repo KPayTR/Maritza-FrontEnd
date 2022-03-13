@@ -4452,8 +4452,7 @@ export class SymbolsApiService {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result400: any = null;
             let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result400 = resultData400 !== undefined ? resultData400 : <any>null;
-    
+            result400 = ErrorDto.fromJS(resultData400);
             return throwException("Bad Request", status, _responseText, _headers, result400);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -4462,6 +4461,71 @@ export class SymbolsApiService {
             }));
         }
         return _observableOf<SymbolModel[]>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    getrates(): Observable<SymbolRateModel[]> {
+        let url_ = this.baseUrl + "/api/finance/symbols/getrates";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetrates(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetrates(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<SymbolRateModel[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<SymbolRateModel[]>;
+        }));
+    }
+
+    protected processGetrates(response: HttpResponseBase): Observable<SymbolRateModel[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(SymbolRateModel.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ErrorDto.fromJS(resultData400);
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<SymbolRateModel[]>(null as any);
     }
 }
 
@@ -16833,6 +16897,126 @@ export interface ISymbolModel {
     buyAddValue?: number;
     sellAddPercent?: number;
     sellAddValue?: number;
+}
+
+export class SymbolRateModel implements ISymbolRateModel {
+    symbolTypeId?: number;
+    symbolType?: SymbolTypeModel;
+    isoCode?: string | undefined;
+    matriksId?: number;
+    matriksCode?: string | undefined;
+    name?: string | undefined;
+    isMainCurrency?: boolean;
+    isTradeable?: boolean;
+    rateDate?: moment.Moment;
+    buy?: number;
+    sell?: number;
+    difference?: number;
+    min?: number;
+    max?: number;
+    minYear?: number;
+    maxYear?: number;
+    dailyChangePercent?: number;
+    latestClosing?: number;
+    opening?: number;
+    volumeLot?: number;
+    volumeTry?: number;
+    capital?: number;
+
+    constructor(data?: ISymbolRateModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.symbolTypeId = _data["SymbolTypeId"];
+            this.symbolType = _data["SymbolType"] ? SymbolTypeModel.fromJS(_data["SymbolType"]) : <any>undefined;
+            this.isoCode = _data["IsoCode"];
+            this.matriksId = _data["MatriksId"];
+            this.matriksCode = _data["MatriksCode"];
+            this.name = _data["Name"];
+            this.isMainCurrency = _data["IsMainCurrency"];
+            this.isTradeable = _data["IsTradeable"];
+            this.rateDate = _data["RateDate"] ? moment(_data["RateDate"].toString()) : <any>undefined;
+            this.buy = _data["Buy"];
+            this.sell = _data["Sell"];
+            this.difference = _data["Difference"];
+            this.min = _data["Min"];
+            this.max = _data["Max"];
+            this.minYear = _data["MinYear"];
+            this.maxYear = _data["MaxYear"];
+            this.dailyChangePercent = _data["DailyChangePercent"];
+            this.latestClosing = _data["LatestClosing"];
+            this.opening = _data["Opening"];
+            this.volumeLot = _data["VolumeLot"];
+            this.volumeTry = _data["VolumeTry"];
+            this.capital = _data["Capital"];
+        }
+    }
+
+    static fromJS(data: any): SymbolRateModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new SymbolRateModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["SymbolTypeId"] = this.symbolTypeId;
+        data["SymbolType"] = this.symbolType ? this.symbolType.toJSON() : <any>undefined;
+        data["IsoCode"] = this.isoCode;
+        data["MatriksId"] = this.matriksId;
+        data["MatriksCode"] = this.matriksCode;
+        data["Name"] = this.name;
+        data["IsMainCurrency"] = this.isMainCurrency;
+        data["IsTradeable"] = this.isTradeable;
+        data["RateDate"] = this.rateDate ? this.rateDate.toISOString() : <any>undefined;
+        data["Buy"] = this.buy;
+        data["Sell"] = this.sell;
+        data["Difference"] = this.difference;
+        data["Min"] = this.min;
+        data["Max"] = this.max;
+        data["MinYear"] = this.minYear;
+        data["MaxYear"] = this.maxYear;
+        data["DailyChangePercent"] = this.dailyChangePercent;
+        data["LatestClosing"] = this.latestClosing;
+        data["Opening"] = this.opening;
+        data["VolumeLot"] = this.volumeLot;
+        data["VolumeTry"] = this.volumeTry;
+        data["Capital"] = this.capital;
+        return data;
+    }
+}
+
+export interface ISymbolRateModel {
+    symbolTypeId?: number;
+    symbolType?: SymbolTypeModel;
+    isoCode?: string | undefined;
+    matriksId?: number;
+    matriksCode?: string | undefined;
+    name?: string | undefined;
+    isMainCurrency?: boolean;
+    isTradeable?: boolean;
+    rateDate?: moment.Moment;
+    buy?: number;
+    sell?: number;
+    difference?: number;
+    min?: number;
+    max?: number;
+    minYear?: number;
+    maxYear?: number;
+    dailyChangePercent?: number;
+    latestClosing?: number;
+    opening?: number;
+    volumeLot?: number;
+    volumeTry?: number;
+    capital?: number;
 }
 
 export class SymbolType implements ISymbolType {

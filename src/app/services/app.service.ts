@@ -74,7 +74,7 @@ async showAlert(message: string, title: string = "Hata!") {
 async showErrorAlert(message: any) {
     if (Array.isArray(message)) {
         const errorDtos: ErrorDto[] = message;
-        message = errorDtos.map(x => x.msg).join(' ');
+        message = errorDtos.map(x => x.message).join(' ');
     }
     if (message != null && message.message != null) {
         message = message.message;

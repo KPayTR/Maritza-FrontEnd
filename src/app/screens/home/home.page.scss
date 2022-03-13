@@ -19,6 +19,7 @@ ion-content {
                 --padding-start: 0;
                 --padding-end: 0;
                 text-transform: none;
+                min-width: 80px;
 
                 &::part(indicator) {
                     z-index: 9;

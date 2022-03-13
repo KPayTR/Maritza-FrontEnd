@@ -1,5 +1,6 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { createChart, IChartApi } from 'lightweight-charts';
+import UniqueId from 'src/app/helpers/UniqueId';
 
 @Component({
   selector: 'app-candle-chart',
@@ -7,6 +8,8 @@ import { createChart, IChartApi } from 'lightweight-charts';
   styleUrls: ['./candle-chart.component.scss'],
 })
 export class CandleChartComponent implements OnInit {
+
+  chartId = 'chart_' + (new UniqueId().randomUUID(6));
 
   darkTheme = {
     chart: {
@@ -226,12 +229,14 @@ export class CandleChartComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    this.initChart();
+    setTimeout(() => {
+      this.initChart();
+    }, 300);
   }
   initChart() {
     var switcherElement = this.createSimpleSwitcher(['Dark', 'Light'], 'Dark', this.syncToTheme);
 
-    var chartElement = document.getElementById('candle-chart');
+    var chartElement = document.getElementById(this.chartId);
 
     this.chart = createChart(chartElement, {
       width: window.innerWidth - 32,

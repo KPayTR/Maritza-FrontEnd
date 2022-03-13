@@ -382,7 +382,9 @@ export class TradingChartComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    this.initChart();
+    setTimeout(() => {
+      this.initChart();
+    }, 300);
   }
   initChart() {
     //const chart = createChart(, { width: 400, height: 300 });

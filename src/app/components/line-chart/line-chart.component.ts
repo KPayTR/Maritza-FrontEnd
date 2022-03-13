@@ -230,14 +230,16 @@ export class LineChartComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+    console.log(this.chartId);
+    
+   setTimeout(() => {
     this.initChart();
+   }, 300);
   }
   initChart() {
     var switcherElement = this.createSimpleSwitcher(['Dark', 'Light'], 'Dark', this.syncToTheme);
 
     var chartElement = document.getElementById(this.chartId);
-
-    
 
     this.chart = createChart(chartElement, {
       width: window.innerWidth - 32,
