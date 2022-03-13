@@ -1,3 +1,4 @@
+import {  HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
@@ -6,7 +7,7 @@ import { BarcodeScanner } from '@awesome-cordova-plugins/barcode-scanner/ngx';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { IonicConfig } from '@ionic/core';
 import { SharedComponentsModule } from '../components/shared-components.module';
-import { MARITZA_API_URL } from '../services/api-yatirimim.service';
+import { MARITZA_API_URL, MatriksApiService } from '../services/api-yatirimim.service';
 import { AppService } from '../services/app.service';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -22,7 +23,8 @@ const ionicConfig: IonicConfig = {
   declarations: [AppComponent],
   entryComponents: [],
   imports: [
-    BrowserModule,
+    BrowserModule, 
+    HttpClientModule,
     IonicModule.forRoot(ionicConfig),
     AppRoutingModule,
     SharedComponentsModule
@@ -30,7 +32,8 @@ const ionicConfig: IonicConfig = {
   providers: [
     BarcodeScanner,
     AppService,
-    { provide: MARITZA_API_URL, useValue:"http://api.yatirimim.local/swagger"},
+    MatriksApiService,
+    { provide: MARITZA_API_URL, useValue:"http://api.yatirimim.local"},
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent],

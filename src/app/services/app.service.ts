@@ -1,11 +1,20 @@
 import { Injectable } from '@angular/core';
+import { AlertController, LoadingController, ToastController } from '@ionic/angular';
+import { ErrorDto } from './api-yatirimim.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AppService {
+  loaderCount = 0;
+  loader: HTMLIonLoadingElement;
 
-  constructor() { }
+
+  constructor(
+    private toastController: ToastController,
+    private alertController: AlertController,
+    private loadingController: LoadingController,
+  ) { }
   public get user(): User {
     try {
       const memberJson = localStorage.getItem("current_user");
@@ -19,6 +28,72 @@ export class AppService {
     localStorage.setItem("current_user", JSON.stringify(v.toJSON()));
 
   }
+
+  async toggleLoader(value: boolean = false, message: string = null): Promise<void> {
+    if (value) {
+        if (this.loaderCount == 0) {
+            this.loaderCount++;
+
+            this.loader = await this.loadingController.create({
+                backdropDismiss: false,
+                spinner: "circles",
+                message: message
+            });
+
+            return this.loader.present();
+        } else {
+            this.loaderCount++;
+            return;
+        }
+    } else {
+        this.loaderCount--;
+
+        if (this.loaderCount == 0 && this.loader != null) {
+            await this.loader.dismiss();
+        }
+        return;
+    }
+}
+
+async showAlert(message: string, title: string = "Hata!") {
+    const alert = await this.alertController.create({
+        header: title,
+        message,
+        buttons: [
+            {
+                text: "Tamam",
+                role: "cancel",
+                handler: () => {
+                },
+            },
+        ],
+    });
+    await alert.present();
+}
+
+async showErrorAlert(message: any) {
+    if (Array.isArray(message)) {
+        const errorDtos: ErrorDto[] = message;
+        message = errorDtos.map(x => x.msg).join(' ');
+    }
+    if (message != null && message.message != null) {
+        message = message.message;
+    }
+
+    await this.showToast(message, "bottom");
+}
+
+async showToast(
+    message: string,
+    position: "top" | "bottom" | "middle" = "top"
+) {
+    const toast = await this.toastController.create({
+        message,
+        position,
+        duration: 3000,
+    });
+    toast.present();
+}
 }
 
 export class User {

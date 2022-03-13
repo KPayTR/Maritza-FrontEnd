@@ -10,7 +10,7 @@
 import { mergeMap as _observableMergeMap, catchError as _observableCatch } from 'rxjs/operators';
 import { Observable, throwError as _observableThrow, of as _observableOf } from 'rxjs';
 import { Injectable, Inject, Optional, InjectionToken } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpResponse, HttpResponseBase } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpResponseBase } from '@angular/common/http';
 
 import * as moment from 'moment';
 
@@ -2198,6 +2198,8 @@ export class MatriksApiService {
 
     protected processGetmatriksnewsdata(response: HttpResponseBase): Observable<MatriksNewsModel> {
         const status = response.status;
+        console.log(response);
+        
         const responseBlob =
             response instanceof HttpResponse ? response.body :
             (<any>response).error instanceof Blob ? (<any>response).error : undefined;
@@ -22952,6 +22954,8 @@ function throwException(message: string, status: number, response: string, heade
 }
 
 function blobToText(blob: any): Observable<string> {
+    console.log(blob);
+    
     return new Observable<string>((observer: any) => {
         if (!blob) {
             observer.next("");
