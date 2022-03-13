@@ -21,8 +21,8 @@
     "nswag-gen-kpay-fixedqr": "nswag openapi2tsclient /input:https://api.kpay.com.tr/fixedqr/KPay.API.FixedQR.V1.yaml /output:src/app/services/api-kpay-fixedqr.service.ts /Template:Angular /InjectionTokenType:InjectionToken /OperationGenerationMode:MultipleClientsFromFirstTagAndOperationId /ClassName:KpayFixedqr{controller}ApiService /DateTimeType:MomentJS /BaseUrlTokenName:KPAY_FIXEDQR_API_URL && node --max-old-space-size=4096 ./api/api.js",
     "nswag-gen-kpay-fixedqrpayment": "nswag openapi2tsclient /input:https://api.kpay.com.tr/fixedqrpayment/KPay.API.FixedQRPayment.V1.yaml /output:src/app/services/api-kpay-fixedqrpayment.service.ts /Template:Angular /InjectionTokenType:InjectionToken /OperationGenerationMode:MultipleClientsFromFirstTagAndOperationId /ClassName:KpayFixedqrPayment{controller}ApiService /DateTimeType:MomentJS /BaseUrlTokenName:KPAY_FIXEDQRPAYMENT_API_URL && node --max-old-space-size=4096 ./api/api.js",
     "nswag-gen-kpay": "npm run nswag-gen-kpay-backend && npm run nswag-gen-kpay-ccpayment && npm run nswag-gen-kpay-fixedqr && npm run nswag-gen-kpay-fixedqrpayment",
-    "nswag-gen-yatirimim": "nswag openapi2tsclient /input:https://api.yatirimim.com/apidoc/v1/api.json?key=yatirimim /output:src/app/services/api-yatirimim.service.ts /Template:Angular /InjectionTokenType:InjectionToken /OperationGenerationMode:MultipleClientsFromPathSegments /ClassName:{controller}ApiService /DateTimeType:MomentJS /BaseUrlTokenName:WISH_API_URL && node --max-old-space-size=4096 ./api/api.js",
-    "nswag-gen-yatirimim-local": "nswag openapi2tsclient /input:https://localhost:44301/apidoc/v1/api.json?key=yatirimim /output:src/app/services/api-wishalink.service.ts /Template:Angular /InjectionTokenType:InjectionToken /OperationGenerationMode:MultipleClientsFromPathSegments /ClassName:{controller}ApiService /DateTimeType:MomentJS /BaseUrlTokenName:WISH_API_URL && node --max-old-space-size=4096 ./api/api.js"
+    "nswag-gen-yatirimim": "nswag openapi2tsclient /input:http://api.yatirimim.com/apidoc/v1/api.json?key=yatirimim /output:src/app/services/api-yatirimim.service.ts /Template:Angular /InjectionTokenType:InjectionToken /OperationGenerationMode:MultipleClientsFromPathSegments /ClassName:{controller}ApiService /DateTimeType:MomentJS /BaseUrlTokenName:MARITZA_API_URL && node --max-old-space-size=4096 ./api/api.js",
+    "nswag-gen-yatirimim-local": "nswag openapi2tsclient /input:http://api.yatirimim.local/swagger/v1/swagger.json /output:src/app/services/api-yatirimim.service.ts /Template:Angular /InjectionTokenType:InjectionToken /OperationGenerationMode:MultipleClientsFromPathSegments /ClassName:{controller}ApiService /DateTimeType:MomentJS /BaseUrlTokenName:MARITZA_API_URL && node --max-old-space-size=4096 ./api/api.js"
   },
   "dependencies": {
     "@angular/common": "~13.0.0",
@@ -42,6 +42,7 @@
     "@ionic/angular": "^6.0.0",
     "apexcharts": "^3.33.2",
     "lightweight-charts": "^3.8.0",
+    "moment": "^2.29.1",
     "ng-apexcharts": "^1.7.0",
     "phonegap-plugin-barcodescanner": "^8.1.0",
     "rxjs": "~6.6.0",

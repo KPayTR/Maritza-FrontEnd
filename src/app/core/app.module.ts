@@ -6,9 +6,11 @@ import { BarcodeScanner } from '@awesome-cordova-plugins/barcode-scanner/ngx';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { IonicConfig } from '@ionic/core';
 import { SharedComponentsModule } from '../components/shared-components.module';
+import { MARITZA_API_URL } from '../services/api-yatirimim.service';
+import { AppService } from '../services/app.service';
 
 import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
+import { AppComponent } from './app.component'; 
 
 const ionicConfig: IonicConfig = {
   mode: "ios",
@@ -27,6 +29,8 @@ const ionicConfig: IonicConfig = {
   ],
   providers: [
     BarcodeScanner,
+    AppService,
+    { provide: MARITZA_API_URL, useValue:"http://api.yatirimim.local/swagger"},
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent],
