@@ -1,8 +1,8 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
-  appName: 'yatirimim-trade',
+  appId: 'com.yatirimim.trade',
+  appName: 'Yatırımım Trade',
   webDir: 'www',
   bundledWebRuntime: false
 };

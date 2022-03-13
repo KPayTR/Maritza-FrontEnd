@@ -1,5 +1,6 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { createChart, IChartApi } from 'lightweight-charts';
+import UniqueId from 'src/app/helpers/UniqueId';
 
 @Component({
   selector: 'app-line-chart',
@@ -7,6 +8,8 @@ import { createChart, IChartApi } from 'lightweight-charts';
   styleUrls: ['./line-chart.component.scss'],
 })
 export class LineChartComponent implements OnInit {
+
+  chartId = 'chart_' + (new UniqueId().randomUUID(6));
 
   darkTheme = {
     chart: {
@@ -232,7 +235,7 @@ export class LineChartComponent implements OnInit {
   initChart() {
     var switcherElement = this.createSimpleSwitcher(['Dark', 'Light'], 'Dark', this.syncToTheme);
 
-    var chartElement = document.getElementById('line-chart');
+    var chartElement = document.getElementById(this.chartId);
 
     
 
