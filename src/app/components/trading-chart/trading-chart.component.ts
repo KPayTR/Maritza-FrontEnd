@@ -1,5 +1,6 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { createChart, IChartApi } from 'lightweight-charts';
+import UniqueId from 'src/app/helpers/UniqueId';
 
 @Component({
   selector: 'app-trading-chart',
@@ -7,6 +8,8 @@ import { createChart, IChartApi } from 'lightweight-charts';
   styleUrls: ['./trading-chart.component.scss'],
 })
 export class TradingChartComponent implements OnInit {
+
+  chartId = 'chart_' + (new UniqueId().randomUUID(6));
 
   darkTheme = {
     chart: {
@@ -386,7 +389,7 @@ export class TradingChartComponent implements OnInit {
 
     var switcherElement = this.createSimpleSwitcher(['Dark', 'Light'], 'Dark', this.syncToTheme);
 
-    var chartElement = document.getElementById('trading-chart');
+    var chartElement = document.getElementById(this.chartId);
 
     this.chart = createChart(chartElement, {
       width: 600,
