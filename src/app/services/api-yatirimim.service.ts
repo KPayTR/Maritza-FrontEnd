@@ -11,7 +11,7 @@
 import { mergeMap as _observableMergeMap, catchError as _observableCatch } from 'rxjs/operators';
 import { Observable, throwError as _observableThrow, of as _observableOf } from 'rxjs';
 import { Injectable, Inject, Optional, InjectionToken } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpResponseBase } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpResponse, HttpResponseBase } from '@angular/common/http';
 
 import * as moment from 'moment';
 
@@ -25,7 +25,7 @@ export class AnalysisApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44366";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://api.yatirimim.local";
     }
 
     /**
@@ -103,7 +103,7 @@ export class AssetsApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44366";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://api.yatirimim.local";
     }
 
     /**
@@ -371,6 +371,426 @@ export class AssetsApiService {
 }
 
 @Injectable()
+export class AuthApiService {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://api.yatirimim.local";
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    login(body: LoginModel | undefined): Observable<TokenModel> {
+        let url_ = this.baseUrl + "/api/auth/login";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processLogin(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processLogin(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<TokenModel>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<TokenModel>;
+        }));
+    }
+
+    protected processLogin(response: HttpResponseBase): Observable<TokenModel> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = TokenModel.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData400)) {
+                result400 = [] as any;
+                for (let item of resultData400)
+                    result400!.push(ErrorDto.fromJS(item));
+            }
+            else {
+                result400 = <any>null;
+            }
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<TokenModel>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    register(body: UserModel | undefined): Observable<TokenModel> {
+        let url_ = this.baseUrl + "/api/auth/register";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processRegister(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processRegister(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<TokenModel>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<TokenModel>;
+        }));
+    }
+
+    protected processRegister(response: HttpResponseBase): Observable<TokenModel> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = TokenModel.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData400)) {
+                result400 = [] as any;
+                for (let item of resultData400)
+                    result400!.push(ErrorDto.fromJS(item));
+            }
+            else {
+                result400 = <any>null;
+            }
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<TokenModel>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    verify(body: VerifyModel | undefined): Observable<TokenModel> {
+        let url_ = this.baseUrl + "/api/auth/verify";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processVerify(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processVerify(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<TokenModel>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<TokenModel>;
+        }));
+    }
+
+    protected processVerify(response: HttpResponseBase): Observable<TokenModel> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = TokenModel.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData400)) {
+                result400 = [] as any;
+                for (let item of resultData400)
+                    result400!.push(ErrorDto.fromJS(item));
+            }
+            else {
+                result400 = <any>null;
+            }
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<TokenModel>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    forgot(body: ForgotModel | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/auth/forgot";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processForgot(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processForgot(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processForgot(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData400)) {
+                result400 = [] as any;
+                for (let item of resultData400)
+                    result400!.push(ErrorDto.fromJS(item));
+            }
+            else {
+                result400 = <any>null;
+            }
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+
+    /**
+     * @param phoneNumber (optional) 
+     * @return Success
+     */
+    check(phoneNumber: string | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/auth/check?";
+        if (phoneNumber === null)
+            throw new Error("The parameter 'phoneNumber' cannot be null.");
+        else if (phoneNumber !== undefined)
+            url_ += "phoneNumber=" + encodeURIComponent("" + phoneNumber) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCheck(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCheck(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processCheck(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData400)) {
+                result400 = [] as any;
+                for (let item of resultData400)
+                    result400!.push(ErrorDto.fromJS(item));
+            }
+            else {
+                result400 = <any>null;
+            }
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    changephonenumber(body: PhoneNumberModel | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/auth/changephonenumber";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processChangephonenumber(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processChangephonenumber(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processChangephonenumber(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData400)) {
+                result400 = [] as any;
+                for (let item of resultData400)
+                    result400!.push(ErrorDto.fromJS(item));
+            }
+            else {
+                result400 = <any>null;
+            }
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+}
+
+@Injectable()
 export class BankApiService {
     private http: HttpClient;
     private baseUrl: string;
@@ -378,7 +798,7 @@ export class BankApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44366";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://api.yatirimim.local";
     }
 
     /**
@@ -448,7 +868,7 @@ export class BankaccountApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44366";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://api.yatirimim.local";
     }
 
     /**
@@ -531,7 +951,7 @@ export class BloodtypeApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44366";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://api.yatirimim.local";
     }
 
     /**
@@ -609,7 +1029,7 @@ export class ChanneltypeApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44366";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://api.yatirimim.local";
     }
 
     /**
@@ -687,7 +1107,7 @@ export class CommissionApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44366";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://api.yatirimim.local";
     }
 
     /**
@@ -757,7 +1177,7 @@ export class ContacstypeApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44366";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://api.yatirimim.local";
     }
 
     /**
@@ -835,7 +1255,7 @@ export class CorporateApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44366";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://api.yatirimim.local";
     }
 
     /**
@@ -911,7 +1331,7 @@ export class GetbyidApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44366";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://api.yatirimim.local";
     }
 
     /**
@@ -987,7 +1407,7 @@ export class ReadApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44366";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://api.yatirimim.local";
     }
 
     /**
@@ -1065,7 +1485,7 @@ export class UpdateApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44366";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://api.yatirimim.local";
     }
 
     /**
@@ -1141,7 +1561,7 @@ export class CorporatecategoriesApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44366";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://api.yatirimim.local";
     }
 
     /**
@@ -1219,7 +1639,7 @@ export class CountryApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44366";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://api.yatirimim.local";
     }
 
     /**
@@ -1289,7 +1709,7 @@ export class DemandtypesApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44366";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://api.yatirimim.local";
     }
 
     /**
@@ -1359,7 +1779,7 @@ export class DepositsApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44366";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://api.yatirimim.local";
     }
 
     /**
@@ -1821,7 +2241,7 @@ export class DocumenttypesApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44366";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://api.yatirimim.local";
     }
 
     /**
@@ -1891,7 +2311,7 @@ export class GenderApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44366";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://api.yatirimim.local";
     }
 
     /**
@@ -1961,7 +2381,7 @@ export class InvoicestatusApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44366";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://api.yatirimim.local";
     }
 
     /**
@@ -2031,7 +2451,7 @@ export class KnowledgebaseApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44366";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://api.yatirimim.local";
     }
 
     /**
@@ -2101,7 +2521,7 @@ export class MatriksApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44366";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://api.yatirimim.local";
     }
 
     /**
@@ -2199,8 +2619,6 @@ export class MatriksApiService {
 
     protected processGetmatriksnewsdata(response: HttpResponseBase): Observable<MatriksNewsModel> {
         const status = response.status;
-        console.log(response);
-        
         const responseBlob =
             response instanceof HttpResponse ? response.body :
             (response as any).error instanceof Blob ? (response as any).error : undefined;
@@ -2366,7 +2784,7 @@ export class MediatypeApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44366";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://api.yatirimim.local";
     }
 
     /**
@@ -2436,7 +2854,7 @@ export class NotificationApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44366";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://api.yatirimim.local";
     }
 
     /**
@@ -2583,7 +3001,7 @@ export class NotificationtypeApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44366";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://api.yatirimim.local";
     }
 
     /**
@@ -2653,7 +3071,7 @@ export class OrderApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44366";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://api.yatirimim.local";
     }
 
     /**
@@ -2867,7 +3285,7 @@ export class OrderstatusApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44366";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://api.yatirimim.local";
     }
 
     /**
@@ -2937,7 +3355,7 @@ export class PaymenttypeApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44366";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://api.yatirimim.local";
     }
 
     /**
@@ -3007,7 +3425,7 @@ export class PostApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44366";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://api.yatirimim.local";
     }
 
     /**
@@ -3077,7 +3495,7 @@ export class ProducttypeApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44366";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://api.yatirimim.local";
     }
 
     /**
@@ -3147,7 +3565,7 @@ export class ProductunitApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44366";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://api.yatirimim.local";
     }
 
     /**
@@ -3217,7 +3635,7 @@ export class ProvinceApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44366";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://api.yatirimim.local";
     }
 
     /**
@@ -3287,7 +3705,7 @@ export class RequeststatusApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44366";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://api.yatirimim.local";
     }
 
     /**
@@ -3357,7 +3775,7 @@ export class RequesttypeApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44366";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://api.yatirimim.local";
     }
 
     /**
@@ -3427,7 +3845,7 @@ export class RetailApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44366";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://api.yatirimim.local";
     }
 
     /**
@@ -3697,7 +4115,7 @@ export class RssfeedApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44366";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://api.yatirimim.local";
     }
 
     /**
@@ -3767,7 +4185,7 @@ export class ScantypeApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44366";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://api.yatirimim.local";
     }
 
     /**
@@ -3837,7 +4255,7 @@ export class SettingApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44366";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://api.yatirimim.local";
     }
 
     /**
@@ -3907,7 +4325,7 @@ export class StaticpageApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44366";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://api.yatirimim.local";
     }
 
     /**
@@ -3977,7 +4395,7 @@ export class SymbolsApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44366";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://api.yatirimim.local";
     }
 
     /**
@@ -4055,7 +4473,7 @@ export class SymboltypeApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44366";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://api.yatirimim.local";
     }
 
     /**
@@ -4125,7 +4543,7 @@ export class TransactionsApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44366";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://api.yatirimim.local";
     }
 
     /**
@@ -4208,7 +4626,7 @@ export class TransactiontypeApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44366";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://api.yatirimim.local";
     }
 
     /**
@@ -4278,7 +4696,7 @@ export class WithdrawalsApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44366";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://api.yatirimim.local";
     }
 
     /**
@@ -9411,9 +9829,9 @@ export interface IDocumentTypeModel {
 }
 
 export class ErrorDto implements IErrorDto {
-    flag?: string | undefined;
-    type?: string | undefined;
-    msg?: string | undefined;
+    code?: number;
+    key?: string | undefined;
+    message?: string | undefined;
 
     constructor(data?: IErrorDto) {
         if (data) {
@@ -9426,9 +9844,9 @@ export class ErrorDto implements IErrorDto {
 
     init(_data?: any) {
         if (_data) {
-            this.flag = _data["Flag"];
-            this.type = _data["Type"];
-            this.msg = _data["Msg"];
+            this.code = _data["Code"];
+            this.key = _data["Key"];
+            this.message = _data["Message"];
         }
     }
 
@@ -9441,17 +9859,17 @@ export class ErrorDto implements IErrorDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["Flag"] = this.flag;
-        data["Type"] = this.type;
-        data["Msg"] = this.msg;
+        data["Code"] = this.code;
+        data["Key"] = this.key;
+        data["Message"] = this.message;
         return data;
     }
 }
 
 export interface IErrorDto {
-    flag?: string | undefined;
-    type?: string | undefined;
-    msg?: string | undefined;
+    code?: number;
+    key?: string | undefined;
+    message?: string | undefined;
 }
 
 export class Euro implements IEuro {
@@ -9580,6 +9998,46 @@ export interface IEurtry {
     endusuk?: string | undefined;
     enyuksek?: string | undefined;
     gunlukyuzde?: string | undefined;
+}
+
+export class ForgotModel implements IForgotModel {
+    email?: string | undefined;
+    phoneNumber?: string | undefined;
+
+    constructor(data?: IForgotModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.email = _data["Email"];
+            this.phoneNumber = _data["PhoneNumber"];
+        }
+    }
+
+    static fromJS(data: any): ForgotModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new ForgotModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["Email"] = this.email;
+        data["PhoneNumber"] = this.phoneNumber;
+        return data;
+    }
+}
+
+export interface IForgotModel {
+    email?: string | undefined;
+    phoneNumber?: string | undefined;
 }
 
 export class Gbp implements IGbp {
@@ -11218,6 +11676,46 @@ export interface IKnowledgeBaseModel {
     category?: KnowledgeBaseCategoryModel;
 }
 
+export class LoginModel implements ILoginModel {
+    username?: string | undefined;
+    password?: string | undefined;
+
+    constructor(data?: ILoginModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.username = _data["Username"];
+            this.password = _data["Password"];
+        }
+    }
+
+    static fromJS(data: any): LoginModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new LoginModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["Username"] = this.username;
+        data["Password"] = this.password;
+        return data;
+    }
+}
+
+export interface ILoginModel {
+    username?: string | undefined;
+    password?: string | undefined;
+}
+
 export class MarketModel implements IMarketModel {
     altin?: Altin;
     altingr?: Altingr;
@@ -11472,7 +11970,7 @@ export interface IMarketModel {
 
 export class MatriksEconomyNewsModel implements IMatriksEconomyNewsModel {
     data?: Data;
-    error?: ErrorDto;
+    error?: MatriksError;
 
     constructor(data?: IMatriksEconomyNewsModel) {
         if (data) {
@@ -11486,7 +11984,7 @@ export class MatriksEconomyNewsModel implements IMatriksEconomyNewsModel {
     init(_data?: any) {
         if (_data) {
             this.data = _data["Data"] ? Data.fromJS(_data["Data"]) : <any>undefined;
-            this.error = _data["Error"] ? ErrorDto.fromJS(_data["Error"]) : <any>undefined;
+            this.error = _data["Error"] ? MatriksError.fromJS(_data["Error"]) : <any>undefined;
         }
     }
 
@@ -11507,7 +12005,51 @@ export class MatriksEconomyNewsModel implements IMatriksEconomyNewsModel {
 
 export interface IMatriksEconomyNewsModel {
     data?: Data;
-    error?: ErrorDto;
+    error?: MatriksError;
+}
+
+export class MatriksError implements IMatriksError {
+    flag?: string | undefined;
+    type?: string | undefined;
+    msg?: string | undefined;
+
+    constructor(data?: IMatriksError) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.flag = _data["Flag"];
+            this.type = _data["Type"];
+            this.msg = _data["Msg"];
+        }
+    }
+
+    static fromJS(data: any): MatriksError {
+        data = typeof data === 'object' ? data : {};
+        let result = new MatriksError();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["Flag"] = this.flag;
+        data["Type"] = this.type;
+        data["Msg"] = this.msg;
+        return data;
+    }
+}
+
+export interface IMatriksError {
+    flag?: string | undefined;
+    type?: string | undefined;
+    msg?: string | undefined;
 }
 
 export class MatriksNewsModel implements IMatriksNewsModel {
@@ -13288,6 +13830,46 @@ export interface IPaymentTypeModel {
     description?: string | undefined;
     displayOrder?: number;
     isActive?: boolean;
+}
+
+export class PhoneNumberModel implements IPhoneNumberModel {
+    oldPhoneNumber?: string | undefined;
+    newPhoneNumber?: string | undefined;
+
+    constructor(data?: IPhoneNumberModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.oldPhoneNumber = _data["OldPhoneNumber"];
+            this.newPhoneNumber = _data["NewPhoneNumber"];
+        }
+    }
+
+    static fromJS(data: any): PhoneNumberModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new PhoneNumberModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["OldPhoneNumber"] = this.oldPhoneNumber;
+        data["NewPhoneNumber"] = this.newPhoneNumber;
+        return data;
+    }
+}
+
+export interface IPhoneNumberModel {
+    oldPhoneNumber?: string | undefined;
+    newPhoneNumber?: string | undefined;
 }
 
 export class Platin implements IPlatin {
@@ -16469,6 +17051,46 @@ export interface ITimeSpan {
     totalSeconds?: number;
 }
 
+export class TokenModel implements ITokenModel {
+    isNeedVerify?: boolean;
+    token?: string | undefined;
+
+    constructor(data?: ITokenModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.isNeedVerify = _data["IsNeedVerify"];
+            this.token = _data["Token"];
+        }
+    }
+
+    static fromJS(data: any): TokenModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new TokenModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["IsNeedVerify"] = this.isNeedVerify;
+        data["Token"] = this.token;
+        return data;
+    }
+}
+
+export interface ITokenModel {
+    isNeedVerify?: boolean;
+    token?: string | undefined;
+}
+
 export class Transaction implements ITransaction {
     id?: number;
     createdOn?: moment.Moment | undefined;
@@ -17257,6 +17879,50 @@ export interface IUserRole {
     role?: Role;
 }
 
+export class VerifyModel implements IVerifyModel {
+    otp!: string;
+    phoneNumber!: string;
+    isUsernameChange?: boolean;
+
+    constructor(data?: IVerifyModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.otp = _data["Otp"];
+            this.phoneNumber = _data["PhoneNumber"];
+            this.isUsernameChange = _data["IsUsernameChange"];
+        }
+    }
+
+    static fromJS(data: any): VerifyModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new VerifyModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["Otp"] = this.otp;
+        data["PhoneNumber"] = this.phoneNumber;
+        data["IsUsernameChange"] = this.isUsernameChange;
+        return data;
+    }
+}
+
+export interface IVerifyModel {
+    otp: string;
+    phoneNumber: string;
+    isUsernameChange?: boolean;
+}
+
 export class ApiException extends Error {
     message: string;
     status: number;
@@ -17289,8 +17955,6 @@ function throwException(message: string, status: number, response: string, heade
 }
 
 function blobToText(blob: any): Observable<string> {
-    console.log(blob);
-    
     return new Observable<string>((observer: any) => {
         if (!blob) {
             observer.next("");
