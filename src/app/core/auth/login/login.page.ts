@@ -32,7 +32,7 @@ export class LoginPage implements OnInit {
       this.tempUser.pass = this.password; 
 
       if (
-        this.tempUser.phone == '+905551112233' &&
+        this.tempUser.phone == '+905331234567' &&
         this.tempUser.pass == '1234'
       ) {
         this.appService.user = this.tempUser; 

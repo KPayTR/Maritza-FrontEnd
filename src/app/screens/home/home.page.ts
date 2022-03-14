@@ -16,7 +16,7 @@ export class Home {
 
   selectedSegment = 'gold';
   selectedChartType = 'candle';
-  selectedTimeRange = '5';
+  selectedTimeRange = '15';
   symbol: SymbolRateModel;
   symbols: SymbolRateModel[];
 
@@ -52,7 +52,7 @@ export class Home {
   onChartData(v: GraphicDataModel): void {
     this.zone.run(() => {
       this.appService.toggleLoader(false);
-
+      console.log(v)
       const candleData = v?.data?.map(x => ({
         time: (moment(x.date, 'DD.MM.YYYY HH:mm:ss').toDate().getTime() / 1000),
         open: x.open,
