@@ -1,39 +1,45 @@
-import { Injectable, NgZone } from '@angular/core';
+import { EventEmitter, Injectable, NgZone } from '@angular/core';
 import { MarketModel, MatriksApiService, SymbolModel, SymbolRateModel, SymbolsApiService } from './api-yatirimim.service';
 import { AppService } from './app.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class CoreService { 
+export class MarketDataService {
+
   symbols: SymbolRateModel[];
+
+  symbolsLoad = new EventEmitter();
+
   constructor(
     private symbolApiService: SymbolsApiService,
     private appService: AppService,
     private zone: NgZone,
-  ) { 
-   }
-   public init() {
-   // setTimeout(() => this.init(), 5000);
+  ) {
+  }
+
+  public init() {
     this.symbolApiService.getrates().subscribe(
       (v) => this.onMarkets(v),
       (e) => this.onError(e)
-    ); 
-  } 
-  onMarkets(v: SymbolRateModel[]): void {
-    this.zone.run(() => { 
-      this.symbols=v;
-      console.log(this.symbols);  
+    );
+  }
 
+  onMarkets(v: SymbolRateModel[]): void {
+    this.zone.run(() => {
+      if (v != null && v.length > 0) {
+        this.symbols = v;
+        this.symbolsLoad.emit(v);
+      }
     });
   }
- 
+
   onError(e: any): void {
     this.zone.run(() => {
       this.appService.toggleLoader(false);
       this.appService.showErrorAlert(e);
     });
   }
-  
- 
+
+
 }

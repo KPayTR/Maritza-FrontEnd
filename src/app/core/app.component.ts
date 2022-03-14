@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import * as moment from 'moment';
-import { CoreService } from '../services/market.service';
+import { MarketDataService } from '../services/market-data.service';
 
 interface SideMenuItem {
   title: string;
@@ -88,7 +88,7 @@ export class AppComponent {
   ]
 
   constructor(
-    private coreService : CoreService
+    private coreService : MarketDataService
 
   ) {
     moment.locale('tr')

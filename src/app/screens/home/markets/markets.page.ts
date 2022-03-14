@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { SymbolRateModel } from 'src/app/services/api-yatirimim.service';
-import { CoreService } from 'src/app/services/market.service';
+import { MarketDataService } from 'src/app/services/market-data.service';
 
 @Component({
   selector: 'app-markets',
@@ -11,7 +11,7 @@ export class MarketsPage implements OnInit {
   selectedSegment = 'maden';
 
   constructor(
-    private coreService: CoreService
+    private coreService: MarketDataService
 
   ) { }
   symbols: SymbolRateModel[];
