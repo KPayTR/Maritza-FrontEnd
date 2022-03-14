@@ -11,5 +11,7 @@ export class OrdersPage implements OnInit {
 
   ngOnInit() {
   }
-
+  segmentChanged(e){
+    
+  }
 }

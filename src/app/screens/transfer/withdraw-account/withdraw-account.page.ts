@@ -6,10 +6,10 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./withdraw-account.page.scss'],
 })
 export class WithdrawAccountPage implements OnInit {
-
+  phone=""
   constructor() { }
 
   ngOnInit() {
   }
-
+  phoneChange(){}
 }

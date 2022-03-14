@@ -6,7 +6,11 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./add-card.page.scss'],
 })
 export class AddCardPage implements OnInit {
-
+  cardHolder=""
+  cardNo=""
+  cardExpireDate=""
+  cardCvc=""
+  isAgreementAccepted=false
   constructor() { }
 
   ngOnInit() {

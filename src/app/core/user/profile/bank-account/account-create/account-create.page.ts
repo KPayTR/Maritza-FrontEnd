@@ -6,7 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./account-create.page.scss'],
 })
 export class AccountCreatePage implements OnInit {
-
+  isAgreementAccepted=false;
   constructor() { }
 
   ngOnInit() {

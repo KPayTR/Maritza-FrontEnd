@@ -6,10 +6,13 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./deposit-pyhsical.page.scss'],
 })
 export class DepositPyhsicalPage implements OnInit {
-
+  phone=''
   constructor() { }
 
   ngOnInit() {
   }
+  selectChangeMain(e){
 
+  }
+  phoneChange(){}
 }

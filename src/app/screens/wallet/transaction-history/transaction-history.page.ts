@@ -11,5 +11,5 @@ export class TransactionHistoryPage implements OnInit {
 
   ngOnInit() {
   }
-
+  candleChange(){}
 }

@@ -11,5 +11,6 @@ export class MetalChangePage implements OnInit {
 
   ngOnInit() {
   }
-
+  selectChangeMain(e){}
+  selectChange(e){}
 }

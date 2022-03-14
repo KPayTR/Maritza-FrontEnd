@@ -8,8 +8,8 @@ import { Component, OnInit } from '@angular/core';
 export class WithdrawAccountPage implements OnInit {
 
   constructor() { }
-
+  phone=""
   ngOnInit() {
   }
-
+  phoneChange(){}
 }

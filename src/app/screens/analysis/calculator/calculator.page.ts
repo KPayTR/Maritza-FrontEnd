@@ -18,4 +18,5 @@ export class CalculatorPage implements OnInit {
     console.log(this.res)
     this.res=this.num;
   }
+  selectChangeMain(e){}
 }

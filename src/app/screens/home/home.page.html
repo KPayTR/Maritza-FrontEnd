@@ -80,7 +80,7 @@
 
   <div class="chart-container">
     <app-candle-chart *ngIf="selectedChartType == 'candle'" [data]="candleData"></app-candle-chart>
-    <app-line-chart *ngIf="selectedChartType == 'line'" [data]="lineData"></app-line-chart>
+    <app-line-chart *ngIf="selectedChartType == 'line'" [data]="lineData" ></app-line-chart> 
   </div>
 
   <div class="market-container">

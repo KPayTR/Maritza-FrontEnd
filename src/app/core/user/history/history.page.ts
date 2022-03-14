@@ -11,5 +11,8 @@ export class HistoryPage implements OnInit {
 
   ngOnInit() {
   }
+  selectChangeMain(e){
 
+  }
+  phoneChange(){}
 }

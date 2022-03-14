@@ -34,7 +34,7 @@ const ionicConfig: IonicConfig = {
     AppService,
     MatriksApiService,
     SymbolsApiService,
-    { provide: MARITZA_API_URL, useValue:"http://api.yatirimim.local"},
+    { provide: MARITZA_API_URL, useValue:"https://api.yatirimim.com"},
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent],

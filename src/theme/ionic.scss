@@ -21,6 +21,11 @@ ion-header {
     }
 }
 ion-footer{
+    .secondBtn
+    {
+        margin: 8px 24px !important;
+
+    }
     ion-button{
         margin: 0px 24px 48px 24px !important;
     }

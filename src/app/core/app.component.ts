@@ -82,7 +82,7 @@ export class AppComponent {
       header: '',
       collapsable: false,
       items: [
-        { title: "ÇIKIŞ YAP", url: "/auth", icon: "exit" },
+        { title: "ÇIKIŞ YAP", url: "/auth/login", icon: "exit" },
       ]
     }
   ]
