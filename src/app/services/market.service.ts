@@ -23,7 +23,7 @@ export class CoreService {
   onMarkets(v: SymbolRateModel[]): void {
     this.zone.run(() => { 
       this.symbols=v;
-     // console.log(this.symbols);  
+      console.log(this.symbols);  
 
     });
   }

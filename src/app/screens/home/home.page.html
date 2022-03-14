@@ -35,7 +35,8 @@
         <img src="../../../assets/img/icon/assetPlatin.svg" />
         <ion-label>Platin</ion-label>
       </ion-segment-button>
-      <ion-segment-button value="all">
+      <ion-segment-button value="all"  routerDirection="forward"  
+      [routerLink]="['markets']">
         <img src="../../../assets/img/icon/assetAll.svg" />
         <ion-label>Piyasalar</ion-label>
       </ion-segment-button>
@@ -44,14 +45,14 @@
   <div class="price-container">
     <div>
       <div class="price">
-        <h3>1.308,10 TL</h3>
-        <div class="price-change  text-success">
-          <ion-icon name="caret-up"></ion-icon>
-          <p>(%1.25)</p>
+        <h3>{{symbol?.buy}} TL</h3>
+        <div [ngClass]="(symbol?.dailyChangePercent > 0)? 'text-success': 'text-danger'"   class="price-change ">
+          <ion-icon [name]="(symbol?.dailyChangePercent > 0)? 'caret-up': 'caret-down'"  ></ion-icon>
+          <p>(%{{symbol?.dailyChangePercent}})</p>
         </div>
       </div>
-      <div class="price-info text-success">
-        <p>+20,00 TL/0,2 Gram</p>
+      <div  [ngClass]="(symbol?.dailyChangePercent > 0)? 'text-success': 'text-danger'"  class="price-info">
+        <p>{{symbol?.difference}} </p>
       </div>
     </div>
     <ion-button slot="end" fill="clear" size="normal">
@@ -62,17 +63,17 @@
     <ion-item lines="none">
       <img src="../../../assets/img/icon/clock.svg" />
       <ion-select (ionChange)="timeRangeChange($event)" [(ngModel)]="selectedTimeRange" interface="action-sheet" cancelText="İptal">
-        <ion-select-option value="5">5 Dakika</ion-select-option>
-        <ion-select-option value="15">15 Dakika</ion-select-option>
-        <ion-select-option value="30">30 Dakika</ion-select-option>
-        <ion-select-option value="60">1 Saat</ion-select-option>
+        <ion-select-option value="5">Günlük</ion-select-option>
+        <ion-select-option value="15">Haftalık</ion-select-option>
+        <ion-select-option value="30">Aylık</ion-select-option>
+        <ion-select-option value="60">Yıllık</ion-select-option>
       </ion-select>
     </ion-item>
     <ion-item lines="none">
       <img src="../../../assets/img/icon/chart.svg" />
       <ion-select (ionChange)="chartTypeChange($event)" [(ngModel)]="selectedChartType" interface="action-sheet" cancelText="İptal">
         <ion-select-option value="candle">Mum Grafik</ion-select-option>
-        <ion-select-option value="line">Cizgi Grafik</ion-select-option>
+        <ion-select-option value="line">Çizgi Grafik</ion-select-option>
       </ion-select>
     </ion-item>
   </div>
@@ -90,65 +91,57 @@
           <ion-col>
             <div class="market-value">
               <p class="label" slot="start">Alış</p>
-              <p class="value text-success" slot="end">1.909,21</p>
+              <p class="value " slot="end">{{symbol.buy}}</p>
             </div>
             <div class="market-value">
               <p class="label" slot="start">Açılış</p>
-              <p class="value text-danger" slot="end">1.909,21</p>
+              <p class="value " slot="end">{{symbol.opening}}</p>
             </div>
             <div class="market-value">
               <p class="label" slot="start">Düşük</p>
-              <p class="value" slot="end">1.909,21</p>
+              <p class="value" slot="end">{{symbol.min}}</p>
             </div>
             <div class="market-value">
-              <p class="label" slot="start">52Düşük</p>
-              <p class="value" slot="end">-</p>
-            </div>
-            <div class="market-value">
-              <p class="label" slot="start">Taban</p>
-              <p class="value" slot="end">-</p>
-            </div>
+              <p class="label" slot="start">Yıllık Düşük</p>
+              <p class="value" slot="end">{{symbol.minYear}}</p>
+            </div> 
             <div class="market-value">
               <p class="label" slot="start">Hacim Adet</p>
-              <p class="value" slot="end">0</p>
+              <p class="value" slot="end">{{symbol.volumeLot}}</p>
             </div>
             <div class="market-value">
               <p class="label" slot="start">Net Değişim %</p>
-              <p class="value" slot="end">0,02</p>
+              <p class="value" slot="end">{{symbol.dailyChangePercent}}</p>
             </div>
             <div class="market-value">
-              <p class="label" slot="start">AOF</p>
-              <p class="value" slot="end">1.909.21</p>
+              <p class="label" slot="start">Sermaye</p>
+              <p class="value" slot="end">{{symbol.capital}}</p>
             </div>
           </ion-col>
           <ion-col>
             <div class="market-value">
               <p class="label" slot="start">Satış</p>
-              <p class="value" slot="end">1.909,21</p>
+              <p class="value" slot="end">{{symbol.sell}}</p>
             </div>
             <div class="market-value">
               <p class="label" slot="start">Ö.Gün Kapanış</p>
-              <p class="value" slot="end">1.909,21</p>
+              <p class="value" slot="end">{{symbol.latestClosing}}</p>
             </div>
             <div class="market-value">
               <p class="label" slot="start">Yüksek</p>
-              <p class="value" slot="end">1.909,21</p>
+              <p class="value" slot="end">{{symbol.max}}</p>
             </div>
             <div class="market-value">
-              <p class="label" slot="start">52Yüksek</p>
-              <p class="value" slot="end">-</p>
-            </div>
-            <div class="market-value">
-              <p class="label" slot="start">Tavan</p>
-              <p class="value" slot="end">-</p>
-            </div>
+              <p class="label" slot="start">Yıllık Yüksek</p>
+              <p class="value" slot="end">{{symbol.maxYear}}</p>
+            </div> 
             <div class="market-value">
               <p class="label" slot="start">Hacim TL</p>
-              <p class="value" slot="end">0</p>
+              <p class="value" slot="end">{{symbol.volumeTry}}</p>
             </div>
             <div class="market-value">
               <p class="label" slot="start">Net Değişim</p>
-              <p class="value" slot="end">0,02</p>
+              <p class="value" slot="end">{{symbol.difference}}</p>
             </div>
           </ion-col>
         </ion-row>
