@@ -1,0 +1,76 @@
+<ion-header mode="ios">
+  <ion-toolbar>
+    <ion-buttons class="p1" slot="start">
+      <ion-back-button mode="md" defaultHref="app/home"></ion-back-button>
+    </ion-buttons>
+  
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div    class="form-container" style="margin: 16px">
+    <ion-grid class="gap-list">
+      <ion-row style="margin-top: 0%">
+        <ion-col>
+          <h3>Hesaba Çekim</h3>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-note>Hesabınıza aktarmak istediğiniz miktarı girin.</ion-note>
+        </ion-col>
+      </ion-row>
+      <ion-row  routerDirection="forward"  
+      [routerLink]="['choose-account']" style="margin-top: 15%">
+        <ion-col>
+          <ion-item   style="--background: none;" class="username-input" lines="none">
+            <img slot="start" src="../../../assets/icon/bank/fiba.png" alt="" /> 
+            <ion-label>
+              <p  style="    color: black;
+              font-weight: bold;">Ev - Fibabanka </p>
+              <ion-note style="    font-size: 11px;
+              ">TR99 9999 9999 9999 9999 99</ion-note>
+            </ion-label>
+         
+            <ion-icon style="color: #7C7F97
+            ;" slot="end" name="chevron-down-outline"></ion-icon>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+     
+      <ion-row style="margin-top: 2%">
+        <ion-col>
+          <ion-item class="username-input" lines="none">
+            <ion-input 
+            style="  --padding-start: 5px;"
+              type="tel" 
+              (ionChange)="phoneChange()" 
+              placeholder="Tutar"
+              [(ngModel)]="phone"
+            ></ion-input>
+            <span style="padding-left:3px;     color: #7C7F97;
+            ">TRY</span> 
+          </ion-item>
+        </ion-col>
+      </ion-row>
+         <div style="  font-size: 14px;">
+          <ion-item lines="none">
+            <p slot="end">Mevcut Bakiye: <b style="color: #F1BC00
+              ;">1.200 TRY</b></p>
+          </ion-item> 
+         </div>
+ 
+ 
+    </ion-grid>
+  </div> 
+</ion-content>
+<ion-footer>
+  <ion-button
+  routerDirection="forward"  
+ [routerLink]="['approve-account']" 
+    size="full" 
+    color="warning" 
+    style="margin: 0" 
+    >DEVAM</ion-button
+  >
+</ion-footer>

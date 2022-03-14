@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import * as moment from 'moment';
+import { CoreService } from '../services/market.service';
 
 interface SideMenuItem {
   title: string;
@@ -27,10 +29,10 @@ export class AppComponent {
       header: 'YATIR',
       collapsable: true,
       items: [
-        { title: "KREDİ KARTI İLE", url: "app/transfer/deposit-credit-card", icon: "card" },
-        { title: "HAVALE / EFT", url: "app/transfer/deposit-eft", icon: "library" },
-        { title: "FİZİKİ YATIR", url: "app/transfer/deposit-pyhsical", icon: "server" },
-        { title: "KAYITLI KARTLARIM", url: "app/transfer/deposit-credit-card/choose-card", icon: "wallet" },
+        { title: "KREDİ KARTI İLE", url: "transfer/deposit-credit-card", icon: "card" },
+        { title: "HAVALE / EFT", url: "transfer/deposit-eft", icon: "library" },
+        { title: "FİZİKİ YATIR", url: "transfer/deposit-pyhsical", icon: "server" },
+        { title: "KAYITLI KARTLARIM", url: "transfer/deposit-credit-card/choose-card", icon: "wallet" },
       ]
     },
     {
@@ -38,8 +40,8 @@ export class AppComponent {
       header: 'ÇEK',
       collapsable: true,
       items: [
-        { title: "HESABA ÇEKİM", url: "app/transfer/withdraw-account", icon: "library" },
-        { title: "FİZİKİ ÇEKİM", url: "app/transfer/withdraw-pyhsical", icon: "server" },
+        { title: "HESABA ÇEKİM", url: "transfer/withdraw-account", icon: "library" },
+        { title: "FİZİKİ ÇEKİM", url: "transfer/withdraw-pyhsical", icon: "server" },
         { title: "BANKA HESAPLARIM", url: "user/profile/bank-account", icon: "wallet" },
       ]
     },
@@ -85,7 +87,13 @@ export class AppComponent {
     }
   ]
 
-  constructor() { }
+  constructor(
+    private coreService : CoreService
+
+  ) {
+    moment.locale('tr')
+    this.coreService.init()
+   }
 
   openSegment(menuId) {
     this.activeSideMenuId = menuId;

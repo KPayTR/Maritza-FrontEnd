@@ -25,10 +25,10 @@ const routes: Routes = [
         path: 'trade',
         loadChildren: () => import('../trade/trade.module').then(m => m.TradePageModule)
       },
-      {
-        path: 'transfer',
-        loadChildren: () => import('../transfer/transfer.module').then(m => m.TransferPageModule)
-      }, 
+      // {
+      //   path: 'transfer',
+      //   loadChildren: () => import('../transfer/transfer.module').then(m => m.TransferPageModule)
+      // }, 
       {
         path: '',
         redirectTo: '/app/home',

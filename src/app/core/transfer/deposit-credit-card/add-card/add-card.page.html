@@ -1,0 +1,77 @@
+<ion-header mode="ios">
+  <ion-toolbar>
+    <ion-buttons class="p1" slot="start">
+      <ion-back-button mode="md" defaultHref="/transfer/credit-card/choose-card"></ion-back-button>
+    </ion-buttons>
+ 
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div  class="form-container" style="margin: 16px">
+    <ion-grid class="gap-list">
+      <ion-row >
+        <ion-col>
+          <h3>Kredi / Bankamatik Kartı Ekle</h3>
+        </ion-col>
+      </ion-row>
+
+      <ion-row style="margin-top: 64px">
+        <ion-col>
+          <ion-item class="username-input" lines="none">
+            <ion-input placeholder="Kart Sahibinin Adı Soyadı" [(ngModel)]="cardHolder"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-item lines="none" class="username-input">
+            <ion-input
+              placeholder="Kart Numarası"
+              [(ngModel)]="cardNo"
+            ></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="6">
+          <ion-item lines="none" class="username-input">
+            <ion-input placeholder="SKT (AA/YY)" [(ngModel)]="cardExpireDate"></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size="6">
+          <ion-item lines="none" class="username-input">
+            <ion-input placeholder="CV2" [(ngModel)]="cardCvc"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+      <ion-item
+        style="padding: 0"
+        lines="none"
+        class="input-checkbox ion-padding d-flex"
+      >
+        <div
+          (click)="isAgreementAccepted= !isAgreementAccepted"
+          [ngClass]="{active: isAgreementAccepted}"
+          class="checkbox mr-2"
+        ></div>
+        <div class="label">
+          <span class="text" (click)="isAgreementAccepted= !isAgreementAccepted">İlerideki satın alım ödemeleri için kart bilgilerimi 3D Secure ile kaydet</span>
+      
+        </div>
+      </ion-item> 
+    </ion-grid>
+  </div>
+  
+</ion-content>
+<ion-footer>
+  <ion-button
+  routerDirection="forward"
+  size="full"
+  color="warning"
+  [routerLink]="['../choose-card']"
+  style="margin: 0"
+  >KART EKLE</ion-button
+>
+</ion-footer>

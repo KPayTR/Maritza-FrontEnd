@@ -1,0 +1,75 @@
+<ion-header mode="ios">
+  <ion-toolbar>
+    <ion-buttons class="p1" slot="start">
+      <ion-back-button mode="md" defaultHref="app/home"></ion-back-button>
+    </ion-buttons>
+  
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div    class="form-container" style="margin: 16px">
+    <ion-grid class="gap-list">
+      <ion-row style="margin-top: 0%">
+        <ion-col>
+          <h3>Teslimat Adresi</h3>
+          <ion-note>Adresinizi seçiniz</ion-note>
+
+        </ion-col>
+      </ion-row
+      >
+      <ion-row>
+        <ion-col>
+        </ion-col>
+      </ion-row>
+      <ion-row  routerDirection="forward"  
+      [routerLink]="['../orders-approve']"  style="margin-top: 16px">
+        <ion-col>
+          <ion-item   class="username-input" lines="none"> 
+            <ion-label>
+              <p  style="    color: black;
+              font-weight: bold;">Ofis </p>
+              <ion-note class="ion-text-wrap" style="    font-size: 12px;
+              ">Kuruçeşme Mahallesi Yeşilpınar Sokak Seden Apt. No:8/2 Beşiktaş / İSTANBUL 34345 </ion-note>
+            </ion-label>
+          
+          </ion-item>
+        </ion-col>
+      </ion-row>
+     
+      <ion-row routerDirection="forward"  
+      [routerLink]="['../orders-approve']"   style="margin-top: 8px">
+        <ion-col>
+          <ion-item   class="username-input" lines="none"> 
+            <ion-label>
+              <p  style="    color: black;
+              font-weight: bold;">Ev </p>
+              <ion-note class="ion-text-wrap" style="    font-size: 12px;
+              ">Kuruçeşme Mahallesi Yeşilpınar Sokak Seden Apt. No:8/2 Beşiktaş / İSTANBUL 34345 </ion-note>
+            </ion-label>
+         
+            
+          </ion-item>
+        </ion-col>
+      </ion-row>
+ 
+     
+      <ion-row style="margin-top: 50%">
+        <ion-col>
+     
+        </ion-col>
+      </ion-row>
+ 
+    </ion-grid>
+  </div> 
+</ion-content>
+<ion-footer>
+  <ion-button 
+  size="full" 
+  color="warning" 
+  style="margin: 0" 
+routerDirection="forward"  
+[routerLink]="['../orders-approve']"
+  >SİPARİŞ OLUŞTUR</ion-button
+>
+</ion-footer>

@@ -1,0 +1,41 @@
+ion-toolbar {
+    --background: white;
+    border: 0px !important;
+    border-bottom-color: transparent !important;
+    background-image: none !important;
+    border-bottom: none !important;
+    --border-width: 0 !important;
+  }
+  .username-input {
+    border-radius: 10px;
+    border: 2px solid #F1F1F1;
+    font-size: 14px;
+  }
+  
+  a {
+    color: #f1bc00;
+  }
+  ion-note{
+    font-size: 14px;
+    line-height: 17.57px;
+    color: #7C7F97;
+  }
+  h3 {
+    font-size: 20px;
+    line-height: 33px;
+    font-weight: bold;
+  }
+   
+   .list-row ion-col{ 
+        margin-left: 5%;
+        margin-top: 20px;
+      border: solid 1px #E9E9E9 ;
+      border-radius: 10px;
+    
+      
+  }    ion-segment-button {
+    font-weight: bold;
+    letter-spacing: normal;
+    --indicator-color: #f1be4b; 
+    --indicator-height: 5px;
+  } 

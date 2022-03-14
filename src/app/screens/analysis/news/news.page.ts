@@ -1,7 +1,9 @@
 import { Component, OnInit, NgZone } from '@angular/core';
+import * as moment from 'moment';
 import {
   MatriksApiService,
   MatriksNewsModel,
+  MatriksNewsModelData,
 } from 'src/app/services/api-yatirimim.service';
 import { AppService } from 'src/app/services/app.service';
 
@@ -11,7 +13,9 @@ import { AppService } from 'src/app/services/app.service';
   styleUrls: ['./news.page.scss'],
 })
 export class NewsPage implements OnInit {
-  news: MatriksNewsModel;
+  
+  news: MatriksNewsModelData[]=[];
+
   constructor(
     private appService: AppService,
     private zone: NgZone,
@@ -40,8 +44,15 @@ export class NewsPage implements OnInit {
     this.zone.run(() => {
       this.appService.toggleLoader(false);
       console.log(v);
-      this.news = v;
+      this.news = v.data;
       console.log(this.news);
     });
+  }
+  formatDate(v: MatriksNewsModelData) {
+    return moment(v.tarih, 'DD.MM.YYYY hh:mm:ss').format('DD MMMM')
+  }
+
+  formatTime(v: MatriksNewsModelData) {
+    return moment(v.tarih, 'DD.MM.YYYY hh:mm:ss').format('HH:mm')
   }
 }

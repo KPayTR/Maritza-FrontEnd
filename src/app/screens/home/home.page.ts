@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { BarcodeScanner } from '@awesome-cordova-plugins/barcode-scanner/ngx';
+import { CoreService } from 'src/app/services/market.service';
 
 @Component({
   selector: 'app-home',
@@ -19,13 +20,16 @@ export class Home {
 
   constructor(
     private barcodeScanner: BarcodeScanner, 
-
-  ) { }
+    private coreService: CoreService
+  ) {  
+    console.log(this.coreService.symbols)
+  }
 
   ionViewDidEnter() {
     
   }
 
+  
   segmentChanged(e) {
     this.selectedSegment = e.detail.value;
   }

@@ -1,0 +1,147 @@
+<ion-header mode="ios">
+  <ion-toolbar>
+    <ion-buttons class="p1" slot="start">
+      <ion-back-button mode="md" defaultHref="app/home"></ion-back-button>
+    </ion-buttons>
+  
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div    class="form-container" style="margin: 16px">
+    <ion-grid class="gap-list">
+      <ion-row >
+        <ion-col>
+          <h3>Banka Transferi ile Para Yatır</h3>
+        </ion-col>
+      </ion-row>
+      <ion-row style="margin-bottom: 8px;">
+        <ion-col>
+          <ion-note>Türkiye’de yerleşik bankalardan adınıza açılmış vadesiz Türk Lirası hesabınız ile aşağıdaki bankalara havale ve FAST ile 7/24 veya EFT saatlerinde Türk Lirası yatırabilirsiniz.</ion-note>
+        </ion-col>
+      </ion-row>
+   
+      <ion-row  routerDirection="forward"  
+      [routerLink]="['bank-detail']" >
+        <ion-col>
+          <ion-item class="username-input"  detail>
+            <img slot="start" src="../../../assets/icon/bank/fiba.png" alt="" />  
+            <h5  >Fibabanka</h5>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row  routerDirection="forward"  
+      [routerLink]="['bank-detail']" >
+        <ion-col>
+          <ion-item class="username-input"  detail>
+            <img slot="start" src="../../../assets/icon/bank/akbank.png" alt="" />  
+            <h5  >Akbank</h5>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row  routerDirection="forward"  
+      [routerLink]="['bank-detail']" >
+        <ion-col>
+          <ion-item class="username-input"  detail>
+            <img slot="start" src="../../../assets/icon/bank/vakif.png" alt="" />  
+            <h5  >Vakıfbank</h5>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row  routerDirection="forward"  
+      [routerLink]="['bank-detail']" >
+        <ion-col>
+          <ion-item class="username-input"  detail>
+            <img slot="start" src="../../../assets/icon/bank/garanti.png" alt="" />  
+            <h5  >Garanti BBVA</h5>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row  routerDirection="forward"  
+      [routerLink]="['bank-detail']" >
+        <ion-col>
+          <ion-item class="username-input"  detail>
+            <img slot="start" src="../../../assets/icon/bank/is.png" alt="" />  
+            <h5  >Türkiye İş Bankası</h5>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row  routerDirection="forward"  
+      [routerLink]="['bank-detail']" >
+        <ion-col>
+          <ion-item class="username-input"  detail>
+            <img slot="start" src="../../../assets/icon/bank/albaraka.png" alt="" />  
+            <h5  >Albaraka Türk</h5>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row  routerDirection="forward"  
+      [routerLink]="['bank-detail']" >
+        <ion-col>
+          <ion-item class="username-input"  detail>
+            <img slot="start" src="../../../assets/icon/bank/qnb.png" alt="" />  
+            <h5  >QNB Finans Bank</h5>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row  routerDirection="forward"  
+      [routerLink]="['bank-detail']" >
+        <ion-col>
+          <ion-item class="username-input"  detail>
+            <img slot="start" src="../../../assets/icon/bank/halk.png" alt="" />  
+            <h5  >Halkbank</h5>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row  routerDirection="forward"  
+      [routerLink]="['bank-detail']" >
+        <ion-col>
+          <ion-item class="username-input"  detail>
+            <img slot="start" src="../../../assets/icon/bank/tf.png" alt="" />  
+            <h5  >Türkiye Finans </h5>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row  routerDirection="forward"  
+      [routerLink]="['bank-detail']" >
+        <ion-col>
+          <ion-item class="username-input"  detail>
+            <img slot="start" src="../../../assets/icon/bank/kuveyt.png" alt="" />  
+            <h5  >Kuveyt Türk</h5>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row  routerDirection="forward"  
+      [routerLink]="['bank-detail']" >
+        <ion-col>
+          <ion-item class="username-input"  detail>
+            <img slot="start" src="../../../assets/icon/bank/deniz.png" alt="" />  
+            <h5  >Denizbank </h5>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row  routerDirection="forward"  
+      [routerLink]="['bank-detail']" >
+        <ion-col>
+          <ion-item class="username-input"  detail>
+            <img slot="start" src="../../../assets/icon/bank/seker.png" alt="" />  
+            <h5  >Şekerbank </h5>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+      <!-- <ion-row style="margin-top: 35%">
+        <ion-col>
+          <ion-button 
+            size="block" 
+            color="warning" 
+            style="margin: 0"
+            (click)="stepContinue()"
+            >YENİ KART EKLE</ion-button
+          >
+        </ion-col>
+      </ion-row> -->
+ 
+    </ion-grid>
+  </div> 
+</ion-content>
