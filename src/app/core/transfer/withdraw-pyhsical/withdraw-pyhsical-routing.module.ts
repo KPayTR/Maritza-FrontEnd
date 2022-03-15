@@ -27,6 +27,10 @@ const routes: Routes = [
   {
     path: 'orders-approve-reject',
     loadChildren: () => import('./orders-approve-reject/orders-approve-reject.module').then( m => m.OrdersApproveRejectPageModule)
+  },
+  {
+    path: 'orders-basket',
+    loadChildren: () => import('./orders-basket/orders-basket.module').then( m => m.OrdersBasketPageModule)
   }
 ];
 

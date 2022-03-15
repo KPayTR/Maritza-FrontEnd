@@ -1,0 +1,86 @@
+<ion-header mode="ios">
+  <ion-toolbar>
+    <ion-buttons class="p1" slot="start">
+      <ion-back-button mode="md" defaultHref="app/home"></ion-back-button>
+    </ion-buttons>
+    <ion-icon slot="end" name="cart-outline"></ion-icon>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content>
+  <div    class="form-container" style="    margin: 0px 16px;">
+    <ion-grid class="gap-list">
+
+      <ion-row style="margin-top: 0%;">
+        <ion-col>
+          <h3>Sepetim </h3>
+        </ion-col>
+      </ion-row>
+      <div>
+        <ion-item lines="none">
+          <ion-thumbnail slot="start">
+            <img    src="../../../assets/icon/bar.png" alt="" />
+          </ion-thumbnail>
+          <ion-label class="item-detail">
+            <h3>15 kg Nadir Gram</h3>
+            <ion-note>999.9 Külçe Gümüş</ion-note>
+            <p>5.36gr Au</p>
+          </ion-label>
+          <p style="    font-weight: bold;  " slot="end">1200 TL</p>
+        </ion-item>
+        <ion-item lines="none" class="border-bttm">
+          <div class="counter" slot="start">
+            <ion-icon name="remove-outline" style="padding-right: 5px; "></ion-icon>
+            <div>2</div>
+            <ion-icon name="add-outline"   style="padding-left: 5px;"   ></ion-icon>
+          </div>
+          <p slot="end">Sil</p>
+        </ion-item>
+      </div>
+      <div>
+        <ion-item lines="none">
+          <ion-thumbnail slot="start">
+            <img    src="../../../assets/icon/bar.png" alt="" />
+          </ion-thumbnail>
+          <ion-label class="item-detail">
+            <h3>15 kg Nadir Gram</h3>
+            <ion-note>999.9 Külçe Gümüş</ion-note>
+            <p>5.36gr Au</p>
+          </ion-label>
+          <p style="    font-weight: bold;  " slot="end">1200 TL</p>
+        </ion-item>
+        <ion-item lines="none" class="border-bttm">
+          <div class="counter" slot="start">
+            <ion-icon name="remove-outline" style="padding-right: 5px; "></ion-icon>
+            <div>2</div>
+            <ion-icon name="add-outline"   style="padding-left: 5px;"   ></ion-icon>
+          </div>
+          <p slot="end">Sil</p>
+        </ion-item>
+      </div>
+     
+      <div style ='padding-top: 48px; '>
+        <ion-item lines="none">
+          <p slot="start">KDV</p>
+          <p slot="end">200 TL</p> 
+        </ion-item>
+        <ion-item lines="none">
+          <b slot="start">TOTAL</b>
+          <b slot="end">1400 TL</b> 
+        </ion-item>
+      </div>
+      </ion-grid>
+    </div>
+</ion-content>
+<ion-footer>
+  
+  <ion-button 
+  routerDirection="forward"  
+  [routerLink]="['../orders-address']"
+    size="block" 
+    color="warning" 
+    style="margin: 0" 
+    >DEVAM ET</ion-button
+  >
+</ion-footer>

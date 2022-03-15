@@ -5,6 +5,11 @@ ion-toolbar {
     background-image: none !important;
     border-bottom: none !important;
     --border-width: 0 !important;
+    ion-icon{
+      font-size: 20px;
+      padding-right: 16px;
+  
+  }
   }
   .username-input {
     border-radius: 10px;
@@ -39,3 +44,21 @@ ion-toolbar {
     --indicator-color: #f1be4b; 
     --indicator-height: 5px;
   } 
+  .desc{
+    font-size: 14px;
+
+  }
+  .bold{
+    font-size: 10px;
+  }
+  .btn-div{
+    background: #f1bf4b;
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    left: 0px;
+    bottom: 0px;
+    padding: 7px;  
+    border-radius: 5px;
+    height: 35px;
+  }
