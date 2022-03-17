@@ -1,6 +1,6 @@
 {
-	"appId": "io.ionic.starter",
-	"appName": "yatirimim-trade",
+	"appId": "com.yatirimim.trade",
+	"appName": "Yatırımım Trade",
 	"webDir": "www",
 	"bundledWebRuntime": false
 }
