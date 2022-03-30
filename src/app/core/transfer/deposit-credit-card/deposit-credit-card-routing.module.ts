@@ -15,6 +15,10 @@ const routes: Routes = [
   {
     path: 'add-card',
     loadChildren: () => import('./add-card/add-card.module').then( m => m.AddCardPageModule)
+  },
+  {
+    path: 'saved-card',
+    loadChildren: () => import('./saved-card/saved-card.module').then( m => m.SavedCardPageModule)
   }
 ];
 

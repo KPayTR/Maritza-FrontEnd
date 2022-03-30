@@ -1,4 +1,7 @@
 <ion-header [translucent]="true">
+  <div class="shrinkable">
+
+
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-menu-toggle class="ion-menu-button">
@@ -9,35 +12,43 @@
       <img src="../../../assets/img/branding/logo-sm.svg">
     </ion-title>
     <ion-buttons slot="end">
+      <ion-button >
+        <div >
+          <img src="../../../../assets/svg/notification.svg" alt="Icon" />
+          <!-- *ngIf="appService.unreadNotificationsCount > 0"  /// {{appService.unreadNotificationsCount}} -->
+          <ion-badge class="badge-notification">1</ion-badge>
+        </div> 
+      </ion-button>
       <ion-button (click)="start()" class="ion-menu-button">
         <img src="../../../assets/img/icon/qrCode.svg">
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
+</div>
 </ion-header>
 
 <ion-content>
   <div class="segment-container">
     <ion-segment (ionChange)="segmentChanged($event)" class="asset-segment" mode="md" [value]="selectedSegment">
       <ion-segment-button value="gold">
-        <img src="../../../assets/img/icon/assetGold.svg" />
+        <img src="../../../assets/svg/au.svg" />
         <ion-label>Altın</ion-label>
       </ion-segment-button>
       <ion-segment-button value="silver">
-        <img src="../../../assets/img/icon/assetSilver.svg" />
+        <img src="../../../assets/svg/ag.svg" />
         <ion-label>Gümüş</ion-label>
       </ion-segment-button>
       <ion-segment-button value="palladium">
-        <img src="../../../assets/img/icon/assetPalladium.svg" />
+        <img src="../../../assets/svg/pd.svg" />
         <ion-label>Paladyum</ion-label>
       </ion-segment-button>
       <ion-segment-button value="platin">
-        <img src="../../../assets/img/icon/assetPlatin.svg" />
+        <img src="../../../assets/svg/pt.svg" />
         <ion-label>Platin</ion-label>
       </ion-segment-button>
       <ion-segment-button value="all"  routerDirection="forward"  
       [routerLink]="['markets']">
-        <img src="../../../assets/img/icon/assetAll.svg" />
+        <img src="../../../assets/svg/tumP.svg" />
         <ion-label>Piyasalar</ion-label>
       </ion-segment-button>
     </ion-segment>
@@ -63,10 +74,10 @@
     <ion-item lines="none">
       <img src="../../../assets/img/icon/clock.svg" />
       <ion-select (ionChange)="timeRangeChange($event)" [value]="selectedTimeRange" interface="action-sheet" cancelText="İptal">
-        <ion-select-option value="5">Günlük</ion-select-option>
-        <ion-select-option value="15">Haftalık</ion-select-option>
-        <ion-select-option value="30">Aylık</ion-select-option>
-        <ion-select-option value="60">Yıllık</ion-select-option>
+        <ion-select-option value="0">Günlük</ion-select-option>
+        <ion-select-option value="1">Haftalık</ion-select-option>
+        <ion-select-option value="2">Aylık</ion-select-option>
+        <!-- <ion-select-option value="60">Yıllık</ion-select-option> -->
       </ion-select>
     </ion-item>
     <ion-item lines="none">

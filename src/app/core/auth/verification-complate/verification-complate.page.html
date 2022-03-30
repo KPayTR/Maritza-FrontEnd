@@ -1,0 +1,46 @@
+<ion-header mode="ios">
+  <ion-toolbar>
+    <ion-buttons class="p1" slot="start">
+      <ion-back-button mode="md" defaultHref="app/home"></ion-back-button>
+    </ion-buttons>
+  
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- <img  style="margin-top: 20%" src="../../../../assets/svg/cong.svg" alt="" />  -->
+  <div style="position: relative;
+  width: 100%;
+  margin-top: 25%;"> 
+  <img  style="width: 100%;    position: absolute;  " src="../../../../assets/gif/con.gif" alt="" /> 
+  <div style="width: 100%;    position: absolute; text-align: center; ">
+    <img    src="../../../assets/icon/tick.png" alt="" /> 
+  </div>
+  </div>
+  <div    class="form-container" style="margin: 16px;    margin-top: 65% !important;  ">
+    <ion-grid class="gap-list"> 
+ 
+          
+  
+      <ion-row style="margin-top: 5%; text-align: center;" >
+        <ion-col>
+          <h3>Aramıza Hoşgeldin!</h3>
+          <p style="  margin: 0px 20px;  font-size: 14px;
+          ">hello@gmail.com hesabına bir doğrulama e-postası gönderdik. Lütfen linke tıklayarak doğrulama işlemini yapın.</p>
+        </ion-col>
+      </ion-row>
+ 
+ 
+    </ion-grid>
+  </div> 
+</ion-content>
+<ion-footer>
+  <ion-button
+  routerDirection="forward"   
+  [routerLink]="['../verification-notifiication']"
+   size="block" 
+    color="warning" 
+    style="margin: 0" 
+    >TAMAMLA</ion-button
+  >
+</ion-footer>

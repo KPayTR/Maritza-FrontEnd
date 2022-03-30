@@ -28,7 +28,13 @@ export class AppService {
     localStorage.setItem("current_user", JSON.stringify(v.toJSON()));
 
   }
+  get accessToken(): string {
+    return localStorage.getItem("access_token");
+}
 
+set accessToken(v: string) {
+    localStorage.setItem("access_token", v);
+}
   async toggleLoader(value: boolean = false, message: string = null): Promise<void> {
     if (value) {
         if (this.loaderCount == 0) {

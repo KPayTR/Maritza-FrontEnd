@@ -10,7 +10,7 @@ import {
   ApexDataLabels,
   ApexFill
 } from "ng-apexcharts";
-import { GraphicDataModel, MatriksApiService, SymbolRateModel } from 'src/app/services/api-yatirimim.service';
+import { GraphicDataModel, MatriksApiService, } from 'src/app/services/api-yatirimim.service';
 import { AppService } from 'src/app/services/app.service';
 import { MarketDataService } from 'src/app/services/market-data.service';
 
@@ -39,8 +39,8 @@ export class Wallet {
   @ViewChild("chart") chart: ChartComponent;
   public chartOptions: Partial<ChartOptions>;
 
-  symbol: SymbolRateModel;
-  symbols: SymbolRateModel[];
+  // symbol: SymbolRateModel;
+  // symbols: SymbolRateModel[];
   assets: any = [
     {
       symbol: 'Altın',
@@ -94,14 +94,14 @@ export class Wallet {
     private matriksService: MatriksApiService,
     private router: Router
   ) {
-    if (marketDataService.symbols == null) {
-      marketDataService.symbolsLoad.subscribe(v => {
-        this.loadSegmentData();
-      })
-    }
-    else {
-      this.loadSegmentData();
-    }
+    // if (marketDataService.symbols == null) {
+    //   marketDataService.symbolsLoad.subscribe(v => {
+    //     this.loadSegmentData();
+    //   })
+    // }
+    // else {
+    //   this.loadSegmentData();
+    // }
     this.chartOptions = {
       chart: {
         type: "donut",
@@ -146,35 +146,35 @@ export class Wallet {
     };
   }
   loadSegmentData() {
-    if (this.marketDataService.symbols == null) return;
+    // if (this.marketDataService.symbols == null) return;
 
-    switch (this.selectedSegment) {
-      case 'gold':
-        this.symbol = this.marketDataService.symbols.filter(q => q.matriksCode == "SGLD")[0]
-        break;
-      case 'silver':
-        this.symbol = this.marketDataService.symbols.filter(q => q.matriksCode == "SXAGGR")[0];
-        break;
-      case 'palladium':
-        this.symbol = this.marketDataService.symbols.filter(q => q.matriksCode == "SUSD")[0];
-        break;
-      case 'platin':
-        this.symbol = this.marketDataService.symbols.filter(q => q.matriksCode == "SEURO")[0];
-        break;
-      case 'all':
-        this.symbols = this.marketDataService.symbols;
-        break;
-      default:
-        break;
-    }
+    // switch (this.selectedSegment) {
+    //   case 'gold':
+    //     this.symbol = this.marketDataService.symbols.filter(q => q.matriksCode == "SGLD")[0]
+    //     break;
+    //   case 'silver':
+    //     this.symbol = this.marketDataService.symbols.filter(q => q.matriksCode == "SXAGGR")[0];
+    //     break;
+    //   case 'palladium':
+    //     this.symbol = this.marketDataService.symbols.filter(q => q.matriksCode == "SUSD")[0];
+    //     break;
+    //   case 'platin':
+    //     this.symbol = this.marketDataService.symbols.filter(q => q.matriksCode == "SEURO")[0];
+    //     break;
+    //   case 'all':
+    //     this.symbols = this.marketDataService.symbols;
+    //     break;
+    //   default:
+    //     break;
+    // }
     this.getChartData();
   }
   getChartData() {
     this.appService.toggleLoader(true).then((res) => {
-      this.matriksService.getgraphicdata(parseInt(this.selectedTimeRange), this.symbol.matriksCode).subscribe(
-        (v) => this.onChartData(v),
-        (e) => this.onError(e)
-      );
+      // this.matriksService.getgraphicdata(parseInt(this.selectedTimeRange), this.symbol.matriksCode).subscribe(
+      //   (v) => this.onChartData(v),
+      //   (e) => this.onError(e)
+      // );
     });
   }
 

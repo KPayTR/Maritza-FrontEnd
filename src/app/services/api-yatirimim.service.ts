@@ -106,70 +106,6 @@ export class AssetsApiService {
     }
 
     /**
-     * @param body (optional) 
-     * @return Success
-     */
-    add(body: Asset | undefined): Observable<AssetModel> {
-        let url_ = this.baseUrl + "/api/finance/assets/add";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_ : any = {
-            body: content_,
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Content-Type": "application/json-patch+json",
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processAdd(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processAdd(<any>response_);
-                } catch (e) {
-                    return <Observable<AssetModel>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<AssetModel>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processAdd(response: HttpResponseBase): Observable<AssetModel> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = AssetModel.fromJS(resultData200);
-            return _observableOf(result200);
-            }));
-        } else if (status === 400) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result400: any = null;
-            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result400 = resultData400 !== undefined ? resultData400 : <any>null;
-    
-            return throwException("Bad Request", status, _responseText, _headers, result400);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<AssetModel>(<any>null);
-    }
-
-    /**
      * @param id (optional) 
      * @return Success
      */
@@ -303,70 +239,6 @@ export class AssetsApiService {
         }
         return _observableOf<AssetModel[]>(<any>null);
     }
-
-    /**
-     * @param body (optional) 
-     * @return Success
-     */
-    update(body: Asset | undefined): Observable<AssetModel> {
-        let url_ = this.baseUrl + "/api/finance/assets/update";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_ : any = {
-            body: content_,
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Content-Type": "application/json-patch+json",
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processUpdate(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processUpdate(<any>response_);
-                } catch (e) {
-                    return <Observable<AssetModel>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<AssetModel>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processUpdate(response: HttpResponseBase): Observable<AssetModel> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = AssetModel.fromJS(resultData200);
-            return _observableOf(result200);
-            }));
-        } else if (status === 400) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result400: any = null;
-            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result400 = resultData400 !== undefined ? resultData400 : <any>null;
-    
-            return throwException("Bad Request", status, _responseText, _headers, result400);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<AssetModel>(<any>null);
-    }
 }
 
 @Injectable()
@@ -384,8 +256,8 @@ export class AuthApiService {
      * @param body (optional) 
      * @return Success
      */
-    login(body: LoginModel | undefined): Observable<TokenModel> {
-        let url_ = this.baseUrl + "/api/auth/login";
+    login(body: LoginModel | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/auth/auth/login";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -396,7 +268,6 @@ export class AuthApiService {
             responseType: "blob",
             headers: new HttpHeaders({
                 "Content-Type": "application/json",
-                "Accept": "text/plain"
             })
         };
 
@@ -407,14 +278,14 @@ export class AuthApiService {
                 try {
                     return this.processLogin(<any>response_);
                 } catch (e) {
-                    return <Observable<TokenModel>><any>_observableThrow(e);
+                    return <Observable<void>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<TokenModel>><any>_observableThrow(response_);
+                return <Observable<void>><any>_observableThrow(response_);
         }));
     }
 
-    protected processLogin(response: HttpResponseBase): Observable<TokenModel> {
+    protected processLogin(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -423,10 +294,7 @@ export class AuthApiService {
         let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
         if (status === 200) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = TokenModel.fromJS(resultData200);
-            return _observableOf(result200);
+            return _observableOf<void>(<any>null);
             }));
         } else if (status === 400) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
@@ -447,77 +315,7 @@ export class AuthApiService {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<TokenModel>(<any>null);
-    }
-
-    /**
-     * @param body (optional) 
-     * @return Success
-     */
-    register(body: UserModel | undefined): Observable<TokenModel> {
-        let url_ = this.baseUrl + "/api/auth/register";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_ : any = {
-            body: content_,
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Content-Type": "application/json",
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processRegister(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processRegister(<any>response_);
-                } catch (e) {
-                    return <Observable<TokenModel>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<TokenModel>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processRegister(response: HttpResponseBase): Observable<TokenModel> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = TokenModel.fromJS(resultData200);
-            return _observableOf(result200);
-            }));
-        } else if (status === 400) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result400: any = null;
-            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData400)) {
-                result400 = [] as any;
-                for (let item of resultData400)
-                    result400!.push(ErrorDto.fromJS(item));
-            }
-            else {
-                result400 = <any>null;
-            }
-            return throwException("Bad Request", status, _responseText, _headers, result400);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<TokenModel>(<any>null);
+        return _observableOf<void>(<any>null);
     }
 
     /**
@@ -525,7 +323,7 @@ export class AuthApiService {
      * @return Success
      */
     verify(body: VerifyModel | undefined): Observable<TokenModel> {
-        let url_ = this.baseUrl + "/api/auth/verify";
+        let url_ = this.baseUrl + "/api/auth/auth/verify";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -595,7 +393,7 @@ export class AuthApiService {
      * @return Success
      */
     forgot(body: ForgotModel | undefined): Observable<void> {
-        let url_ = this.baseUrl + "/api/auth/forgot";
+        let url_ = this.baseUrl + "/api/auth/auth/forgot";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -660,8 +458,8 @@ export class AuthApiService {
      * @param phoneNumber (optional) 
      * @return Success
      */
-    check(phoneNumber: string | undefined): Observable<void> {
-        let url_ = this.baseUrl + "/api/auth/check?";
+    checkphonenumber(phoneNumber: string | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/auth/auth/checkphonenumber?";
         if (phoneNumber === null)
             throw new Error("The parameter 'phoneNumber' cannot be null.");
         else if (phoneNumber !== undefined)
@@ -676,11 +474,11 @@ export class AuthApiService {
         };
 
         return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processCheck(response_);
+            return this.processCheckphonenumber(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processCheck(<any>response_);
+                    return this.processCheckphonenumber(<any>response_);
                 } catch (e) {
                     return <Observable<void>><any>_observableThrow(e);
                 }
@@ -689,7 +487,73 @@ export class AuthApiService {
         }));
     }
 
-    protected processCheck(response: HttpResponseBase): Observable<void> {
+    protected processCheckphonenumber(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData400)) {
+                result400 = [] as any;
+                for (let item of resultData400)
+                    result400!.push(ErrorDto.fromJS(item));
+            }
+            else {
+                result400 = <any>null;
+            }
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * @param identityNo (optional) 
+     * @return Success
+     */
+    checkidentityno(identityNo: string | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/auth/auth/checkidentityno?";
+        if (identityNo === null)
+            throw new Error("The parameter 'identityNo' cannot be null.");
+        else if (identityNo !== undefined)
+            url_ += "identityNo=" + encodeURIComponent("" + identityNo) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCheckidentityno(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCheckidentityno(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processCheckidentityno(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -726,8 +590,8 @@ export class AuthApiService {
      * @param body (optional) 
      * @return Success
      */
-    changephonenumber(body: PhoneNumberModel | undefined): Observable<void> {
-        let url_ = this.baseUrl + "/api/auth/changephonenumber";
+    register(body: RegisterModel | undefined): Observable<TokenModel> {
+        let url_ = this.baseUrl + "/api/auth/auth/register";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -737,25 +601,26 @@ export class AuthApiService {
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
-                "Content-Type": "application/json",
+                "Content-Type": "application/json-patch+json",
+                "Accept": "text/plain"
             })
         };
 
         return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processChangephonenumber(response_);
+            return this.processRegister(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processChangephonenumber(<any>response_);
+                    return this.processRegister(<any>response_);
                 } catch (e) {
-                    return <Observable<void>><any>_observableThrow(e);
+                    return <Observable<TokenModel>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<void>><any>_observableThrow(response_);
+                return <Observable<TokenModel>><any>_observableThrow(response_);
         }));
     }
 
-    protected processChangephonenumber(response: HttpResponseBase): Observable<void> {
+    protected processRegister(response: HttpResponseBase): Observable<TokenModel> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -764,7 +629,10 @@ export class AuthApiService {
         let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
         if (status === 200) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return _observableOf<void>(<any>null);
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = TokenModel.fromJS(resultData200);
+            return _observableOf(result200);
             }));
         } else if (status === 400) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
@@ -785,7 +653,7 @@ export class AuthApiService {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<void>(<any>null);
+        return _observableOf<TokenModel>(<any>null);
     }
 }
 
@@ -1320,25 +1188,13 @@ export class CorporateApiService {
         }
         return _observableOf<CorporateModel>(<any>null);
     }
-}
-
-@Injectable()
-export class GetbyidApiService {
-    private http: HttpClient;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
-        this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://api.yatirimim.local";
-    }
 
     /**
      * @param id (optional) 
      * @return Success
      */
     getbyid(id: number | undefined): Observable<CorporateModel> {
-        let url_ = this.baseUrl + "/api/auth/corporate/getbyid/getbyid?";
+        let url_ = this.baseUrl + "/api/auth/corporate/getbyid?";
         if (id === null)
             throw new Error("The parameter 'id' cannot be null.");
         else if (id !== undefined)
@@ -1353,7 +1209,7 @@ export class GetbyidApiService {
             })
         };
 
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
             return this.processGetbyid(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
@@ -1368,6 +1224,70 @@ export class GetbyidApiService {
     }
 
     protected processGetbyid(response: HttpResponseBase): Observable<CorporateModel> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = CorporateModel.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result400 = resultData400 !== undefined ? resultData400 : <any>null;
+    
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<CorporateModel>(<any>null);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    update(body: CorporateModel | undefined): Observable<CorporateModel> {
+        let url_ = this.baseUrl + "/api/auth/corporate/update";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdate(<any>response_);
+                } catch (e) {
+                    return <Observable<CorporateModel>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<CorporateModel>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processUpdate(response: HttpResponseBase): Observable<CorporateModel> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -1473,82 +1393,6 @@ export class ReadApiService {
             }));
         }
         return _observableOf<CorporateModel[]>(<any>null);
-    }
-}
-
-@Injectable()
-export class UpdateApiService {
-    private http: HttpClient;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
-        this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://api.yatirimim.local";
-    }
-
-    /**
-     * @param body (optional) 
-     * @return Success
-     */
-    update(body: CorporateModel | undefined): Observable<CorporateModel> {
-        let url_ = this.baseUrl + "/api/auth/corporate/update/update";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_ : any = {
-            body: content_,
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Content-Type": "application/json-patch+json",
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processUpdate(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processUpdate(<any>response_);
-                } catch (e) {
-                    return <Observable<CorporateModel>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<CorporateModel>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processUpdate(response: HttpResponseBase): Observable<CorporateModel> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = CorporateModel.fromJS(resultData200);
-            return _observableOf(result200);
-            }));
-        } else if (status === 400) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result400: any = null;
-            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result400 = resultData400 !== undefined ? resultData400 : <any>null;
-    
-            return throwException("Bad Request", status, _responseText, _headers, result400);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<CorporateModel>(<any>null);
     }
 }
 
@@ -2592,8 +2436,8 @@ export class MatriksApiService {
      * @param symbol (optional) 
      * @return Success
      */
-    getgraphicdata(graphic: number | undefined, symbol: string | undefined): Observable<GraphicDataModel> {
-        let url_ = this.baseUrl + "/api/proxy/matriks/getgraphicdata?";
+    getgraphdata(graphic: MatriksGraphType | undefined, symbol: string | undefined): Observable<GraphicDataModel> {
+        let url_ = this.baseUrl + "/api/proxy/matriks/getgraphdata?";
         if (graphic === null)
             throw new Error("The parameter 'graphic' cannot be null.");
         else if (graphic !== undefined)
@@ -2613,11 +2457,11 @@ export class MatriksApiService {
         };
 
         return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetgraphicdata(response_);
+            return this.processGetgraphdata(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGetgraphicdata(<any>response_);
+                    return this.processGetgraphdata(<any>response_);
                 } catch (e) {
                     return <Observable<GraphicDataModel>><any>_observableThrow(e);
                 }
@@ -2626,7 +2470,7 @@ export class MatriksApiService {
         }));
     }
 
-    protected processGetgraphicdata(response: HttpResponseBase): Observable<GraphicDataModel> {
+    protected processGetgraphdata(response: HttpResponseBase): Observable<GraphicDataModel> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -2686,6 +2530,70 @@ export class MatriksApiService {
     }
 
     protected processGetmatriksnewsdata(response: HttpResponseBase): Observable<MatriksNewsModel> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = MatriksNewsModel.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result400 = resultData400 !== undefined ? resultData400 : <any>null;
+    
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<MatriksNewsModel>(<any>null);
+    }
+
+    /**
+     * @param newsId (optional) 
+     * @return Success
+     */
+    getmatriksnewsdetaildata(newsId: string | undefined): Observable<MatriksNewsModel> {
+        let url_ = this.baseUrl + "/api/proxy/matriks/getmatriksnewsdetaildata?";
+        if (newsId === null)
+            throw new Error("The parameter 'newsId' cannot be null.");
+        else if (newsId !== undefined)
+            url_ += "newsId=" + encodeURIComponent("" + newsId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetmatriksnewsdetaildata(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetmatriksnewsdetaildata(<any>response_);
+                } catch (e) {
+                    return <Observable<MatriksNewsModel>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<MatriksNewsModel>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetmatriksnewsdetaildata(response: HttpResponseBase): Observable<MatriksNewsModel> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -3146,8 +3054,8 @@ export class OrderApiService {
      * @param body (optional) 
      * @return Success
      */
-    add(body: Order | undefined): Observable<OrderModel> {
-        let url_ = this.baseUrl + "/api/commerce/order/add";
+    adddigitalorder(body: RequestCompleteDigitalOrderModel | undefined): Observable<RequestCompleteDigitalOrderModel> {
+        let url_ = this.baseUrl + "/api/commerce/order/adddigitalorder";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -3163,20 +3071,20 @@ export class OrderApiService {
         };
 
         return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processAdd(response_);
+            return this.processAdddigitalorder(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processAdd(<any>response_);
+                    return this.processAdddigitalorder(<any>response_);
                 } catch (e) {
-                    return <Observable<OrderModel>><any>_observableThrow(e);
+                    return <Observable<RequestCompleteDigitalOrderModel>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<OrderModel>><any>_observableThrow(response_);
+                return <Observable<RequestCompleteDigitalOrderModel>><any>_observableThrow(response_);
         }));
     }
 
-    protected processAdd(response: HttpResponseBase): Observable<OrderModel> {
+    protected processAdddigitalorder(response: HttpResponseBase): Observable<RequestCompleteDigitalOrderModel> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -3187,7 +3095,7 @@ export class OrderApiService {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = OrderModel.fromJS(resultData200);
+            result200 = RequestCompleteDigitalOrderModel.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status === 400) {
@@ -3203,15 +3111,79 @@ export class OrderApiService {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<OrderModel>(<any>null);
+        return _observableOf<RequestCompleteDigitalOrderModel>(<any>null);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    addphysicalorder(body: RequestPhysicalOrderModel | undefined): Observable<ResponsePhysicalOrderModel> {
+        let url_ = this.baseUrl + "/api/commerce/order/addphysicalorder";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processAddphysicalorder(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processAddphysicalorder(<any>response_);
+                } catch (e) {
+                    return <Observable<ResponsePhysicalOrderModel>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<ResponsePhysicalOrderModel>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processAddphysicalorder(response: HttpResponseBase): Observable<ResponsePhysicalOrderModel> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ResponsePhysicalOrderModel.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result400 = resultData400 !== undefined ? resultData400 : <any>null;
+    
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ResponsePhysicalOrderModel>(<any>null);
     }
 
     /**
      * @param orderId (optional) 
      * @return Success
      */
-    cancel(orderId: number | undefined): Observable<OrderModel> {
-        let url_ = this.baseUrl + "/api/commerce/order/cancel?";
+    canceldigitalorder(orderId: number | undefined): Observable<ResponseDigitalOrderModel> {
+        let url_ = this.baseUrl + "/api/commerce/order/canceldigitalorder?";
         if (orderId === null)
             throw new Error("The parameter 'orderId' cannot be null.");
         else if (orderId !== undefined)
@@ -3227,20 +3199,20 @@ export class OrderApiService {
         };
 
         return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processCancel(response_);
+            return this.processCanceldigitalorder(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processCancel(<any>response_);
+                    return this.processCanceldigitalorder(<any>response_);
                 } catch (e) {
-                    return <Observable<OrderModel>><any>_observableThrow(e);
+                    return <Observable<ResponseDigitalOrderModel>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<OrderModel>><any>_observableThrow(response_);
+                return <Observable<ResponseDigitalOrderModel>><any>_observableThrow(response_);
         }));
     }
 
-    protected processCancel(response: HttpResponseBase): Observable<OrderModel> {
+    protected processCanceldigitalorder(response: HttpResponseBase): Observable<ResponseDigitalOrderModel> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -3251,7 +3223,7 @@ export class OrderApiService {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = OrderModel.fromJS(resultData200);
+            result200 = ResponseDigitalOrderModel.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status === 400) {
@@ -3267,29 +3239,19 @@ export class OrderApiService {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<OrderModel>(<any>null);
+        return _observableOf<ResponseDigitalOrderModel>(<any>null);
     }
 
     /**
      * @param orderId (optional) 
-     * @param paymentId (optional) 
-     * @param assetId (optional) 
      * @return Success
      */
-    complete(orderId: number | undefined, paymentId: number | undefined, assetId: number | undefined): Observable<OrderModel> {
-        let url_ = this.baseUrl + "/api/commerce/order/complete?";
+    cancelphysicalorder(orderId: number | undefined): Observable<ResponsePhysicalOrderModel> {
+        let url_ = this.baseUrl + "/api/commerce/order/cancelphysicalorder?";
         if (orderId === null)
             throw new Error("The parameter 'orderId' cannot be null.");
         else if (orderId !== undefined)
             url_ += "orderId=" + encodeURIComponent("" + orderId) + "&";
-        if (paymentId === null)
-            throw new Error("The parameter 'paymentId' cannot be null.");
-        else if (paymentId !== undefined)
-            url_ += "paymentId=" + encodeURIComponent("" + paymentId) + "&";
-        if (assetId === null)
-            throw new Error("The parameter 'assetId' cannot be null.");
-        else if (assetId !== undefined)
-            url_ += "assetId=" + encodeURIComponent("" + assetId) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -3301,20 +3263,20 @@ export class OrderApiService {
         };
 
         return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processComplete(response_);
+            return this.processCancelphysicalorder(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processComplete(<any>response_);
+                    return this.processCancelphysicalorder(<any>response_);
                 } catch (e) {
-                    return <Observable<OrderModel>><any>_observableThrow(e);
+                    return <Observable<ResponsePhysicalOrderModel>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<OrderModel>><any>_observableThrow(response_);
+                return <Observable<ResponsePhysicalOrderModel>><any>_observableThrow(response_);
         }));
     }
 
-    protected processComplete(response: HttpResponseBase): Observable<OrderModel> {
+    protected processCancelphysicalorder(response: HttpResponseBase): Observable<ResponsePhysicalOrderModel> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -3325,7 +3287,7 @@ export class OrderApiService {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = OrderModel.fromJS(resultData200);
+            result200 = ResponsePhysicalOrderModel.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status === 400) {
@@ -3341,7 +3303,391 @@ export class OrderApiService {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<OrderModel>(<any>null);
+        return _observableOf<ResponsePhysicalOrderModel>(<any>null);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    completedigitalorder(body: CompleDigitalOrderModel | undefined): Observable<ResponseDigitalOrderModel> {
+        let url_ = this.baseUrl + "/api/commerce/order/completedigitalorder";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCompletedigitalorder(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCompletedigitalorder(<any>response_);
+                } catch (e) {
+                    return <Observable<ResponseDigitalOrderModel>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<ResponseDigitalOrderModel>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processCompletedigitalorder(response: HttpResponseBase): Observable<ResponseDigitalOrderModel> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ResponseDigitalOrderModel.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result400 = resultData400 !== undefined ? resultData400 : <any>null;
+    
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ResponseDigitalOrderModel>(<any>null);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    completephysicalorder(body: ComplePhysicalOrderModel | undefined): Observable<ResponsePhysicalOrderModel> {
+        let url_ = this.baseUrl + "/api/commerce/order/completephysicalorder";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCompletephysicalorder(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCompletephysicalorder(<any>response_);
+                } catch (e) {
+                    return <Observable<ResponsePhysicalOrderModel>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<ResponsePhysicalOrderModel>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processCompletephysicalorder(response: HttpResponseBase): Observable<ResponsePhysicalOrderModel> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ResponsePhysicalOrderModel.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result400 = resultData400 !== undefined ? resultData400 : <any>null;
+    
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ResponsePhysicalOrderModel>(<any>null);
+    }
+
+    /**
+     * @param orderId (optional) 
+     * @return Success
+     */
+    getdigitalorderbyid(orderId: number | undefined): Observable<ResponseDigitalOrderModel> {
+        let url_ = this.baseUrl + "/api/commerce/order/getdigitalorderbyid?";
+        if (orderId === null)
+            throw new Error("The parameter 'orderId' cannot be null.");
+        else if (orderId !== undefined)
+            url_ += "orderId=" + encodeURIComponent("" + orderId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetdigitalorderbyid(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetdigitalorderbyid(<any>response_);
+                } catch (e) {
+                    return <Observable<ResponseDigitalOrderModel>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<ResponseDigitalOrderModel>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetdigitalorderbyid(response: HttpResponseBase): Observable<ResponseDigitalOrderModel> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ResponseDigitalOrderModel.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result400 = resultData400 !== undefined ? resultData400 : <any>null;
+    
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ResponseDigitalOrderModel>(<any>null);
+    }
+
+    /**
+     * @param orderId (optional) 
+     * @return Success
+     */
+    getphysicalorderbyid(orderId: number | undefined): Observable<RequestPhysicalOrderModel> {
+        let url_ = this.baseUrl + "/api/commerce/order/getphysicalorderbyid?";
+        if (orderId === null)
+            throw new Error("The parameter 'orderId' cannot be null.");
+        else if (orderId !== undefined)
+            url_ += "orderId=" + encodeURIComponent("" + orderId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetphysicalorderbyid(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetphysicalorderbyid(<any>response_);
+                } catch (e) {
+                    return <Observable<RequestPhysicalOrderModel>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<RequestPhysicalOrderModel>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetphysicalorderbyid(response: HttpResponseBase): Observable<RequestPhysicalOrderModel> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = RequestPhysicalOrderModel.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result400 = resultData400 !== undefined ? resultData400 : <any>null;
+    
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<RequestPhysicalOrderModel>(<any>null);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    updatedigitalorder(body: ResponseDigitalOrderModel | undefined): Observable<ResponseDigitalOrderModel> {
+        let url_ = this.baseUrl + "/api/commerce/order/updatedigitalorder";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdatedigitalorder(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdatedigitalorder(<any>response_);
+                } catch (e) {
+                    return <Observable<ResponseDigitalOrderModel>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<ResponseDigitalOrderModel>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processUpdatedigitalorder(response: HttpResponseBase): Observable<ResponseDigitalOrderModel> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ResponseDigitalOrderModel.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result400 = resultData400 !== undefined ? resultData400 : <any>null;
+    
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ResponseDigitalOrderModel>(<any>null);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    updatephysicalorder(body: ResponsePhysicalOrderModel | undefined): Observable<ResponsePhysicalOrderModel> {
+        let url_ = this.baseUrl + "/api/commerce/order/updatephysicalorder";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdatephysicalorder(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdatephysicalorder(<any>response_);
+                } catch (e) {
+                    return <Observable<ResponsePhysicalOrderModel>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<ResponsePhysicalOrderModel>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processUpdatephysicalorder(response: HttpResponseBase): Observable<ResponsePhysicalOrderModel> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ResponsePhysicalOrderModel.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result400 = resultData400 !== undefined ? resultData400 : <any>null;
+    
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ResponsePhysicalOrderModel>(<any>null);
     }
 }
 
@@ -4386,6 +4732,81 @@ export class SettingApiService {
 }
 
 @Injectable()
+export class SlideApiService {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://api.yatirimim.local";
+    }
+
+    /**
+     * @param slideTypeId (optional) 
+     * @return Success
+     */
+    getslides(slideTypeId: number | undefined): Observable<SlideModel[]> {
+        let url_ = this.baseUrl + "/api/contents/slide/getslides?";
+        if (slideTypeId === null)
+            throw new Error("The parameter 'slideTypeId' cannot be null.");
+        else if (slideTypeId !== undefined)
+            url_ += "slideTypeId=" + encodeURIComponent("" + slideTypeId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetslides(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetslides(<any>response_);
+                } catch (e) {
+                    return <Observable<SlideModel[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<SlideModel[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetslides(response: HttpResponseBase): Observable<SlideModel[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(SlideModel.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<SlideModel[]>(<any>null);
+    }
+}
+
+@Injectable()
 export class StaticpageApiService {
     private http: HttpClient;
     private baseUrl: string;
@@ -4520,7 +4941,8 @@ export class SymbolsApiService {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result400: any = null;
             let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result400 = ErrorDto.fromJS(resultData400);
+                result400 = resultData400 !== undefined ? resultData400 : <any>null;
+    
             return throwException("Bad Request", status, _responseText, _headers, result400);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -4534,8 +4956,8 @@ export class SymbolsApiService {
     /**
      * @return Success
      */
-    getrates(): Observable<SymbolRateModel[]> {
-        let url_ = this.baseUrl + "/api/finance/symbols/getrates";
+    getsymbolrates(): Observable<SymbolRateModel[]> {
+        let url_ = this.baseUrl + "/api/finance/symbols/getsymbolrates";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -4547,11 +4969,11 @@ export class SymbolsApiService {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetrates(response_);
+            return this.processGetsymbolrates(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGetrates(<any>response_);
+                    return this.processGetsymbolrates(<any>response_);
                 } catch (e) {
                     return <Observable<SymbolRateModel[]>><any>_observableThrow(e);
                 }
@@ -4560,7 +4982,7 @@ export class SymbolsApiService {
         }));
     }
 
-    protected processGetrates(response: HttpResponseBase): Observable<SymbolRateModel[]> {
+    protected processGetsymbolrates(response: HttpResponseBase): Observable<SymbolRateModel[]> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -4585,7 +5007,8 @@ export class SymbolsApiService {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result400: any = null;
             let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result400 = ErrorDto.fromJS(resultData400);
+                result400 = resultData400 !== undefined ? resultData400 : <any>null;
+    
             return throwException("Bad Request", status, _responseText, _headers, result400);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -4594,6 +5017,198 @@ export class SymbolsApiService {
             }));
         }
         return _observableOf<SymbolRateModel[]>(<any>null);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    addsymbolalarm(body: SymbolAlarmModel | undefined): Observable<SymbolAlarmModel> {
+        let url_ = this.baseUrl + "/api/finance/symbols/addsymbolalarm";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processAddsymbolalarm(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processAddsymbolalarm(<any>response_);
+                } catch (e) {
+                    return <Observable<SymbolAlarmModel>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<SymbolAlarmModel>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processAddsymbolalarm(response: HttpResponseBase): Observable<SymbolAlarmModel> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SymbolAlarmModel.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result400 = resultData400 !== undefined ? resultData400 : <any>null;
+    
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<SymbolAlarmModel>(<any>null);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    deletesymbolalarm(body: SymbolAlarmModel | undefined): Observable<SymbolAlarmModel> {
+        let url_ = this.baseUrl + "/api/finance/symbols/deletesymbolalarm";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDeletesymbolalarm(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDeletesymbolalarm(<any>response_);
+                } catch (e) {
+                    return <Observable<SymbolAlarmModel>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<SymbolAlarmModel>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processDeletesymbolalarm(response: HttpResponseBase): Observable<SymbolAlarmModel> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SymbolAlarmModel.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result400 = resultData400 !== undefined ? resultData400 : <any>null;
+    
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<SymbolAlarmModel>(<any>null);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    togglesymbolvote(body: SymbolVoteRequestModel | undefined): Observable<SymbolVoteModel> {
+        let url_ = this.baseUrl + "/api/finance/symbols/togglesymbolvote";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processTogglesymbolvote(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processTogglesymbolvote(<any>response_);
+                } catch (e) {
+                    return <Observable<SymbolVoteModel>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<SymbolVoteModel>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processTogglesymbolvote(response: HttpResponseBase): Observable<SymbolVoteModel> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SymbolVoteModel.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result400 = resultData400 !== undefined ? resultData400 : <any>null;
+    
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<SymbolVoteModel>(<any>null);
     }
 }
 
@@ -4698,7 +5313,7 @@ export class TransactionsApiService {
             })
         };
 
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
             return this.processGettransactionhistory(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
@@ -6827,6 +7442,7 @@ export interface IBank {
 }
 
 export class BankModel implements IBankModel {
+    id?: number;
     name?: string | undefined;
     description?: string | undefined;
     isActive?: boolean;
@@ -6842,6 +7458,7 @@ export class BankModel implements IBankModel {
 
     init(_data?: any) {
         if (_data) {
+            this.id = _data["Id"];
             this.name = _data["Name"];
             this.description = _data["Description"];
             this.isActive = _data["IsActive"];
@@ -6857,6 +7474,7 @@ export class BankModel implements IBankModel {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["Id"] = this.id;
         data["Name"] = this.name;
         data["Description"] = this.description;
         data["IsActive"] = this.isActive;
@@ -6865,6 +7483,7 @@ export class BankModel implements IBankModel {
 }
 
 export interface IBankModel {
+    id?: number;
     name?: string | undefined;
     description?: string | undefined;
     isActive?: boolean;
@@ -7330,94 +7949,6 @@ export interface ICategory {
     productCategories?: ProductCategory[] | undefined;
 }
 
-export class CategoryModel implements ICategoryModel {
-    id?: number;
-    name?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isPublished?: boolean;
-    parentId?: number | undefined;
-    parent?: CategoryModel;
-    yatirimimId?: number | undefined;
-    readonly children?: CategoryModel[] | undefined;
-    readonly productCategories?: ProductCategoryModel[] | undefined;
-
-    constructor(data?: ICategoryModel) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["Id"];
-            this.name = _data["Name"];
-            this.description = _data["Description"];
-            this.displayOrder = _data["DisplayOrder"];
-            this.isPublished = _data["IsPublished"];
-            this.parentId = _data["ParentId"];
-            this.parent = _data["Parent"] ? CategoryModel.fromJS(_data["Parent"]) : <any>undefined;
-            this.yatirimimId = _data["YatirimimId"];
-            if (Array.isArray(_data["Children"])) {
-                (<any>this).children = [] as any;
-                for (let item of _data["Children"])
-                    (<any>this).children!.push(CategoryModel.fromJS(item));
-            }
-            if (Array.isArray(_data["ProductCategories"])) {
-                (<any>this).productCategories = [] as any;
-                for (let item of _data["ProductCategories"])
-                    (<any>this).productCategories!.push(ProductCategoryModel.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): CategoryModel {
-        data = typeof data === 'object' ? data : {};
-        let result = new CategoryModel();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Id"] = this.id;
-        data["Name"] = this.name;
-        data["Description"] = this.description;
-        data["DisplayOrder"] = this.displayOrder;
-        data["IsPublished"] = this.isPublished;
-        data["ParentId"] = this.parentId;
-        data["Parent"] = this.parent ? this.parent.toJSON() : <any>undefined;
-        data["YatirimimId"] = this.yatirimimId;
-        if (Array.isArray(this.children)) {
-            data["Children"] = [];
-            for (let item of this.children)
-                data["Children"].push(item.toJSON());
-        }
-        if (Array.isArray(this.productCategories)) {
-            data["ProductCategories"] = [];
-            for (let item of this.productCategories)
-                data["ProductCategories"].push(item.toJSON());
-        }
-        return data;
-    }
-}
-
-export interface ICategoryModel {
-    id?: number;
-    name?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isPublished?: boolean;
-    parentId?: number | undefined;
-    parent?: CategoryModel;
-    yatirimimId?: number | undefined;
-    children?: CategoryModel[] | undefined;
-    productCategories?: ProductCategoryModel[] | undefined;
-}
-
 export class ChannelType implements IChannelType {
     id?: number;
     createdOn?: moment.Moment | undefined;
@@ -7740,6 +8271,98 @@ export interface ICommissionTypeModel {
     description?: string | undefined;
     displayOrder?: number;
     isActive?: boolean;
+}
+
+export class CompleDigitalOrderModel implements ICompleDigitalOrderModel {
+    orderId?: number;
+    paymnetTypeId?: number;
+    sourceAssetId?: number;
+    targetAssetId?: number;
+
+    constructor(data?: ICompleDigitalOrderModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.orderId = _data["OrderId"];
+            this.paymnetTypeId = _data["PaymnetTypeId"];
+            this.sourceAssetId = _data["SourceAssetId"];
+            this.targetAssetId = _data["TargetAssetId"];
+        }
+    }
+
+    static fromJS(data: any): CompleDigitalOrderModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new CompleDigitalOrderModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["OrderId"] = this.orderId;
+        data["PaymnetTypeId"] = this.paymnetTypeId;
+        data["SourceAssetId"] = this.sourceAssetId;
+        data["TargetAssetId"] = this.targetAssetId;
+        return data;
+    }
+}
+
+export interface ICompleDigitalOrderModel {
+    orderId?: number;
+    paymnetTypeId?: number;
+    sourceAssetId?: number;
+    targetAssetId?: number;
+}
+
+export class ComplePhysicalOrderModel implements IComplePhysicalOrderModel {
+    orderId?: number;
+    paymnetTypeId?: number;
+    sourceAssetId?: number;
+
+    constructor(data?: IComplePhysicalOrderModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.orderId = _data["OrderId"];
+            this.paymnetTypeId = _data["PaymnetTypeId"];
+            this.sourceAssetId = _data["SourceAssetId"];
+        }
+    }
+
+    static fromJS(data: any): ComplePhysicalOrderModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new ComplePhysicalOrderModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["OrderId"] = this.orderId;
+        data["PaymnetTypeId"] = this.paymnetTypeId;
+        data["SourceAssetId"] = this.sourceAssetId;
+        return data;
+    }
+}
+
+export interface IComplePhysicalOrderModel {
+    orderId?: number;
+    paymnetTypeId?: number;
+    sourceAssetId?: number;
 }
 
 export class ContactType implements IContactType {
@@ -8258,6 +8881,10 @@ export interface ICountry {
 }
 
 export class CountryModel implements ICountryModel {
+    id?: number;
+    code!: string;
+    name!: string;
+    nationality?: string | undefined;
 
     constructor(data?: ICountryModel) {
         if (data) {
@@ -8269,6 +8896,12 @@ export class CountryModel implements ICountryModel {
     }
 
     init(_data?: any) {
+        if (_data) {
+            this.id = _data["Id"];
+            this.code = _data["Code"];
+            this.name = _data["Name"];
+            this.nationality = _data["Nationality"];
+        }
     }
 
     static fromJS(data: any): CountryModel {
@@ -8280,11 +8913,19 @@ export class CountryModel implements ICountryModel {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["Id"] = this.id;
+        data["Code"] = this.code;
+        data["Name"] = this.name;
+        data["Nationality"] = this.nationality;
         return data;
     }
 }
 
 export interface ICountryModel {
+    id?: number;
+    code: string;
+    name: string;
+    nationality?: string | undefined;
 }
 
 export class Coupon implements ICoupon {
@@ -11949,7 +12590,7 @@ export interface IKnowledgeBaseModel {
 }
 
 export class LoginModel implements ILoginModel {
-    username?: string | undefined;
+    phoneNumber?: string | undefined;
     password?: string | undefined;
 
     constructor(data?: ILoginModel) {
@@ -11963,7 +12604,7 @@ export class LoginModel implements ILoginModel {
 
     init(_data?: any) {
         if (_data) {
-            this.username = _data["Username"];
+            this.phoneNumber = _data["PhoneNumber"];
             this.password = _data["Password"];
         }
     }
@@ -11977,14 +12618,14 @@ export class LoginModel implements ILoginModel {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["Username"] = this.username;
+        data["PhoneNumber"] = this.phoneNumber;
         data["Password"] = this.password;
         return data;
     }
 }
 
 export interface ILoginModel {
-    username?: string | undefined;
+    phoneNumber?: string | undefined;
     password?: string | undefined;
 }
 
@@ -12322,6 +12963,12 @@ export interface IMatriksError {
     flag?: string | undefined;
     type?: string | undefined;
     msg?: string | undefined;
+}
+
+export enum MatriksGraphType {
+    _0 = 0,
+    _1 = 1,
+    _2 = 2,
 }
 
 export class MatriksNewsModel implements IMatriksNewsModel {
@@ -13032,424 +13679,10 @@ export interface IOns {
     gunlukyuzde?: string | undefined;
 }
 
-export class Order implements IOrder {
-    id?: number;
-    createdOn?: moment.Moment | undefined;
-    createdById?: number | undefined;
-    createdBy?: User;
-    updatedOn?: moment.Moment | undefined;
-    updatedById?: number | undefined;
-    updatedBy?: User;
-    deletedOn?: moment.Moment | undefined;
-    deletedById?: number | undefined;
-    deletedBy?: User;
-    isDeleted?: boolean;
-    customerId?: number;
-    customer?: Customer;
-    deliveryTime?: TimeSpan;
-    subTotal?: number;
-    total?: number;
-    shippingAddressId?: number | undefined;
-    shippingAddress?: OrderAddress;
-    billingAddressId?: number | undefined;
-    billingAddress?: OrderAddress;
-    orderStatusId?: number;
-    orderStatus?: OrderStatus;
-    transactionId?: number;
-    transaction?: Transaction;
-    assetId?: number;
-    asset?: Asset;
-    note?: string | undefined;
-    isTest?: boolean;
-    readonly orderItems?: OrderItem[] | undefined;
-
-    constructor(data?: IOrder) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["Id"];
-            this.createdOn = _data["CreatedOn"] ? moment(_data["CreatedOn"].toString()) : <any>undefined;
-            this.createdById = _data["CreatedById"];
-            this.createdBy = _data["CreatedBy"] ? User.fromJS(_data["CreatedBy"]) : <any>undefined;
-            this.updatedOn = _data["UpdatedOn"] ? moment(_data["UpdatedOn"].toString()) : <any>undefined;
-            this.updatedById = _data["UpdatedById"];
-            this.updatedBy = _data["UpdatedBy"] ? User.fromJS(_data["UpdatedBy"]) : <any>undefined;
-            this.deletedOn = _data["DeletedOn"] ? moment(_data["DeletedOn"].toString()) : <any>undefined;
-            this.deletedById = _data["DeletedById"];
-            this.deletedBy = _data["DeletedBy"] ? User.fromJS(_data["DeletedBy"]) : <any>undefined;
-            this.isDeleted = _data["IsDeleted"];
-            this.customerId = _data["CustomerId"];
-            this.customer = _data["Customer"] ? Customer.fromJS(_data["Customer"]) : <any>undefined;
-            this.deliveryTime = _data["DeliveryTime"] ? TimeSpan.fromJS(_data["DeliveryTime"]) : <any>undefined;
-            this.subTotal = _data["SubTotal"];
-            this.total = _data["Total"];
-            this.shippingAddressId = _data["ShippingAddressId"];
-            this.shippingAddress = _data["ShippingAddress"] ? OrderAddress.fromJS(_data["ShippingAddress"]) : <any>undefined;
-            this.billingAddressId = _data["BillingAddressId"];
-            this.billingAddress = _data["BillingAddress"] ? OrderAddress.fromJS(_data["BillingAddress"]) : <any>undefined;
-            this.orderStatusId = _data["OrderStatusId"];
-            this.orderStatus = _data["OrderStatus"] ? OrderStatus.fromJS(_data["OrderStatus"]) : <any>undefined;
-            this.transactionId = _data["TransactionId"];
-            this.transaction = _data["Transaction"] ? Transaction.fromJS(_data["Transaction"]) : <any>undefined;
-            this.assetId = _data["AssetId"];
-            this.asset = _data["Asset"] ? Asset.fromJS(_data["Asset"]) : <any>undefined;
-            this.note = _data["Note"];
-            this.isTest = _data["IsTest"];
-            if (Array.isArray(_data["OrderItems"])) {
-                (<any>this).orderItems = [] as any;
-                for (let item of _data["OrderItems"])
-                    (<any>this).orderItems!.push(OrderItem.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): Order {
-        data = typeof data === 'object' ? data : {};
-        let result = new Order();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Id"] = this.id;
-        data["CreatedOn"] = this.createdOn ? this.createdOn.toISOString() : <any>undefined;
-        data["CreatedById"] = this.createdById;
-        data["CreatedBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
-        data["UpdatedOn"] = this.updatedOn ? this.updatedOn.toISOString() : <any>undefined;
-        data["UpdatedById"] = this.updatedById;
-        data["UpdatedBy"] = this.updatedBy ? this.updatedBy.toJSON() : <any>undefined;
-        data["DeletedOn"] = this.deletedOn ? this.deletedOn.toISOString() : <any>undefined;
-        data["DeletedById"] = this.deletedById;
-        data["DeletedBy"] = this.deletedBy ? this.deletedBy.toJSON() : <any>undefined;
-        data["IsDeleted"] = this.isDeleted;
-        data["CustomerId"] = this.customerId;
-        data["Customer"] = this.customer ? this.customer.toJSON() : <any>undefined;
-        data["DeliveryTime"] = this.deliveryTime ? this.deliveryTime.toJSON() : <any>undefined;
-        data["SubTotal"] = this.subTotal;
-        data["Total"] = this.total;
-        data["ShippingAddressId"] = this.shippingAddressId;
-        data["ShippingAddress"] = this.shippingAddress ? this.shippingAddress.toJSON() : <any>undefined;
-        data["BillingAddressId"] = this.billingAddressId;
-        data["BillingAddress"] = this.billingAddress ? this.billingAddress.toJSON() : <any>undefined;
-        data["OrderStatusId"] = this.orderStatusId;
-        data["OrderStatus"] = this.orderStatus ? this.orderStatus.toJSON() : <any>undefined;
-        data["TransactionId"] = this.transactionId;
-        data["Transaction"] = this.transaction ? this.transaction.toJSON() : <any>undefined;
-        data["AssetId"] = this.assetId;
-        data["Asset"] = this.asset ? this.asset.toJSON() : <any>undefined;
-        data["Note"] = this.note;
-        data["IsTest"] = this.isTest;
-        if (Array.isArray(this.orderItems)) {
-            data["OrderItems"] = [];
-            for (let item of this.orderItems)
-                data["OrderItems"].push(item.toJSON());
-        }
-        return data;
-    }
-}
-
-export interface IOrder {
-    id?: number;
-    createdOn?: moment.Moment | undefined;
-    createdById?: number | undefined;
-    createdBy?: User;
-    updatedOn?: moment.Moment | undefined;
-    updatedById?: number | undefined;
-    updatedBy?: User;
-    deletedOn?: moment.Moment | undefined;
-    deletedById?: number | undefined;
-    deletedBy?: User;
-    isDeleted?: boolean;
-    customerId?: number;
-    customer?: Customer;
-    deliveryTime?: TimeSpan;
-    subTotal?: number;
-    total?: number;
-    shippingAddressId?: number | undefined;
-    shippingAddress?: OrderAddress;
-    billingAddressId?: number | undefined;
-    billingAddress?: OrderAddress;
-    orderStatusId?: number;
-    orderStatus?: OrderStatus;
-    transactionId?: number;
-    transaction?: Transaction;
-    assetId?: number;
-    asset?: Asset;
-    note?: string | undefined;
-    isTest?: boolean;
-    orderItems?: OrderItem[] | undefined;
-}
-
-export class OrderAddress implements IOrderAddress {
-    id?: number;
-    name?: string | undefined;
-    contactName?: string | undefined;
-    phone?: string | undefined;
-    addressLine?: string | undefined;
-    directions?: string | undefined;
-    neighborhoodId?: number | undefined;
-    neighborhood?: Neighborhood;
-    districtId?: number;
-    district?: District;
-    provinceId?: number;
-    province?: Province;
-    countryId?: string | undefined;
-    country?: Country;
-
-    constructor(data?: IOrderAddress) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["Id"];
-            this.name = _data["Name"];
-            this.contactName = _data["ContactName"];
-            this.phone = _data["Phone"];
-            this.addressLine = _data["AddressLine"];
-            this.directions = _data["Directions"];
-            this.neighborhoodId = _data["NeighborhoodId"];
-            this.neighborhood = _data["Neighborhood"] ? Neighborhood.fromJS(_data["Neighborhood"]) : <any>undefined;
-            this.districtId = _data["DistrictId"];
-            this.district = _data["District"] ? District.fromJS(_data["District"]) : <any>undefined;
-            this.provinceId = _data["ProvinceId"];
-            this.province = _data["Province"] ? Province.fromJS(_data["Province"]) : <any>undefined;
-            this.countryId = _data["CountryId"];
-            this.country = _data["Country"] ? Country.fromJS(_data["Country"]) : <any>undefined;
-        }
-    }
-
-    static fromJS(data: any): OrderAddress {
-        data = typeof data === 'object' ? data : {};
-        let result = new OrderAddress();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Id"] = this.id;
-        data["Name"] = this.name;
-        data["ContactName"] = this.contactName;
-        data["Phone"] = this.phone;
-        data["AddressLine"] = this.addressLine;
-        data["Directions"] = this.directions;
-        data["NeighborhoodId"] = this.neighborhoodId;
-        data["Neighborhood"] = this.neighborhood ? this.neighborhood.toJSON() : <any>undefined;
-        data["DistrictId"] = this.districtId;
-        data["District"] = this.district ? this.district.toJSON() : <any>undefined;
-        data["ProvinceId"] = this.provinceId;
-        data["Province"] = this.province ? this.province.toJSON() : <any>undefined;
-        data["CountryId"] = this.countryId;
-        data["Country"] = this.country ? this.country.toJSON() : <any>undefined;
-        return data;
-    }
-}
-
-export interface IOrderAddress {
-    id?: number;
-    name?: string | undefined;
-    contactName?: string | undefined;
-    phone?: string | undefined;
-    addressLine?: string | undefined;
-    directions?: string | undefined;
-    neighborhoodId?: number | undefined;
-    neighborhood?: Neighborhood;
-    districtId?: number;
-    district?: District;
-    provinceId?: number;
-    province?: Province;
-    countryId?: string | undefined;
-    country?: Country;
-}
-
-export class OrderAddressModel implements IOrderAddressModel {
-    id?: number;
-    name?: string | undefined;
-    contactName?: string | undefined;
-    phone?: string | undefined;
-    addressLine?: string | undefined;
-    directions?: string | undefined;
-    countryId?: string | undefined;
-    country?: CountryModel;
-
-    constructor(data?: IOrderAddressModel) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["Id"];
-            this.name = _data["Name"];
-            this.contactName = _data["ContactName"];
-            this.phone = _data["Phone"];
-            this.addressLine = _data["AddressLine"];
-            this.directions = _data["Directions"];
-            this.countryId = _data["CountryId"];
-            this.country = _data["Country"] ? CountryModel.fromJS(_data["Country"]) : <any>undefined;
-        }
-    }
-
-    static fromJS(data: any): OrderAddressModel {
-        data = typeof data === 'object' ? data : {};
-        let result = new OrderAddressModel();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Id"] = this.id;
-        data["Name"] = this.name;
-        data["ContactName"] = this.contactName;
-        data["Phone"] = this.phone;
-        data["AddressLine"] = this.addressLine;
-        data["Directions"] = this.directions;
-        data["CountryId"] = this.countryId;
-        data["Country"] = this.country ? this.country.toJSON() : <any>undefined;
-        return data;
-    }
-}
-
-export interface IOrderAddressModel {
-    id?: number;
-    name?: string | undefined;
-    contactName?: string | undefined;
-    phone?: string | undefined;
-    addressLine?: string | undefined;
-    directions?: string | undefined;
-    countryId?: string | undefined;
-    country?: CountryModel;
-}
-
-export class OrderItem implements IOrderItem {
-    id?: number;
-    createdOn?: moment.Moment | undefined;
-    createdById?: number | undefined;
-    createdBy?: User;
-    updatedOn?: moment.Moment | undefined;
-    updatedById?: number | undefined;
-    updatedBy?: User;
-    deletedOn?: moment.Moment | undefined;
-    deletedById?: number | undefined;
-    deletedBy?: User;
-    isDeleted?: boolean;
-    orderId?: number;
-    order?: Order;
-    productId?: number;
-    product?: Product;
-    quantity?: number;
-    productPrice?: number;
-    amount?: number;
-
-    constructor(data?: IOrderItem) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["Id"];
-            this.createdOn = _data["CreatedOn"] ? moment(_data["CreatedOn"].toString()) : <any>undefined;
-            this.createdById = _data["CreatedById"];
-            this.createdBy = _data["CreatedBy"] ? User.fromJS(_data["CreatedBy"]) : <any>undefined;
-            this.updatedOn = _data["UpdatedOn"] ? moment(_data["UpdatedOn"].toString()) : <any>undefined;
-            this.updatedById = _data["UpdatedById"];
-            this.updatedBy = _data["UpdatedBy"] ? User.fromJS(_data["UpdatedBy"]) : <any>undefined;
-            this.deletedOn = _data["DeletedOn"] ? moment(_data["DeletedOn"].toString()) : <any>undefined;
-            this.deletedById = _data["DeletedById"];
-            this.deletedBy = _data["DeletedBy"] ? User.fromJS(_data["DeletedBy"]) : <any>undefined;
-            this.isDeleted = _data["IsDeleted"];
-            this.orderId = _data["OrderId"];
-            this.order = _data["Order"] ? Order.fromJS(_data["Order"]) : <any>undefined;
-            this.productId = _data["ProductId"];
-            this.product = _data["Product"] ? Product.fromJS(_data["Product"]) : <any>undefined;
-            this.quantity = _data["Quantity"];
-            this.productPrice = _data["ProductPrice"];
-            this.amount = _data["Amount"];
-        }
-    }
-
-    static fromJS(data: any): OrderItem {
-        data = typeof data === 'object' ? data : {};
-        let result = new OrderItem();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Id"] = this.id;
-        data["CreatedOn"] = this.createdOn ? this.createdOn.toISOString() : <any>undefined;
-        data["CreatedById"] = this.createdById;
-        data["CreatedBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
-        data["UpdatedOn"] = this.updatedOn ? this.updatedOn.toISOString() : <any>undefined;
-        data["UpdatedById"] = this.updatedById;
-        data["UpdatedBy"] = this.updatedBy ? this.updatedBy.toJSON() : <any>undefined;
-        data["DeletedOn"] = this.deletedOn ? this.deletedOn.toISOString() : <any>undefined;
-        data["DeletedById"] = this.deletedById;
-        data["DeletedBy"] = this.deletedBy ? this.deletedBy.toJSON() : <any>undefined;
-        data["IsDeleted"] = this.isDeleted;
-        data["OrderId"] = this.orderId;
-        data["Order"] = this.order ? this.order.toJSON() : <any>undefined;
-        data["ProductId"] = this.productId;
-        data["Product"] = this.product ? this.product.toJSON() : <any>undefined;
-        data["Quantity"] = this.quantity;
-        data["ProductPrice"] = this.productPrice;
-        data["Amount"] = this.amount;
-        return data;
-    }
-}
-
-export interface IOrderItem {
-    id?: number;
-    createdOn?: moment.Moment | undefined;
-    createdById?: number | undefined;
-    createdBy?: User;
-    updatedOn?: moment.Moment | undefined;
-    updatedById?: number | undefined;
-    updatedBy?: User;
-    deletedOn?: moment.Moment | undefined;
-    deletedById?: number | undefined;
-    deletedBy?: User;
-    isDeleted?: boolean;
-    orderId?: number;
-    order?: Order;
-    productId?: number;
-    product?: Product;
-    quantity?: number;
-    productPrice?: number;
-    amount?: number;
-}
-
 export class OrderItemModel implements IOrderItemModel {
     id?: number;
     orderId?: number;
-    order?: OrderModel;
     productId?: number;
-    product?: ProductModel;
     quantity?: number;
     productPrice?: number;
     amount?: number;
@@ -13467,9 +13700,7 @@ export class OrderItemModel implements IOrderItemModel {
         if (_data) {
             this.id = _data["Id"];
             this.orderId = _data["OrderId"];
-            this.order = _data["Order"] ? OrderModel.fromJS(_data["Order"]) : <any>undefined;
             this.productId = _data["ProductId"];
-            this.product = _data["Product"] ? ProductModel.fromJS(_data["Product"]) : <any>undefined;
             this.quantity = _data["Quantity"];
             this.productPrice = _data["ProductPrice"];
             this.amount = _data["Amount"];
@@ -13487,9 +13718,7 @@ export class OrderItemModel implements IOrderItemModel {
         data = typeof data === 'object' ? data : {};
         data["Id"] = this.id;
         data["OrderId"] = this.orderId;
-        data["Order"] = this.order ? this.order.toJSON() : <any>undefined;
         data["ProductId"] = this.productId;
-        data["Product"] = this.product ? this.product.toJSON() : <any>undefined;
         data["Quantity"] = this.quantity;
         data["ProductPrice"] = this.productPrice;
         data["Amount"] = this.amount;
@@ -13500,220 +13729,10 @@ export class OrderItemModel implements IOrderItemModel {
 export interface IOrderItemModel {
     id?: number;
     orderId?: number;
-    order?: OrderModel;
     productId?: number;
-    product?: ProductModel;
     quantity?: number;
     productPrice?: number;
     amount?: number;
-}
-
-export class OrderModel implements IOrderModel {
-    id?: number;
-    customerId?: number;
-    customer?: CustomerModel;
-    deliveryTime?: TimeSpan;
-    subTotal?: number;
-    total?: number;
-    shippingAddressId?: number | undefined;
-    shippingAddress?: OrderAddressModel;
-    billingAddressId?: number | undefined;
-    billingAddress?: OrderAddressModel;
-    orderStatusId?: number;
-    orderStatus?: OrderStatusModel;
-    transactionId?: number;
-    transaction?: TransactionModel;
-    assetId?: number;
-    asset?: AssetModel;
-    note?: string | undefined;
-    isTest?: boolean;
-    readonly orderItems?: OrderItemModel[] | undefined;
-
-    constructor(data?: IOrderModel) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["Id"];
-            this.customerId = _data["CustomerId"];
-            this.customer = _data["Customer"] ? CustomerModel.fromJS(_data["Customer"]) : <any>undefined;
-            this.deliveryTime = _data["DeliveryTime"] ? TimeSpan.fromJS(_data["DeliveryTime"]) : <any>undefined;
-            this.subTotal = _data["SubTotal"];
-            this.total = _data["Total"];
-            this.shippingAddressId = _data["ShippingAddressId"];
-            this.shippingAddress = _data["ShippingAddress"] ? OrderAddressModel.fromJS(_data["ShippingAddress"]) : <any>undefined;
-            this.billingAddressId = _data["BillingAddressId"];
-            this.billingAddress = _data["BillingAddress"] ? OrderAddressModel.fromJS(_data["BillingAddress"]) : <any>undefined;
-            this.orderStatusId = _data["OrderStatusId"];
-            this.orderStatus = _data["OrderStatus"] ? OrderStatusModel.fromJS(_data["OrderStatus"]) : <any>undefined;
-            this.transactionId = _data["TransactionId"];
-            this.transaction = _data["Transaction"] ? TransactionModel.fromJS(_data["Transaction"]) : <any>undefined;
-            this.assetId = _data["AssetId"];
-            this.asset = _data["Asset"] ? AssetModel.fromJS(_data["Asset"]) : <any>undefined;
-            this.note = _data["Note"];
-            this.isTest = _data["IsTest"];
-            if (Array.isArray(_data["OrderItems"])) {
-                (<any>this).orderItems = [] as any;
-                for (let item of _data["OrderItems"])
-                    (<any>this).orderItems!.push(OrderItemModel.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): OrderModel {
-        data = typeof data === 'object' ? data : {};
-        let result = new OrderModel();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Id"] = this.id;
-        data["CustomerId"] = this.customerId;
-        data["Customer"] = this.customer ? this.customer.toJSON() : <any>undefined;
-        data["DeliveryTime"] = this.deliveryTime ? this.deliveryTime.toJSON() : <any>undefined;
-        data["SubTotal"] = this.subTotal;
-        data["Total"] = this.total;
-        data["ShippingAddressId"] = this.shippingAddressId;
-        data["ShippingAddress"] = this.shippingAddress ? this.shippingAddress.toJSON() : <any>undefined;
-        data["BillingAddressId"] = this.billingAddressId;
-        data["BillingAddress"] = this.billingAddress ? this.billingAddress.toJSON() : <any>undefined;
-        data["OrderStatusId"] = this.orderStatusId;
-        data["OrderStatus"] = this.orderStatus ? this.orderStatus.toJSON() : <any>undefined;
-        data["TransactionId"] = this.transactionId;
-        data["Transaction"] = this.transaction ? this.transaction.toJSON() : <any>undefined;
-        data["AssetId"] = this.assetId;
-        data["Asset"] = this.asset ? this.asset.toJSON() : <any>undefined;
-        data["Note"] = this.note;
-        data["IsTest"] = this.isTest;
-        if (Array.isArray(this.orderItems)) {
-            data["OrderItems"] = [];
-            for (let item of this.orderItems)
-                data["OrderItems"].push(item.toJSON());
-        }
-        return data;
-    }
-}
-
-export interface IOrderModel {
-    id?: number;
-    customerId?: number;
-    customer?: CustomerModel;
-    deliveryTime?: TimeSpan;
-    subTotal?: number;
-    total?: number;
-    shippingAddressId?: number | undefined;
-    shippingAddress?: OrderAddressModel;
-    billingAddressId?: number | undefined;
-    billingAddress?: OrderAddressModel;
-    orderStatusId?: number;
-    orderStatus?: OrderStatusModel;
-    transactionId?: number;
-    transaction?: TransactionModel;
-    assetId?: number;
-    asset?: AssetModel;
-    note?: string | undefined;
-    isTest?: boolean;
-    orderItems?: OrderItemModel[] | undefined;
-}
-
-export class OrderStatus implements IOrderStatus {
-    id?: number;
-    createdOn?: moment.Moment | undefined;
-    createdById?: number | undefined;
-    createdBy?: User;
-    updatedOn?: moment.Moment | undefined;
-    updatedById?: number | undefined;
-    updatedBy?: User;
-    deletedOn?: moment.Moment | undefined;
-    deletedById?: number | undefined;
-    deletedBy?: User;
-    isDeleted?: boolean;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-
-    constructor(data?: IOrderStatus) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["Id"];
-            this.createdOn = _data["CreatedOn"] ? moment(_data["CreatedOn"].toString()) : <any>undefined;
-            this.createdById = _data["CreatedById"];
-            this.createdBy = _data["CreatedBy"] ? User.fromJS(_data["CreatedBy"]) : <any>undefined;
-            this.updatedOn = _data["UpdatedOn"] ? moment(_data["UpdatedOn"].toString()) : <any>undefined;
-            this.updatedById = _data["UpdatedById"];
-            this.updatedBy = _data["UpdatedBy"] ? User.fromJS(_data["UpdatedBy"]) : <any>undefined;
-            this.deletedOn = _data["DeletedOn"] ? moment(_data["DeletedOn"].toString()) : <any>undefined;
-            this.deletedById = _data["DeletedById"];
-            this.deletedBy = _data["DeletedBy"] ? User.fromJS(_data["DeletedBy"]) : <any>undefined;
-            this.isDeleted = _data["IsDeleted"];
-            this.code = _data["Code"];
-            this.description = _data["Description"];
-            this.displayOrder = _data["DisplayOrder"];
-            this.isActive = _data["IsActive"];
-        }
-    }
-
-    static fromJS(data: any): OrderStatus {
-        data = typeof data === 'object' ? data : {};
-        let result = new OrderStatus();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Id"] = this.id;
-        data["CreatedOn"] = this.createdOn ? this.createdOn.toISOString() : <any>undefined;
-        data["CreatedById"] = this.createdById;
-        data["CreatedBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
-        data["UpdatedOn"] = this.updatedOn ? this.updatedOn.toISOString() : <any>undefined;
-        data["UpdatedById"] = this.updatedById;
-        data["UpdatedBy"] = this.updatedBy ? this.updatedBy.toJSON() : <any>undefined;
-        data["DeletedOn"] = this.deletedOn ? this.deletedOn.toISOString() : <any>undefined;
-        data["DeletedById"] = this.deletedById;
-        data["DeletedBy"] = this.deletedBy ? this.deletedBy.toJSON() : <any>undefined;
-        data["IsDeleted"] = this.isDeleted;
-        data["Code"] = this.code;
-        data["Description"] = this.description;
-        data["DisplayOrder"] = this.displayOrder;
-        data["IsActive"] = this.isActive;
-        return data;
-    }
-}
-
-export interface IOrderStatus {
-    id?: number;
-    createdOn?: moment.Moment | undefined;
-    createdById?: number | undefined;
-    createdBy?: User;
-    updatedOn?: moment.Moment | undefined;
-    updatedById?: number | undefined;
-    updatedBy?: User;
-    deletedOn?: moment.Moment | undefined;
-    deletedById?: number | undefined;
-    deletedBy?: User;
-    isDeleted?: boolean;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
 }
 
 export class OrderStatusModel implements IOrderStatusModel {
@@ -14102,46 +14121,6 @@ export interface IPaymentTypeModel {
     description?: string | undefined;
     displayOrder?: number;
     isActive?: boolean;
-}
-
-export class PhoneNumberModel implements IPhoneNumberModel {
-    oldPhoneNumber?: string | undefined;
-    newPhoneNumber?: string | undefined;
-
-    constructor(data?: IPhoneNumberModel) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.oldPhoneNumber = _data["OldPhoneNumber"];
-            this.newPhoneNumber = _data["NewPhoneNumber"];
-        }
-    }
-
-    static fromJS(data: any): PhoneNumberModel {
-        data = typeof data === 'object' ? data : {};
-        let result = new PhoneNumberModel();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["OldPhoneNumber"] = this.oldPhoneNumber;
-        data["NewPhoneNumber"] = this.newPhoneNumber;
-        return data;
-    }
-}
-
-export interface IPhoneNumberModel {
-    oldPhoneNumber?: string | undefined;
-    newPhoneNumber?: string | undefined;
 }
 
 export class Platin implements IPlatin {
@@ -14700,190 +14679,6 @@ export interface IProductCategory {
     category?: Category;
 }
 
-export class ProductCategoryModel implements IProductCategoryModel {
-    id?: number;
-    productId?: number;
-    product?: ProductModel;
-    categoryId?: number;
-    category?: CategoryModel;
-
-    constructor(data?: IProductCategoryModel) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["Id"];
-            this.productId = _data["ProductId"];
-            this.product = _data["Product"] ? ProductModel.fromJS(_data["Product"]) : <any>undefined;
-            this.categoryId = _data["CategoryId"];
-            this.category = _data["Category"] ? CategoryModel.fromJS(_data["Category"]) : <any>undefined;
-        }
-    }
-
-    static fromJS(data: any): ProductCategoryModel {
-        data = typeof data === 'object' ? data : {};
-        let result = new ProductCategoryModel();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Id"] = this.id;
-        data["ProductId"] = this.productId;
-        data["Product"] = this.product ? this.product.toJSON() : <any>undefined;
-        data["CategoryId"] = this.categoryId;
-        data["Category"] = this.category ? this.category.toJSON() : <any>undefined;
-        return data;
-    }
-}
-
-export interface IProductCategoryModel {
-    id?: number;
-    productId?: number;
-    product?: ProductModel;
-    categoryId?: number;
-    category?: CategoryModel;
-}
-
-export class ProductModel implements IProductModel {
-    id?: number;
-    code?: string | undefined;
-    barcode?: string | undefined;
-    name?: string | undefined;
-    normalizedName?: string | undefined;
-    description?: string | undefined;
-    specification?: string | undefined;
-    brand?: string | undefined;
-    price?: number;
-    oldPrice?: number | undefined;
-    specialPrice?: number | undefined;
-    specialPriceStart?: moment.Moment | undefined;
-    specialPriceEnd?: moment.Moment | undefined;
-    stockQuantity?: number;
-    displayOrder?: number;
-    isFeatured?: boolean;
-    isPublished?: boolean;
-    unitId?: number;
-    unit?: ProductUnitModel;
-    productTypeId?: number;
-    productType?: ProductTypeModel;
-    yatirimimId?: number | undefined;
-    readonly categories?: ProductCategoryModel[] | undefined;
-
-    constructor(data?: IProductModel) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["Id"];
-            this.code = _data["Code"];
-            this.barcode = _data["Barcode"];
-            this.name = _data["Name"];
-            this.normalizedName = _data["NormalizedName"];
-            this.description = _data["Description"];
-            this.specification = _data["Specification"];
-            this.brand = _data["Brand"];
-            this.price = _data["Price"];
-            this.oldPrice = _data["OldPrice"];
-            this.specialPrice = _data["SpecialPrice"];
-            this.specialPriceStart = _data["SpecialPriceStart"] ? moment(_data["SpecialPriceStart"].toString()) : <any>undefined;
-            this.specialPriceEnd = _data["SpecialPriceEnd"] ? moment(_data["SpecialPriceEnd"].toString()) : <any>undefined;
-            this.stockQuantity = _data["StockQuantity"];
-            this.displayOrder = _data["DisplayOrder"];
-            this.isFeatured = _data["IsFeatured"];
-            this.isPublished = _data["IsPublished"];
-            this.unitId = _data["UnitId"];
-            this.unit = _data["Unit"] ? ProductUnitModel.fromJS(_data["Unit"]) : <any>undefined;
-            this.productTypeId = _data["ProductTypeId"];
-            this.productType = _data["ProductType"] ? ProductTypeModel.fromJS(_data["ProductType"]) : <any>undefined;
-            this.yatirimimId = _data["YatirimimId"];
-            if (Array.isArray(_data["Categories"])) {
-                (<any>this).categories = [] as any;
-                for (let item of _data["Categories"])
-                    (<any>this).categories!.push(ProductCategoryModel.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): ProductModel {
-        data = typeof data === 'object' ? data : {};
-        let result = new ProductModel();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Id"] = this.id;
-        data["Code"] = this.code;
-        data["Barcode"] = this.barcode;
-        data["Name"] = this.name;
-        data["NormalizedName"] = this.normalizedName;
-        data["Description"] = this.description;
-        data["Specification"] = this.specification;
-        data["Brand"] = this.brand;
-        data["Price"] = this.price;
-        data["OldPrice"] = this.oldPrice;
-        data["SpecialPrice"] = this.specialPrice;
-        data["SpecialPriceStart"] = this.specialPriceStart ? this.specialPriceStart.toISOString() : <any>undefined;
-        data["SpecialPriceEnd"] = this.specialPriceEnd ? this.specialPriceEnd.toISOString() : <any>undefined;
-        data["StockQuantity"] = this.stockQuantity;
-        data["DisplayOrder"] = this.displayOrder;
-        data["IsFeatured"] = this.isFeatured;
-        data["IsPublished"] = this.isPublished;
-        data["UnitId"] = this.unitId;
-        data["Unit"] = this.unit ? this.unit.toJSON() : <any>undefined;
-        data["ProductTypeId"] = this.productTypeId;
-        data["ProductType"] = this.productType ? this.productType.toJSON() : <any>undefined;
-        data["YatirimimId"] = this.yatirimimId;
-        if (Array.isArray(this.categories)) {
-            data["Categories"] = [];
-            for (let item of this.categories)
-                data["Categories"].push(item.toJSON());
-        }
-        return data;
-    }
-}
-
-export interface IProductModel {
-    id?: number;
-    code?: string | undefined;
-    barcode?: string | undefined;
-    name?: string | undefined;
-    normalizedName?: string | undefined;
-    description?: string | undefined;
-    specification?: string | undefined;
-    brand?: string | undefined;
-    price?: number;
-    oldPrice?: number | undefined;
-    specialPrice?: number | undefined;
-    specialPriceStart?: moment.Moment | undefined;
-    specialPriceEnd?: moment.Moment | undefined;
-    stockQuantity?: number;
-    displayOrder?: number;
-    isFeatured?: boolean;
-    isPublished?: boolean;
-    unitId?: number;
-    unit?: ProductUnitModel;
-    productTypeId?: number;
-    productType?: ProductTypeModel;
-    yatirimimId?: number | undefined;
-    categories?: ProductCategoryModel[] | undefined;
-}
-
 export class ProductType implements IProductType {
     id?: number;
     createdOn?: moment.Moment | undefined;
@@ -15284,6 +15079,90 @@ export interface IProvinceModel {
     type?: string | undefined;
 }
 
+export class RegisterModel implements IRegisterModel {
+    email?: string | undefined;
+    phoneNumber?: string | undefined;
+    password?: string | undefined;
+    taxOffice?: string | undefined;
+    taxNumber?: string | undefined;
+    corporateName?: string | undefined;
+    identityNo?: string | undefined;
+    firstName?: string | undefined;
+    lastName?: string | undefined;
+    isAcceptKvk?: boolean;
+    isCorporate?: boolean;
+    isAcceptTerms?: boolean;
+    isAcceptContact?: boolean;
+
+    constructor(data?: IRegisterModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.email = _data["Email"];
+            this.phoneNumber = _data["PhoneNumber"];
+            this.password = _data["Password"];
+            this.taxOffice = _data["TaxOffice"];
+            this.taxNumber = _data["TaxNumber"];
+            this.corporateName = _data["CorporateName"];
+            this.identityNo = _data["IdentityNo"];
+            this.firstName = _data["FirstName"];
+            this.lastName = _data["LastName"];
+            this.isAcceptKvk = _data["IsAcceptKvk"];
+            this.isCorporate = _data["IsCorporate"];
+            this.isAcceptTerms = _data["IsAcceptTerms"];
+            this.isAcceptContact = _data["IsAcceptContact"];
+        }
+    }
+
+    static fromJS(data: any): RegisterModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new RegisterModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["Email"] = this.email;
+        data["PhoneNumber"] = this.phoneNumber;
+        data["Password"] = this.password;
+        data["TaxOffice"] = this.taxOffice;
+        data["TaxNumber"] = this.taxNumber;
+        data["CorporateName"] = this.corporateName;
+        data["IdentityNo"] = this.identityNo;
+        data["FirstName"] = this.firstName;
+        data["LastName"] = this.lastName;
+        data["IsAcceptKvk"] = this.isAcceptKvk;
+        data["IsCorporate"] = this.isCorporate;
+        data["IsAcceptTerms"] = this.isAcceptTerms;
+        data["IsAcceptContact"] = this.isAcceptContact;
+        return data;
+    }
+}
+
+export interface IRegisterModel {
+    email?: string | undefined;
+    phoneNumber?: string | undefined;
+    password?: string | undefined;
+    taxOffice?: string | undefined;
+    taxNumber?: string | undefined;
+    corporateName?: string | undefined;
+    identityNo?: string | undefined;
+    firstName?: string | undefined;
+    lastName?: string | undefined;
+    isAcceptKvk?: boolean;
+    isCorporate?: boolean;
+    isAcceptTerms?: boolean;
+    isAcceptContact?: boolean;
+}
+
 export class Request implements IRequest {
     id?: number;
     createdOn?: moment.Moment | undefined;
@@ -15420,6 +15299,82 @@ export interface IRequest {
     price?: number;
 }
 
+export class RequestCompleteDigitalOrderModel implements IRequestCompleteDigitalOrderModel {
+    customerId?: number;
+    paymnetTypeId?: number;
+    sourceAssetId?: number;
+    targetAssetId?: number;
+    subTotal?: number;
+    total?: number;
+    shippingAddressId?: number | undefined;
+    billingAddressId?: number | undefined;
+    readonly orderItems?: OrderItemModel[] | undefined;
+
+    constructor(data?: IRequestCompleteDigitalOrderModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.customerId = _data["CustomerId"];
+            this.paymnetTypeId = _data["PaymnetTypeId"];
+            this.sourceAssetId = _data["SourceAssetId"];
+            this.targetAssetId = _data["TargetAssetId"];
+            this.subTotal = _data["SubTotal"];
+            this.total = _data["Total"];
+            this.shippingAddressId = _data["ShippingAddressId"];
+            this.billingAddressId = _data["BillingAddressId"];
+            if (Array.isArray(_data["OrderItems"])) {
+                (<any>this).orderItems = [] as any;
+                for (let item of _data["OrderItems"])
+                    (<any>this).orderItems!.push(OrderItemModel.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): RequestCompleteDigitalOrderModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new RequestCompleteDigitalOrderModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["CustomerId"] = this.customerId;
+        data["PaymnetTypeId"] = this.paymnetTypeId;
+        data["SourceAssetId"] = this.sourceAssetId;
+        data["TargetAssetId"] = this.targetAssetId;
+        data["SubTotal"] = this.subTotal;
+        data["Total"] = this.total;
+        data["ShippingAddressId"] = this.shippingAddressId;
+        data["BillingAddressId"] = this.billingAddressId;
+        if (Array.isArray(this.orderItems)) {
+            data["OrderItems"] = [];
+            for (let item of this.orderItems)
+                data["OrderItems"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IRequestCompleteDigitalOrderModel {
+    customerId?: number;
+    paymnetTypeId?: number;
+    sourceAssetId?: number;
+    targetAssetId?: number;
+    subTotal?: number;
+    total?: number;
+    shippingAddressId?: number | undefined;
+    billingAddressId?: number | undefined;
+    orderItems?: OrderItemModel[] | undefined;
+}
+
 export class RequestModel implements IRequestModel {
     id?: number;
     customerId?: number;
@@ -15514,6 +15469,78 @@ export interface IRequestModel {
     symbolId?: number;
     symbol?: SymbolModel;
     price?: number;
+}
+
+export class RequestPhysicalOrderModel implements IRequestPhysicalOrderModel {
+    customerId?: number;
+    paymnetTypeId?: number;
+    sourceAssetId?: number;
+    subTotal?: number;
+    total?: number;
+    shippingAddressId?: number | undefined;
+    billingAddressId?: number | undefined;
+    readonly orderItems?: OrderItemModel[] | undefined;
+
+    constructor(data?: IRequestPhysicalOrderModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.customerId = _data["CustomerId"];
+            this.paymnetTypeId = _data["PaymnetTypeId"];
+            this.sourceAssetId = _data["SourceAssetId"];
+            this.subTotal = _data["SubTotal"];
+            this.total = _data["Total"];
+            this.shippingAddressId = _data["ShippingAddressId"];
+            this.billingAddressId = _data["BillingAddressId"];
+            if (Array.isArray(_data["OrderItems"])) {
+                (<any>this).orderItems = [] as any;
+                for (let item of _data["OrderItems"])
+                    (<any>this).orderItems!.push(OrderItemModel.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): RequestPhysicalOrderModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new RequestPhysicalOrderModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["CustomerId"] = this.customerId;
+        data["PaymnetTypeId"] = this.paymnetTypeId;
+        data["SourceAssetId"] = this.sourceAssetId;
+        data["SubTotal"] = this.subTotal;
+        data["Total"] = this.total;
+        data["ShippingAddressId"] = this.shippingAddressId;
+        data["BillingAddressId"] = this.billingAddressId;
+        if (Array.isArray(this.orderItems)) {
+            data["OrderItems"] = [];
+            for (let item of this.orderItems)
+                data["OrderItems"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IRequestPhysicalOrderModel {
+    customerId?: number;
+    paymnetTypeId?: number;
+    sourceAssetId?: number;
+    subTotal?: number;
+    total?: number;
+    shippingAddressId?: number | undefined;
+    billingAddressId?: number | undefined;
+    orderItems?: OrderItemModel[] | undefined;
 }
 
 export class RequestStatus implements IRequestStatus {
@@ -15802,6 +15829,162 @@ export interface IRequestTypeModel {
     description?: string | undefined;
     displayOrder?: number;
     isActive?: boolean;
+}
+
+export class ResponseDigitalOrderModel implements IResponseDigitalOrderModel {
+    orderId?: number;
+    customerId?: number;
+    paymnetTypeId?: number;
+    sourceAssetId?: number;
+    targetAssetId?: number;
+    subTotal?: number;
+    total?: number;
+    shippingAddressId?: number | undefined;
+    billingAddressId?: number | undefined;
+    readonly orderItems?: OrderItemModel[] | undefined;
+
+    constructor(data?: IResponseDigitalOrderModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.orderId = _data["OrderId"];
+            this.customerId = _data["CustomerId"];
+            this.paymnetTypeId = _data["PaymnetTypeId"];
+            this.sourceAssetId = _data["SourceAssetId"];
+            this.targetAssetId = _data["TargetAssetId"];
+            this.subTotal = _data["SubTotal"];
+            this.total = _data["Total"];
+            this.shippingAddressId = _data["ShippingAddressId"];
+            this.billingAddressId = _data["BillingAddressId"];
+            if (Array.isArray(_data["OrderItems"])) {
+                (<any>this).orderItems = [] as any;
+                for (let item of _data["OrderItems"])
+                    (<any>this).orderItems!.push(OrderItemModel.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): ResponseDigitalOrderModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new ResponseDigitalOrderModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["OrderId"] = this.orderId;
+        data["CustomerId"] = this.customerId;
+        data["PaymnetTypeId"] = this.paymnetTypeId;
+        data["SourceAssetId"] = this.sourceAssetId;
+        data["TargetAssetId"] = this.targetAssetId;
+        data["SubTotal"] = this.subTotal;
+        data["Total"] = this.total;
+        data["ShippingAddressId"] = this.shippingAddressId;
+        data["BillingAddressId"] = this.billingAddressId;
+        if (Array.isArray(this.orderItems)) {
+            data["OrderItems"] = [];
+            for (let item of this.orderItems)
+                data["OrderItems"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IResponseDigitalOrderModel {
+    orderId?: number;
+    customerId?: number;
+    paymnetTypeId?: number;
+    sourceAssetId?: number;
+    targetAssetId?: number;
+    subTotal?: number;
+    total?: number;
+    shippingAddressId?: number | undefined;
+    billingAddressId?: number | undefined;
+    orderItems?: OrderItemModel[] | undefined;
+}
+
+export class ResponsePhysicalOrderModel implements IResponsePhysicalOrderModel {
+    orderId?: number;
+    customerId?: number;
+    paymnetTypeId?: number;
+    sourceAssetId?: number;
+    subTotal?: number;
+    total?: number;
+    shippingAddressId?: number | undefined;
+    billingAddressId?: number | undefined;
+    readonly orderItems?: OrderItemModel[] | undefined;
+
+    constructor(data?: IResponsePhysicalOrderModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.orderId = _data["OrderId"];
+            this.customerId = _data["CustomerId"];
+            this.paymnetTypeId = _data["PaymnetTypeId"];
+            this.sourceAssetId = _data["SourceAssetId"];
+            this.subTotal = _data["SubTotal"];
+            this.total = _data["Total"];
+            this.shippingAddressId = _data["ShippingAddressId"];
+            this.billingAddressId = _data["BillingAddressId"];
+            if (Array.isArray(_data["OrderItems"])) {
+                (<any>this).orderItems = [] as any;
+                for (let item of _data["OrderItems"])
+                    (<any>this).orderItems!.push(OrderItemModel.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): ResponsePhysicalOrderModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new ResponsePhysicalOrderModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["OrderId"] = this.orderId;
+        data["CustomerId"] = this.customerId;
+        data["PaymnetTypeId"] = this.paymnetTypeId;
+        data["SourceAssetId"] = this.sourceAssetId;
+        data["SubTotal"] = this.subTotal;
+        data["Total"] = this.total;
+        data["ShippingAddressId"] = this.shippingAddressId;
+        data["BillingAddressId"] = this.billingAddressId;
+        if (Array.isArray(this.orderItems)) {
+            data["OrderItems"] = [];
+            for (let item of this.orderItems)
+                data["OrderItems"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IResponsePhysicalOrderModel {
+    orderId?: number;
+    customerId?: number;
+    paymnetTypeId?: number;
+    sourceAssetId?: number;
+    subTotal?: number;
+    total?: number;
+    shippingAddressId?: number | undefined;
+    billingAddressId?: number | undefined;
+    orderItems?: OrderItemModel[] | undefined;
 }
 
 export class Retail implements IRetail {
@@ -16595,6 +16778,62 @@ export interface ISettingModel {
     value?: string | undefined;
 }
 
+export class SlideModel implements ISlideModel {
+    id?: number;
+    title!: string;
+    description!: string;
+    darkMediaUrl?: string | undefined;
+    lightMediaUrl!: string;
+    displayOrder?: number;
+
+    constructor(data?: ISlideModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["Id"];
+            this.title = _data["Title"];
+            this.description = _data["Description"];
+            this.darkMediaUrl = _data["DarkMediaUrl"];
+            this.lightMediaUrl = _data["LightMediaUrl"];
+            this.displayOrder = _data["DisplayOrder"];
+        }
+    }
+
+    static fromJS(data: any): SlideModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new SlideModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["Id"] = this.id;
+        data["Title"] = this.title;
+        data["Description"] = this.description;
+        data["DarkMediaUrl"] = this.darkMediaUrl;
+        data["LightMediaUrl"] = this.lightMediaUrl;
+        data["DisplayOrder"] = this.displayOrder;
+        return data;
+    }
+}
+
+export interface ISlideModel {
+    id?: number;
+    title: string;
+    description: string;
+    darkMediaUrl?: string | undefined;
+    lightMediaUrl: string;
+    displayOrder?: number;
+}
+
 export class StaticPageModel implements IStaticPageModel {
     title!: string;
     subTitle?: string | undefined;
@@ -17011,7 +17250,144 @@ export interface ISymbol {
     sellAddValue?: number;
 }
 
+export class SymbolAlarmModel implements ISymbolAlarmModel {
+    symbolAlarmTypeId?: number;
+    symbolAlarmType?: SymbolAlarmTypeModel;
+    value?: number;
+    isRate?: boolean;
+    whileOnStatus?: boolean;
+    anyTimeStatus?: boolean;
+    validityStatus?: boolean;
+    customerId?: number;
+    customer?: CustomerModel;
+    symbolId?: number;
+    symbol?: SymbolModel;
+    transactionTypeId?: number;
+    transactionType?: TransactionTypeModel;
+
+    constructor(data?: ISymbolAlarmModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.symbolAlarmTypeId = _data["SymbolAlarmTypeId"];
+            this.symbolAlarmType = _data["SymbolAlarmType"] ? SymbolAlarmTypeModel.fromJS(_data["SymbolAlarmType"]) : <any>undefined;
+            this.value = _data["Value"];
+            this.isRate = _data["IsRate"];
+            this.whileOnStatus = _data["WhileOnStatus"];
+            this.anyTimeStatus = _data["AnyTimeStatus"];
+            this.validityStatus = _data["ValidityStatus"];
+            this.customerId = _data["CustomerId"];
+            this.customer = _data["Customer"] ? CustomerModel.fromJS(_data["Customer"]) : <any>undefined;
+            this.symbolId = _data["SymbolId"];
+            this.symbol = _data["Symbol"] ? SymbolModel.fromJS(_data["Symbol"]) : <any>undefined;
+            this.transactionTypeId = _data["TransactionTypeId"];
+            this.transactionType = _data["TransactionType"] ? TransactionTypeModel.fromJS(_data["TransactionType"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): SymbolAlarmModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new SymbolAlarmModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["SymbolAlarmTypeId"] = this.symbolAlarmTypeId;
+        data["SymbolAlarmType"] = this.symbolAlarmType ? this.symbolAlarmType.toJSON() : <any>undefined;
+        data["Value"] = this.value;
+        data["IsRate"] = this.isRate;
+        data["WhileOnStatus"] = this.whileOnStatus;
+        data["AnyTimeStatus"] = this.anyTimeStatus;
+        data["ValidityStatus"] = this.validityStatus;
+        data["CustomerId"] = this.customerId;
+        data["Customer"] = this.customer ? this.customer.toJSON() : <any>undefined;
+        data["SymbolId"] = this.symbolId;
+        data["Symbol"] = this.symbol ? this.symbol.toJSON() : <any>undefined;
+        data["TransactionTypeId"] = this.transactionTypeId;
+        data["TransactionType"] = this.transactionType ? this.transactionType.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface ISymbolAlarmModel {
+    symbolAlarmTypeId?: number;
+    symbolAlarmType?: SymbolAlarmTypeModel;
+    value?: number;
+    isRate?: boolean;
+    whileOnStatus?: boolean;
+    anyTimeStatus?: boolean;
+    validityStatus?: boolean;
+    customerId?: number;
+    customer?: CustomerModel;
+    symbolId?: number;
+    symbol?: SymbolModel;
+    transactionTypeId?: number;
+    transactionType?: TransactionTypeModel;
+}
+
+export class SymbolAlarmTypeModel implements ISymbolAlarmTypeModel {
+    id?: number;
+    code?: string | undefined;
+    description?: string | undefined;
+    displayOrder?: number;
+    isActive?: boolean;
+
+    constructor(data?: ISymbolAlarmTypeModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["Id"];
+            this.code = _data["Code"];
+            this.description = _data["Description"];
+            this.displayOrder = _data["DisplayOrder"];
+            this.isActive = _data["IsActive"];
+        }
+    }
+
+    static fromJS(data: any): SymbolAlarmTypeModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new SymbolAlarmTypeModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["Id"] = this.id;
+        data["Code"] = this.code;
+        data["Description"] = this.description;
+        data["DisplayOrder"] = this.displayOrder;
+        data["IsActive"] = this.isActive;
+        return data;
+    }
+}
+
+export interface ISymbolAlarmTypeModel {
+    id?: number;
+    code?: string | undefined;
+    description?: string | undefined;
+    displayOrder?: number;
+    isActive?: boolean;
+}
+
 export class SymbolModel implements ISymbolModel {
+    id?: number;
     countryId?: string | undefined;
     country?: CountryModel;
     symbolTypeId?: number;
@@ -17040,6 +17416,7 @@ export class SymbolModel implements ISymbolModel {
 
     init(_data?: any) {
         if (_data) {
+            this.id = _data["Id"];
             this.countryId = _data["CountryId"];
             this.country = _data["Country"] ? CountryModel.fromJS(_data["Country"]) : <any>undefined;
             this.symbolTypeId = _data["SymbolTypeId"];
@@ -17068,6 +17445,7 @@ export class SymbolModel implements ISymbolModel {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["Id"] = this.id;
         data["CountryId"] = this.countryId;
         data["Country"] = this.country ? this.country.toJSON() : <any>undefined;
         data["SymbolTypeId"] = this.symbolTypeId;
@@ -17089,6 +17467,7 @@ export class SymbolModel implements ISymbolModel {
 }
 
 export interface ISymbolModel {
+    id?: number;
     countryId?: string | undefined;
     country?: CountryModel;
     symbolTypeId?: number;
@@ -17367,20 +17746,16 @@ export interface ISymbolTypeModel {
     isActive?: boolean;
 }
 
-export class TimeSpan implements ITimeSpan {
-    readonly ticks?: number;
-    readonly days?: number;
-    readonly hours?: number;
-    readonly milliseconds?: number;
-    readonly minutes?: number;
-    readonly seconds?: number;
-    readonly totalDays?: number;
-    readonly totalHours?: number;
-    readonly totalMilliseconds?: number;
-    readonly totalMinutes?: number;
-    readonly totalSeconds?: number;
+export class SymbolVoteModel implements ISymbolVoteModel {
+    id?: number;
+    customerId?: number;
+    customer?: CustomerModel;
+    symbolId?: number;
+    symbol?: SymbolModel;
+    voteDate?: moment.Moment;
+    vote?: boolean;
 
-    constructor(data?: ITimeSpan) {
+    constructor(data?: ISymbolVoteModel) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -17391,60 +17766,91 @@ export class TimeSpan implements ITimeSpan {
 
     init(_data?: any) {
         if (_data) {
-            (<any>this).ticks = _data["Ticks"];
-            (<any>this).days = _data["Days"];
-            (<any>this).hours = _data["Hours"];
-            (<any>this).milliseconds = _data["Milliseconds"];
-            (<any>this).minutes = _data["Minutes"];
-            (<any>this).seconds = _data["Seconds"];
-            (<any>this).totalDays = _data["TotalDays"];
-            (<any>this).totalHours = _data["TotalHours"];
-            (<any>this).totalMilliseconds = _data["TotalMilliseconds"];
-            (<any>this).totalMinutes = _data["TotalMinutes"];
-            (<any>this).totalSeconds = _data["TotalSeconds"];
+            this.id = _data["Id"];
+            this.customerId = _data["CustomerId"];
+            this.customer = _data["Customer"] ? CustomerModel.fromJS(_data["Customer"]) : <any>undefined;
+            this.symbolId = _data["SymbolId"];
+            this.symbol = _data["Symbol"] ? SymbolModel.fromJS(_data["Symbol"]) : <any>undefined;
+            this.voteDate = _data["VoteDate"] ? moment(_data["VoteDate"].toString()) : <any>undefined;
+            this.vote = _data["Vote"];
         }
     }
 
-    static fromJS(data: any): TimeSpan {
+    static fromJS(data: any): SymbolVoteModel {
         data = typeof data === 'object' ? data : {};
-        let result = new TimeSpan();
+        let result = new SymbolVoteModel();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["Ticks"] = this.ticks;
-        data["Days"] = this.days;
-        data["Hours"] = this.hours;
-        data["Milliseconds"] = this.milliseconds;
-        data["Minutes"] = this.minutes;
-        data["Seconds"] = this.seconds;
-        data["TotalDays"] = this.totalDays;
-        data["TotalHours"] = this.totalHours;
-        data["TotalMilliseconds"] = this.totalMilliseconds;
-        data["TotalMinutes"] = this.totalMinutes;
-        data["TotalSeconds"] = this.totalSeconds;
+        data["Id"] = this.id;
+        data["CustomerId"] = this.customerId;
+        data["Customer"] = this.customer ? this.customer.toJSON() : <any>undefined;
+        data["SymbolId"] = this.symbolId;
+        data["Symbol"] = this.symbol ? this.symbol.toJSON() : <any>undefined;
+        data["VoteDate"] = this.voteDate ? this.voteDate.toISOString() : <any>undefined;
+        data["Vote"] = this.vote;
         return data;
     }
 }
 
-export interface ITimeSpan {
-    ticks?: number;
-    days?: number;
-    hours?: number;
-    milliseconds?: number;
-    minutes?: number;
-    seconds?: number;
-    totalDays?: number;
-    totalHours?: number;
-    totalMilliseconds?: number;
-    totalMinutes?: number;
-    totalSeconds?: number;
+export interface ISymbolVoteModel {
+    id?: number;
+    customerId?: number;
+    customer?: CustomerModel;
+    symbolId?: number;
+    symbol?: SymbolModel;
+    voteDate?: moment.Moment;
+    vote?: boolean;
+}
+
+export class SymbolVoteRequestModel implements ISymbolVoteRequestModel {
+    customerId?: number;
+    symbolId?: number;
+    vote?: boolean;
+
+    constructor(data?: ISymbolVoteRequestModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.customerId = _data["CustomerId"];
+            this.symbolId = _data["SymbolId"];
+            this.vote = _data["Vote"];
+        }
+    }
+
+    static fromJS(data: any): SymbolVoteRequestModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new SymbolVoteRequestModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["CustomerId"] = this.customerId;
+        data["SymbolId"] = this.symbolId;
+        data["Vote"] = this.vote;
+        return data;
+    }
+}
+
+export interface ISymbolVoteRequestModel {
+    customerId?: number;
+    symbolId?: number;
+    vote?: boolean;
 }
 
 export class TokenModel implements ITokenModel {
-    isNeedVerify?: boolean;
     token?: string | undefined;
 
     constructor(data?: ITokenModel) {
@@ -17458,7 +17864,6 @@ export class TokenModel implements ITokenModel {
 
     init(_data?: any) {
         if (_data) {
-            this.isNeedVerify = _data["IsNeedVerify"];
             this.token = _data["Token"];
         }
     }
@@ -17472,14 +17877,12 @@ export class TokenModel implements ITokenModel {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["IsNeedVerify"] = this.isNeedVerify;
         data["Token"] = this.token;
         return data;
     }
 }
 
 export interface ITokenModel {
-    isNeedVerify?: boolean;
     token?: string | undefined;
 }
 
@@ -18274,7 +18677,6 @@ export interface IUserRole {
 export class VerifyModel implements IVerifyModel {
     otp!: string;
     phoneNumber!: string;
-    isUsernameChange?: boolean;
 
     constructor(data?: IVerifyModel) {
         if (data) {
@@ -18289,7 +18691,6 @@ export class VerifyModel implements IVerifyModel {
         if (_data) {
             this.otp = _data["Otp"];
             this.phoneNumber = _data["PhoneNumber"];
-            this.isUsernameChange = _data["IsUsernameChange"];
         }
     }
 
@@ -18304,7 +18705,6 @@ export class VerifyModel implements IVerifyModel {
         data = typeof data === 'object' ? data : {};
         data["Otp"] = this.otp;
         data["PhoneNumber"] = this.phoneNumber;
-        data["IsUsernameChange"] = this.isUsernameChange;
         return data;
     }
 }
@@ -18312,7 +18712,6 @@ export class VerifyModel implements IVerifyModel {
 export interface IVerifyModel {
     otp: string;
     phoneNumber: string;
-    isUsernameChange?: boolean;
 }
 
 export class ApiException extends Error {

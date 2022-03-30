@@ -1,5 +1,5 @@
 import { EventEmitter, Injectable, NgZone } from '@angular/core';
-import { MarketModel, MatriksApiService, SymbolModel, SymbolRateModel, SymbolsApiService } from './api-yatirimim.service';
+import { MarketModel, MatriksApiService, SymbolModel,  SymbolRateModel,  SymbolsApiService } from './api-yatirimim.service';
 import { AppService } from './app.service';
 
 @Injectable({
@@ -7,7 +7,7 @@ import { AppService } from './app.service';
 })
 export class MarketDataService {
 
-  symbols: SymbolRateModel[];
+   symbols: SymbolRateModel[];
 
   symbolsLoad = new EventEmitter();
 
@@ -19,7 +19,7 @@ export class MarketDataService {
   }
 
   public init() {
-    this.symbolApiService.getrates().subscribe(
+    this.symbolApiService.getsymbolrates().subscribe(
       (v) => this.onMarkets(v),
       (e) => this.onError(e)
     );
@@ -28,6 +28,7 @@ export class MarketDataService {
   onMarkets(v: SymbolRateModel[]): void {
     this.zone.run(() => {
       if (v != null && v.length > 0) {
+        console.log(v)
         this.symbols = v;
         this.symbolsLoad.emit(v);
       }

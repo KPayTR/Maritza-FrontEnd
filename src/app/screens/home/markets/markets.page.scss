@@ -1,7 +1,6 @@
-.assets-list {
-  padding: 16px;
-  margin-bottom: 16px;
-  padding: 16px;
+.assets-list { 
+  margin-bottom: 16px; 
+  padding: 7px;
   border: solid 1px #e9e9e9;
   border-radius: 10px;
   ion-row {
@@ -41,6 +40,8 @@
   }
 }
 .segment-container {
+  margin-bottom: 16px;
+
   ::before {
     content: " ";
     display: block;
@@ -93,16 +94,34 @@
   color: #16c784;
   --background: #ebebeb;
   --background-activated: #a0dbc5;
-  min-width: 50px;
+  min-width: 64px;
   max-height: 25px;
 }
 .sell-btn {
   color: #ff4747;   
    --background-activated: #e1b8b8;
   --background: #ebebeb;
-  min-width: 50px;
+  min-width: 64px;
   max-height: 25px;
 }
 .bold{
   font-weight: bold;
+}
+.div-left{
+  text-align: center;
+  max-width: 64px;
+  float: left;
+  h4{
+    font-size: 12px !important;
+      
+    }
+}
+.div-right{
+  text-align: center;
+  max-width: 64px;
+  float: right;
+  h4{
+  font-size: 12px !important;
+    
+  }
 }

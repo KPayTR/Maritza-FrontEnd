@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, NgZone, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController, LoadingController } from '@ionic/angular';
+import { AuthApiService, LoginModel } from 'src/app/services/api-yatirimim.service';
 import { AppService, User } from 'src/app/services/app.service';
 
 @Component({
@@ -16,6 +17,8 @@ export class LoginPage implements OnInit {
     private router: Router,
     private alertController: AlertController,
     public loadingController: LoadingController,
+    private authService:AuthApiService,
+    private zone: NgZone,
     private appService: AppService
   ) {}
 
@@ -31,26 +34,38 @@ export class LoginPage implements OnInit {
       this.tempUser.phone = '+90' + this.phone;
       this.tempUser.pass = this.password; 
 
-      if (
-        this.tempUser.phone == '+905331234567' &&
-        this.tempUser.pass == '1234'
-      ) {
-        this.appService.user = this.tempUser; 
-        this.router.navigate(["auth/login-approve"], { replaceUrl: true });
-
-      } else { 
-
-        this.presentAlert(
-          'Yanlış telefon numarası yada şifre girdiniz. Lütfen kontrol edip tekrar deneyiniz.'
-        );
-      }
+      const model = new LoginModel();
+      model.phoneNumber= this.tempUser.phone;
+      model.password= this.tempUser.pass;
+      this.appService.toggleLoader(true).then((res) => {
+        this.authService.login(model)
+            .subscribe(
+                v => this.onLogin(v),
+                e => this.onError(e)
+            ) 
+          }); 
     } else { 
 
       this.presentAlert(
         'Yanlış telefon numarası yada şifre girdiniz. Lütfen kontrol edip tekrar deneyiniz.'
       );
     }
+  }  
+  onLogin(v: void): void {
+    this.zone.run(() => {
+      this.appService.toggleLoader(false);
+      this.appService.user = this.tempUser; 
+      console.log(v);
+    this.router.navigate(['/auth/login-approve'])
+    });
   }
+  onError(e: any): void {
+    this.zone.run(() => {
+      this.appService.toggleLoader(false);
+      this.appService.showErrorAlert(e);
+    });
+  }
+
   async presentAlert(txt) {
     const alert = await this.alertController.create({
       cssClass: 'my-custom-class',

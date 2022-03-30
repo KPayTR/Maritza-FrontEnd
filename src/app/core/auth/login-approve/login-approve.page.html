@@ -30,19 +30,19 @@
       </ion-row>
       <ion-row>
         <ion-col>
-          <ion-input maxlength="1" type="tel" placeholder="1" name="password" value="">
+          <ion-input   [(ngModel)]="p1" maxlength="1" type="tel" placeholder="1" name="password" value="">
           </ion-input>
         </ion-col>
         <ion-col>
-          <ion-input maxlength="1" type="tel"  placeholder="2" name="password" value="">
+          <ion-input [(ngModel)]="p2" maxlength="1" type="tel"  placeholder="2" name="password" value="">
           </ion-input>
         </ion-col>
         <ion-col>
-          <ion-input maxlength="1" type="tel"  placeholder="3" name="password" value="">
+          <ion-input [(ngModel)]="p3" maxlength="1" type="tel"  placeholder="3" name="password" value="">
           </ion-input>
         </ion-col>
         <ion-col>
-          <ion-input maxlength="1" type="tel"  placeholder="4" name="password" value="">
+          <ion-input  [(ngModel)]="p4" maxlength="1" type="tel"  placeholder="4" name="password" value="">
           </ion-input>
         </ion-col>
       </ion-row>
@@ -54,6 +54,7 @@
             color="medium"
             size="block"
             style="margin: 0"
+            (click)="reCode()"
             >YENİDEN KOD GÖNDER</ion-button
           >
         </ion-col>
@@ -64,7 +65,7 @@
             routerDirection="forward"
             size="block"
             color="warning"
-            [routerLink]="['../../app/home']"
+            (click)="login()"
             style="margin: 0"
             >GİRİŞ YAP</ion-button
           >
