@@ -17,22 +17,26 @@ export class MarketsPage implements OnInit {
   symbols: SymbolRateModel[];
 
   ngOnInit() {
-     this.symbols=this.coreService.symbols.filter(q => q.matriksCode=="SGLD" || q.matriksCode=="SXAGGR" )
-    console.log(this.symbols)
+    this.updateData();
   }
+
   segmentChanged(e) {
     this.selectedSegment = e.detail.value;
+    this.updateData();
+  }
+
+  updateData() {
     switch (this.selectedSegment) {
       case 'maden':
-         this.symbols=this.coreService.symbols.filter(q => q.symbolType.code=="METAL")
+        this.symbols = this.coreService.symbols.filter(q => q.symbolType.code == "METALS")
         break;
       case 'doviz':
-        this.symbols=this.coreService.symbols.filter(q => q.matriksCode=="SUSD" || q.matriksCode=="SEURO" || q.matriksCode=="SGBP" || q.matriksCode=="SCHF" || q.matriksCode=="SJPY" || q.matriksCode=="SSAR"); 
+        this.symbols = this.coreService.symbols.filter(q => q.symbolType.code == "FOREX");
         break;
       case 'sarrafi':
-        this.symbols=this.coreService.symbols.filter(q => q.matriksCode=="SGLD");
+        this.symbols = this.coreService.symbols.filter(q => q.matriksCode == "SGLD");
         break;
- 
+
       default:
         break;
     }

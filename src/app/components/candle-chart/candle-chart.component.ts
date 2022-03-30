@@ -1,5 +1,5 @@
 import { Component, OnInit, AfterViewInit, Input } from '@angular/core';
-import { createChart, IChartApi, UTCTimestamp } from 'lightweight-charts';
+import { CandlestickData, createChart, CrosshairMode, IChartApi, ISeriesApi, UTCTimestamp, WhitespaceData } from 'lightweight-charts';
 import UniqueId from 'src/app/helpers/UniqueId';
 
 @Component({
@@ -14,6 +14,7 @@ export class CandleChartComponent implements OnInit {
   darkTheme = {
     chart: {
       layout: {
+        fontFamily: 'var(--ion-font-family)',
         backgroundColor: '#2B2B43',
         lineColor: '#2B2B43',
         textColor: '#D9D9D9',
@@ -71,7 +72,7 @@ export class CandleChartComponent implements OnInit {
     Light: this.lightTheme,
   };
 
-  private chartData: any;
+  private chartData: (CandlestickData | WhitespaceData)[];
 
   @Input()
   set data(v: {
@@ -85,12 +86,13 @@ export class CandleChartComponent implements OnInit {
       this.chartData = v;
       if (this.candleStickSeries) {
         this.candleStickSeries.setData(v);
+        this.chart.timeScale().fitContent();
       }
     }
   };
 
   chart: IChartApi;
-  candleStickSeries: any;
+  candleStickSeries: ISeriesApi<"Candlestick">;
 
   constructor() { }
 
@@ -108,12 +110,26 @@ export class CandleChartComponent implements OnInit {
     this.chart = createChart(chartElement, {
       width: window.innerWidth - 32,
       height: 200,
+      layout: {
+        fontFamily: 'var(--ion-font-family)'
+      },
       rightPriceScale: {
         borderVisible: false,
       },
       timeScale: {
         borderVisible: false,
+        fixLeftEdge: true,
+        fixRightEdge: true
       },
+      handleScale: false,
+      handleScroll: {
+        mouseWheel: true,
+        pressedMouseMove: false,
+        horzTouchDrag: true
+      },
+      crosshair: {
+        mode: CrosshairMode.Magnet
+      }
     });
 
     this.candleStickSeries = this.chart.addCandlestickSeries({

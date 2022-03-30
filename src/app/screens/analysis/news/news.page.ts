@@ -48,6 +48,18 @@ export class NewsPage implements OnInit {
       console.log(this.news);
     });
   }
+
+  getDescription(v: MatriksNewsModelData) {
+    let span = document.createElement('span');
+    span.innerHTML = v.icerik;
+    let desc = span.textContent || span.innerText;
+
+    if(desc?.length > 160) {
+      desc= desc.substring(0, 160) + '...';
+    }
+    
+    return desc;
+  }
   formatDate(v: MatriksNewsModelData) {
     return moment(v.tarih, 'DD.MM.YYYY hh:mm:ss').format('DD MMMM')
   }

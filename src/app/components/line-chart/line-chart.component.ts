@@ -1,5 +1,5 @@
 import { Component, OnInit, AfterViewInit, Input } from '@angular/core';
-import { createChart, IChartApi, UTCTimestamp } from 'lightweight-charts';
+import { createChart, CrosshairMode, IChartApi, ISeriesApi, SingleValueData, UTCTimestamp, WhitespaceData } from 'lightweight-charts';
 import UniqueId from 'src/app/helpers/UniqueId';
 
 @Component({
@@ -71,7 +71,7 @@ export class LineChartComponent implements AfterViewInit {
     Light: this.lightTheme,
   };
 
-  private chartData: any;
+  private chartData: (SingleValueData | WhitespaceData)[];
 
   @Input()
   set data(v: {
@@ -82,12 +82,13 @@ export class LineChartComponent implements AfterViewInit {
       this.chartData = v;
       if (this.areaSeries) {
         this.areaSeries.setData(v);
+        this.chart.timeScale().fitContent();
       }
     }
   };
 
   chart: IChartApi;
-  areaSeries: any;
+  areaSeries: ISeriesApi<"Area">;
 
   constructor() { }
 
@@ -102,12 +103,22 @@ export class LineChartComponent implements AfterViewInit {
     this.chart = createChart(chartElement, {
       width: window.innerWidth - 32,
       height: 200,
+      layout: {
+        fontFamily: 'var(--ion-font-family)',
+      },
       rightPriceScale: {
         borderVisible: false,
       },
       timeScale: {
         borderVisible: false,
+        fixLeftEdge: true,
+        fixRightEdge: true
       },
+      crosshair: {
+        mode: CrosshairMode.Magnet
+      },
+      handleScale: false,
+      handleScroll: false
     });
 
     this.areaSeries = this.chart.addAreaSeries({
