@@ -28,7 +28,6 @@ ion-footer {
         margin: 8px 24px !important;
     }
     ion-button {
-
         &.ion-color-primary {
             height: 3.25em;
             font-weight: 600;
@@ -46,22 +45,22 @@ ion-item {
         --padding-bottom: 18px;
         --placeholder-color: #7c7f97;
         --placeholder-opacity: 1;
-        color: #080A1E;
-    }
+        color: #080a1e;
 
-    ion-input + span {
-        color: #7c7f97;
+        & + span {
+            color: #7c7f97;
+        }
     }
 
     &.item-has-value {
         ion-input,
         ion-input.sc-ion-input-ios-h {
             font-weight: 600;
-        }
 
-        ion-input + span {
-            color: #080A1E;
-            font-weight: 600;
+            & + span {
+                color: #080a1e;
+                font-weight: 600;
+            }
         }
     }
 }
@@ -76,6 +75,7 @@ ion-tab-button {
 
 ion-button {
     font-size: 14px;
+    outline: none !important;
 }
 
 ion-action-sheet {

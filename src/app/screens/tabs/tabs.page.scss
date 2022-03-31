@@ -1,6 +1,6 @@
 ion-tab-bar {
     --border-style: none;
-    --background: #080A1E;
+    --background: #080a1e;
     --min-height: 60px !important;
     border-top-left-radius: 25px;
     border-top-right-radius: 25px;
@@ -10,11 +10,19 @@ ion-tab-bar {
     background-image: none !important;
     border-top: none !important;
     box-shadow: 0px -1px 1px rgba(0, 0, 0, 0.1);
-   
+
     ion-tab-button {
         color: white;
         &.tab-selected {
             color: var(--ion-color-primary);
+        }
+
+        &:first-child {
+            border-top-left-radius: 25px;
+        }
+
+        &:last-child {
+            border-top-right-radius: 25px;
         }
 
         img {
@@ -25,6 +33,61 @@ ion-tab-bar {
             margin-top: 4px;
             white-space: nowrap;
             font-size: 10px;
+            font-weight: 500;
+        }
+    }
+}
+
+ion-fab {
+    width: 64px;
+    height: 64px;
+    bottom: calc(var(--ion-safe-area-bottom) + 20px);
+    ion-fab-button {
+        width: 64px;
+        height: 64px;
+        img {
+            width: 64px;
+            height: 64px;
+        }
+    }
+}
+
+::ng-deep {
+    .fab-list-side-top {
+        top: auto;
+        flex-direction: row;
+        left: -58px;
+        z-index: -1;
+        margin: 0 0 calc(var(--ion-safe-area-bottom) + 32px) 0;
+
+        .circle-button {
+            &.left {
+                width: 90px;
+                height: 90px;
+                border-radius: 90px 0 0 0;
+                -moz-border-radius: 90px 0 0 0;
+                -webkit-border-radius: 90px 0 0 0;
+
+                &::after {
+                    position: absolute;
+                    display: block;
+                    background-color: #080a1e;
+                    width: 100%;
+                    height: 12px;
+                    content: " ";
+                    bottom: 0;
+                    z-index: 1;
+                }
+            }
+
+            &.right {
+                width: 90px;
+                height: 90px;
+                border-radius: 0 90px 0 0;
+                -moz-border-radius: 0 90px 0 0;
+                -webkit-border-radius: 0 90px 0 0;
+                margin-left: -1px;
+            }
         }
     }
 }

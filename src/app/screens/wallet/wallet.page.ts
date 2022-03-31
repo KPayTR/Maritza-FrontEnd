@@ -1,4 +1,4 @@
-import { Component, NgZone, ViewChild } from '@angular/core';
+import { Component, NgZone, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import * as moment from 'moment';
 import {
@@ -10,7 +10,7 @@ import {
   ApexDataLabels,
   ApexFill
 } from "ng-apexcharts";
-import { GraphicDataModel, MatriksApiService, } from 'src/app/services/api-yatirimim.service';
+import { AssetModel, AssetsApiService, GraphicDataModel, MatriksApiService, } from 'src/app/services/api-yatirimim.service';
 import { AppService } from 'src/app/services/app.service';
 import { MarketDataService } from 'src/app/services/market-data.service';
 
@@ -29,7 +29,7 @@ export type ChartOptions = {
   templateUrl: 'wallet.page.html',
   styleUrls: ['wallet.page.scss']
 })
-export class Wallet {
+export class Wallet implements OnInit {
   selectedSegment = 'gold';
   selectedSegmentVal = 'assets';
   selectedChartType = 'line';
@@ -41,7 +41,7 @@ export class Wallet {
 
   // symbol: SymbolRateModel;
   // symbols: SymbolRateModel[];
-  assets: any = [
+  assetsx: any = [
     {
       symbol: 'Altın',
       isPrimary: false,
@@ -83,32 +83,33 @@ export class Wallet {
       color: 'rgba(2, 117, 74)'
     }
   ];
-  series: any = [];
-  colors: any = [];
-  selectedItem: any; 
+  series: any = [1];
+  colors: any = ['#B1B1C5'];
+  selectedItem: any;
+  assets: AssetModel[] = [];
 
   constructor(
     private marketDataService: MarketDataService,
     private zone: NgZone,
     private appService: AppService,
     private matriksService: MatriksApiService,
+    private assetsApiService: AssetsApiService,
     private router: Router
   ) {
-    // if (marketDataService.symbols == null) {
-    //   marketDataService.symbolsLoad.subscribe(v => {
-    //     this.loadSegmentData();
-    //   })
-    // }
-    // else {
-    //   this.loadSegmentData();
-    // }
     this.chartOptions = {
       chart: {
         type: "donut",
         events: {
           dataPointSelection: (event, chartContext, config) => {
+            if (this.assets.length == 0) {
+              event.preventDefault();
+              return false;
+            }
             this.selectedItem = this.assets[config.dataPointIndex];
           }
+        },
+        selection: {
+          enabled: false
         }
       },
       labels: this.assets.map(x => x.symbol),
@@ -126,7 +127,7 @@ export class Wallet {
         }
       ],
       fill: {
-        type: "gradient"
+        type: "linear"
       },
       dataLabels: {
         enabled: false
@@ -139,34 +140,32 @@ export class Wallet {
               name: {
                 color: 'orange'
               }
-            }
+            },
           }
         }
-      }
+      },
     };
   }
-  loadSegmentData() {
-    // if (this.marketDataService.symbols == null) return;
 
-    // switch (this.selectedSegment) {
-    //   case 'gold':
-    //     this.symbol = this.marketDataService.symbols.filter(q => q.matriksCode == "SGLD")[0]
-    //     break;
-    //   case 'silver':
-    //     this.symbol = this.marketDataService.symbols.filter(q => q.matriksCode == "SXAGGR")[0];
-    //     break;
-    //   case 'palladium':
-    //     this.symbol = this.marketDataService.symbols.filter(q => q.matriksCode == "SUSD")[0];
-    //     break;
-    //   case 'platin':
-    //     this.symbol = this.marketDataService.symbols.filter(q => q.matriksCode == "SEURO")[0];
-    //     break;
-    //   case 'all':
-    //     this.symbols = this.marketDataService.symbols;
-    //     break;
-    //   default:
-    //     break;
-    // }
+  ngOnInit(): void {
+    this.appService.toggleLoader(true).then(() => {
+      this.assetsApiService.getwallet(this.appService.user?.id)
+        .subscribe(
+          v => this.initData(v),
+          e => {
+            this.appService.toggleLoader(false)
+            this.appService.showToast('Veri yüklenemedi.', 'bottom')
+          }
+        )
+    });
+  }
+
+  initData(v: AssetModel[]): void {
+    this.appService.toggleLoader(false)
+    this.assets = v;
+  }
+
+  loadSegmentData() {
     this.getChartData();
   }
   getChartData() {
@@ -190,7 +189,7 @@ export class Wallet {
         this.lineData = lineData;
       }
 
-     
+
     });
   }
 
@@ -200,25 +199,26 @@ export class Wallet {
       this.appService.showErrorAlert(e);
     });
   }
+
   ionViewDidEnter() {
-    this.colors= this.assets.map(x => x.color);
-    this.series = this.assets.map(x => x.amountTRY);;
+    //this.colors= this.assets.map(x => x.color);
+    //this.series = this.assets.map(x => x.amountTRY);;
   }
 
   segmentChange(e) {
     this.selectedSegment = e.detail.value;
   }
 
-  goBuy(){
+  goBuy() {
     this.router.navigate(['app/trade/buy'])
   }
-  goSell(){
+  goSell() {
     this.router.navigate(['app/trade/sell'])
   }
-  goDeposit(){
+  goDeposit() {
     this.router.navigate(['app/transfer/deposit-credit-card'])
   }
-  goWithdraw(){
+  goWithdraw() {
     this.router.navigate(['app/transfer/withdraw-account'])
   }
 }

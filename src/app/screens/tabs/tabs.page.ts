@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 import { MenuPage } from 'src/app/core/modals/menu/menu.page';
 
@@ -10,6 +11,7 @@ import { MenuPage } from 'src/app/core/modals/menu/menu.page';
 export class TabsPage {
 
   constructor(
+    private router: Router,
     private modalCtrl: ModalController,
 
   ) {}
@@ -21,5 +23,13 @@ export class TabsPage {
       swipeToClose:true
     });
     await modal.present();
+  }
+
+  openBuy() {
+    this.router.navigateByUrl('/app/trade/buy')
+  }
+
+  openSell() {
+    this.router.navigateByUrl('/app/trade/sell')
   }
 }

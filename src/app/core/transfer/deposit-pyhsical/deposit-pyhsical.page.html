@@ -3,12 +3,12 @@
     <ion-buttons class="p1" slot="start">
       <ion-back-button mode="md" defaultHref="app/home"></ion-back-button>
     </ion-buttons>
-  
+
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <div    class="form-container" style="margin:0px 16px">
+  <div class="form-container" style="margin:0px 16px">
     <ion-grid class="gap-list">
       <ion-row style="margin-top: 0%;">
         <ion-col>
@@ -16,89 +16,58 @@
         </ion-col>
       </ion-row>
 
-  <div   class="metal" > 
-    <div class="up" style="height: 15%;  margin: 5px; margin-top: 16px;
+      <div class="metal">
+        <div class="up" style="height: 15%;  margin: 5px; margin-top: 16px;
     background: #F6F5F1;
     border-radius: 10px;">
-      <ion-row> 
+          <ion-row>
+            <ion-col>
+              <ion-select class="custom-options" value="" placeholder="Yatırılmak İstenen Ürün"
+                (ionChange)="selectChangeMain($event)" okText="Tamam" cancelText="İptal">
+                <ion-select-option value="Altın">Altın</ion-select-option>
+                <ion-select-option value="Gumus">Gümüş</ion-select-option>
+              </ion-select>
+            </ion-col>
+          </ion-row>
+        </div>
+      </div>
+
+      <ion-row style="margin-top: 8px">
         <ion-col>
-          <ion-label>
-            <ion-select
-              class="custom-options"
-              
-              value=""
-              placeholder="Yatırılmak İstenen Ürün"
-              (ionChange)="selectChangeMain($event)"
-            >
-            <ion-select-option
-               
-            value="Altın"
-            >Altın</ion-select-option
-          > <ion-select-option
-               
-          value="Gumus"
-          >Gumus</ion-select-option
-        >
-            </ion-select> 
-          </ion-label>
+          <ion-item class="username-input" lines="none">
+            <ion-input style="  --padding-start: 25px;" type="tel" (ionChange)="phoneChange()"
+              placeholder="Ürünün Miktarı" [(ngModel)]="phone"></ion-input>
+            <span style="padding-left:3px;">TRY/Altın</span>
+
+          </ion-item>
         </ion-col>
       </ion-row>
-    </div> 
-  </div>
 
-  <ion-row style="margin-top: 8px">
-    <ion-col>
-      <ion-item class="username-input" lines="none">
-        <ion-input 
-        style="  --padding-start: 25px;"
-          type="tel" 
-          (ionChange)="phoneChange()" 
-          placeholder="Ürünün Miktarı"
-          [(ngModel)]="phone"
-        ></ion-input>
-        <span style="padding-left:3px;     color: #7C7F97;
-        ">TRY/Altın</span> 
 
-      </ion-item>
-    </ion-col>
-  </ion-row>
-     
+      <ion-row style="margin-top: 8px">
+        <ion-col>
+          <ion-item class="username-input" lines="none" style="    color: #7C7F97;  ">
+            <p style="  padding-left: 25px; " (ionChange)="phoneChange()" slot="start">İşlem Zamanı</p>
+            <ion-icon slot="end" name="calendar-outline"></ion-icon>
 
-  <ion-row style="margin-top: 8px">
-    <ion-col>
-      <ion-item class="username-input" lines="none" style="    color: #7C7F97;  ">
-        <p
-        style="  padding-left: 25px; " 
-          (ionChange)="phoneChange()"  
-          slot="start"
-        >İşlem Zamanı</p>
-        <ion-icon slot="end" name="calendar-outline"></ion-icon>
+          </ion-item>
+        </ion-col>
+      </ion-row>
 
-      </ion-item>
-    </ion-col>
-  </ion-row>
-
-  <div style="text-align: center;">
-    <div style=" 
+      <div style="text-align: center;">
+        <div style=" 
     height: 267px;   
     background: #F7F7F7;">
-    <p style="    padding-top: 100px;
+          <p style="    padding-top: 100px;
     text-align: center;">milyem tablosu</p>
-    </div>
-  </div>
- 
- 
+        </div>
+      </div>
+
+
     </ion-grid>
-  </div> 
+  </div>
 </ion-content>
 <ion-footer>
-  <ion-button 
-          routerDirection="forward"  
-          [routerLink]="['deposit-approve']"
-            size="block" 
-            color="primary" 
-            style="margin: 0"
-        
-            >DEVAM</ion-button
-          >
+  <ion-button routerDirection="forward" [routerLink]="['deposit-approve']" size="block" color="primary"
+    style="margin: 0">DEVAM</ion-button>
 </ion-footer>

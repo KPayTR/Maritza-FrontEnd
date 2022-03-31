@@ -103,6 +103,7 @@ async showToast(
 }
 
 export class User {
+  public id: number | undefined;
   public phone: string | undefined;
   public pass: string | undefined; 
   public token: string | undefined; 
@@ -110,6 +111,7 @@ export class User {
 
   init(_data?: any) {
     if (_data) {
+      this.id = _data["id"];
       this.phone = _data["phone"];
       this.pass = _data["pass"]; 
       this.token = _data["token"];
@@ -126,6 +128,7 @@ export class User {
 
   toJSON(data?: any) {
     data = typeof data === "object" ? data : {};
+    data["id"] = this.id;
     data["phone"] = this.phone;
     data["pass"] = this.pass; 
     data["token"] = this.token;

@@ -18,10 +18,10 @@
   <div class="wallet-summary">
     <h2>Tüm Varlıklarım</h2>
     <h3>
-      13.308,10 TL
+      0.00 TL
     </h3>
     <p>
-      <ion-icon style="color: #16C784 ;" name="caret-up"></ion-icon>-%2,5
+      <ion-icon style="color: #16C784 ;" name="caret-up"></ion-icon>-%0.00
     </p>
   </div>
   <div class="chart-container centered">
@@ -39,7 +39,7 @@
   <div class="actions-container" style="margin-top: 5%;">
     <ion-row>
       <ion-col size="3">
-        <ion-button (click)="goBuy()"  class="btn-light">
+        <ion-button (click)="goBuy()" class="btn-light">
           <div class="button-inner">
             <ion-icon name="add-circle"></ion-icon>
             <span>Al</span>
@@ -47,7 +47,7 @@
         </ion-button>
       </ion-col>
       <ion-col size="3">
-        <ion-button (click)="goSell()"  class="btn-light">
+        <ion-button (click)="goSell()" class="btn-light">
           <div class="button-inner">
             <ion-icon name="remove-circle"></ion-icon>
             <span>Sat</span>
@@ -56,7 +56,7 @@
 
       </ion-col>
       <ion-col size="3">
-        <ion-button (click)="goWithdraw()"  class="btn-light">
+        <ion-button (click)="goWithdraw()" class="btn-light">
           <div class="button-inner">
             <ion-icon name="arrow-up-circle"></ion-icon>
             <span>Çek</span>
@@ -65,7 +65,7 @@
 
       </ion-col>
       <ion-col size="3">
-        <ion-button (click)="goDeposit()"  class="btn-light">
+        <ion-button (click)="goDeposit()" class="btn-light">
           <div class="button-inner">
             <ion-icon name="arrow-down-circle"></ion-icon>
             <span>Yatır</span>
@@ -88,14 +88,59 @@
   </div>
 
   <div *ngIf="selectedSegmentVal=='assets'">
-    <div   class="trade-list">
+    <div *ngFor="let asset of assets" class="trade-list">
       <ion-row>
         <ion-col size="2">
           <div>
-            <img
-              src="../../../assets/img/icon/assetGoldSolid.svg" 
-              alt=""
-            />
+            <img src="../../../assets/img/icon/assetGoldSolid.svg" alt="" />
+          </div>
+        </ion-col>
+        <ion-col size="8">
+          <ion-label class="center">
+            <h4 class="bold">{{asset.symbol.name}}</h4>
+            <p>999.0/1000</p>
+          </ion-label>
+        </ion-col>
+        <ion-col size="2">
+          <div>
+            <img src="../../../assets/img/icon/alarm.svg" />
+          </div>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="4">
+          <div class="div-left">
+            <ion-label>
+              <h4>0 TL</h4>
+              <ion-button class="buy-btn" size="small">AL</ion-button>
+            </ion-label>
+          </div>
+        </ion-col>
+        <ion-col size="4">
+          <ion-label class="center">
+            <div class="center">
+              <img src="../../../assets/img/icon/deleteMiniChart.svg" alt="" />
+            </div>
+            <p>%0</p>
+          </ion-label>
+        </ion-col>
+        <ion-col size="4">
+          <div class="div-right">
+            <ion-label>
+              <h4 style="    max-width: 64px; ">0 TL</h4>
+              <ion-button class="sell-btn" size="small">SAT</ion-button>
+            </ion-label>
+          </div>
+        </ion-col>
+      </ion-row>
+    </div>
+
+    <!--
+    <div class="trade-list">
+      <ion-row>
+        <ion-col size="2">
+          <div>
+            <img src="../../../assets/img/icon/assetGoldSolid.svg" alt="" />
           </div>
         </ion-col>
         <ion-col size="8">
@@ -110,41 +155,38 @@
           </div>
         </ion-col>
       </ion-row>
-      <ion-row >
-        <ion-col  size="4">
-          <div class="div-left" >
-            <ion-label >
-              <h4 >{{symbol.buy}} TL</h4>
-              <ion-button class="buy-btn" size="small">AL</ion-button>  
-            </ion-label> 
+      <ion-row>
+        <ion-col size="4">
+          <div class="div-left">
+            <ion-label>
+              <h4>{{symbol.buy}} TL</h4>
+              <ion-button class="buy-btn" size="small">AL</ion-button>
+            </ion-label>
           </div>
         </ion-col>
-        <ion-col size="4"  >
+        <ion-col size="4">
           <ion-label class="center">
             <div class="center">
               <img src="../../../assets/img/icon/deleteMiniChart.svg" alt="" />
-             </div>
+            </div>
             <p>%{{symbol.dailyChangePercent}}</p>
           </ion-label>
         </ion-col>
         <ion-col size="4">
-            <div  class="div-right">
-              <ion-label >
-                <h4 style="    max-width: 64px; ">{{symbol.sell}} TL</h4>
-                <ion-button class="sell-btn" size="small">SAT</ion-button>  
-              </ion-label> 
-            </div>
+          <div class="div-right">
+            <ion-label>
+              <h4 style="    max-width: 64px; ">{{symbol.sell}} TL</h4>
+              <ion-button class="sell-btn" size="small">SAT</ion-button>
+            </ion-label>
+          </div>
         </ion-col>
-      </ion-row> 
+      </ion-row>
     </div>
-    <div   class="trade-list">
+    <div class="trade-list">
       <ion-row>
         <ion-col size="2">
           <div>
-            <img
-              src="../../../assets/img/icon/assetSilverSolid.svg" 
-              alt=""
-            />
+            <img src="../../../assets/img/icon/assetSilverSolid.svg" alt="" />
           </div>
         </ion-col>
         <ion-col size="8">
@@ -159,41 +201,38 @@
           </div>
         </ion-col>
       </ion-row>
-      <ion-row >
-        <ion-col  size="4">
-          <div class="div-left" >
-            <ion-label >
-              <h4 >{{symbol.buy}} TL</h4>
-              <ion-button class="buy-btn" size="small">AL</ion-button>  
-            </ion-label> 
+      <ion-row>
+        <ion-col size="4">
+          <div class="div-left">
+            <ion-label>
+              <h4>{{symbol.buy}} TL</h4>
+              <ion-button class="buy-btn" size="small">AL</ion-button>
+            </ion-label>
           </div>
         </ion-col>
-        <ion-col size="4"  >
+        <ion-col size="4">
           <ion-label class="center">
             <div class="center">
               <img src="../../../assets/img/icon/deleteMiniChart.svg" alt="" />
-             </div>
+            </div>
             <p>%{{symbol.dailyChangePercent}}</p>
           </ion-label>
         </ion-col>
         <ion-col size="4">
-            <div  class="div-right">
-              <ion-label >
-                <h4 style="    max-width: 64px; ">{{symbol.sell}} TL</h4>
-                <ion-button class="sell-btn" size="small">SAT</ion-button>  
-              </ion-label> 
-            </div>
+          <div class="div-right">
+            <ion-label>
+              <h4 style="    max-width: 64px; ">{{symbol.sell}} TL</h4>
+              <ion-button class="sell-btn" size="small">SAT</ion-button>
+            </ion-label>
+          </div>
         </ion-col>
-      </ion-row> 
+      </ion-row>
     </div>
-    <div   class="trade-list">
+    <div class="trade-list">
       <ion-row>
         <ion-col size="2">
           <div>
-            <img
-              src="../../../assets/img/icon/assetPalladiumSolid.svg" 
-              alt=""
-            />
+            <img src="../../../assets/img/icon/assetPalladiumSolid.svg" alt="" />
           </div>
         </ion-col>
         <ion-col size="8">
@@ -208,41 +247,38 @@
           </div>
         </ion-col>
       </ion-row>
-      <ion-row >
-        <ion-col  size="4">
-          <div class="div-left" >
-            <ion-label >
-              <h4 >{{symbol.buy}} TL</h4>
-              <ion-button class="buy-btn" size="small">AL</ion-button>  
-            </ion-label> 
+      <ion-row>
+        <ion-col size="4">
+          <div class="div-left">
+            <ion-label>
+              <h4>{{symbol.buy}} TL</h4>
+              <ion-button class="buy-btn" size="small">AL</ion-button>
+            </ion-label>
           </div>
         </ion-col>
-        <ion-col size="4"  >
+        <ion-col size="4">
           <ion-label class="center">
             <div class="center">
               <img src="../../../assets/img/icon/deleteMiniChart.svg" alt="" />
-             </div>
+            </div>
             <p>%{{symbol.dailyChangePercent}}</p>
           </ion-label>
         </ion-col>
         <ion-col size="4">
-            <div  class="div-right">
-              <ion-label >
-                <h4 style="    max-width: 64px; ">{{symbol.sell}} TL</h4>
-                <ion-button class="sell-btn" size="small">SAT</ion-button>  
-              </ion-label> 
-            </div>
+          <div class="div-right">
+            <ion-label>
+              <h4 style="    max-width: 64px; ">{{symbol.sell}} TL</h4>
+              <ion-button class="sell-btn" size="small">SAT</ion-button>
+            </ion-label>
+          </div>
         </ion-col>
-      </ion-row> 
+      </ion-row>
     </div>
-    <div   class="trade-list">
+    <div class="trade-list">
       <ion-row>
         <ion-col size="2">
           <div>
-            <img
-              src="../../../assets/img/icon/assetPlatinSolid.svg" 
-              alt=""
-            />
+            <img src="../../../assets/img/icon/assetPlatinSolid.svg" alt="" />
           </div>
         </ion-col>
         <ion-col size="8">
@@ -257,42 +293,39 @@
           </div>
         </ion-col>
       </ion-row>
-      <ion-row >
-        <ion-col  size="4">
-          <div class="div-left" >
-            <ion-label >
-              <h4 >{{symbol.buy}} TL</h4>
-              <ion-button class="buy-btn" size="small">AL</ion-button>  
-            </ion-label> 
+      <ion-row>
+        <ion-col size="4">
+          <div class="div-left">
+            <ion-label>
+              <h4>{{symbol.buy}} TL</h4>
+              <ion-button class="buy-btn" size="small">AL</ion-button>
+            </ion-label>
           </div>
         </ion-col>
-        <ion-col size="4"  >
+        <ion-col size="4">
           <ion-label class="center">
             <div class="center">
               <img src="../../../assets/img/icon/deleteMiniChart.svg" alt="" />
-             </div>
+            </div>
             <p>%{{symbol.dailyChangePercent}}</p>
           </ion-label>
         </ion-col>
         <ion-col size="4">
-            <div  class="div-right">
-              <ion-label >
-                <h4 style="    max-width: 64px; ">{{symbol.sell}} TL</h4>
-                <ion-button class="sell-btn" size="small">SAT</ion-button>  
-              </ion-label> 
-            </div>
+          <div class="div-right">
+            <ion-label>
+              <h4 style="    max-width: 64px; ">{{symbol.sell}} TL</h4>
+              <ion-button class="sell-btn" size="small">SAT</ion-button>
+            </ion-label>
+          </div>
         </ion-col>
-      </ion-row> 
+      </ion-row>
     </div>
-    <div   class="trade-list">
+    <div class="trade-list">
       <ion-row>
         <ion-col size="2">
           <div>
-            <img
-              src="../../../assets/img/icon/assetsLiraSolid.svg"
-              onerror="this.src='../../../assets/img/icon/assetsLiraSolid.svg';"
-              alt=""
-            />
+            <img src="../../../assets/img/icon/assetsLiraSolid.svg"
+              onerror="this.src='../../../assets/img/icon/assetsLiraSolid.svg';" alt="" />
           </div>
         </ion-col>
         <ion-col size="8">
@@ -307,34 +340,35 @@
           </div>
         </ion-col>
       </ion-row>
-      <ion-row >
-        <ion-col  size="4">
-          <div class="div-left" >
-            <ion-label >
-              <h4 >{{symbol.buy}} TL</h4>
-              <ion-button class="buy-btn" size="small">AL</ion-button>  
-            </ion-label> 
+      <ion-row>
+        <ion-col size="4">
+          <div class="div-left">
+            <ion-label>
+              <h4>{{symbol.buy}} TL</h4>
+              <ion-button class="buy-btn" size="small">AL</ion-button>
+            </ion-label>
           </div>
         </ion-col>
-        <ion-col size="4"  >
+        <ion-col size="4">
           <ion-label class="center">
             <div class="center">
               <img src="../../../assets/img/icon/deleteMiniChart.svg" alt="" />
-             </div>
+            </div>
             <p>%{{symbol.dailyChangePercent}}</p>
           </ion-label>
         </ion-col>
         <ion-col size="4">
-            <div  class="div-right">
-              <ion-label >
-                <h4 style="    max-width: 64px; ">{{symbol.sell}} TL</h4>
-                <ion-button class="sell-btn" size="small">SAT</ion-button>  
-              </ion-label> 
-            </div>
+          <div class="div-right">
+            <ion-label>
+              <h4 style="    max-width: 64px; ">{{symbol.sell}} TL</h4>
+              <ion-button class="sell-btn" size="small">SAT</ion-button>
+            </ion-label>
+          </div>
         </ion-col>
-      </ion-row> 
-    </div> 
- 
+      </ion-row>
+    </div>
+  -->
+
 
     <div class="share-container">
       <div class="share">
@@ -367,7 +401,7 @@
           </ion-row>
         </ion-grid>
       </div>
-      <app-line-chart *ngIf="selectedChartType == 'line'" [data]="lineData" ></app-line-chart> 
+      <app-line-chart *ngIf="selectedChartType == 'line'" [data]="lineData"></app-line-chart>
     </div>
 
 
