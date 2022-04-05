@@ -75,7 +75,14 @@ ion-tab-button {
 
 ion-button {
     font-size: 14px;
+    font-weight: 600;
     outline: none !important;
+    margin: 0;
+    
+    &.ion-color-primary {
+        --box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.1);
+        height: 3.25em;
+    }
 }
 
 ion-action-sheet {

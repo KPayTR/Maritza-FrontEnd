@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { CardApiService } from 'src/app/services/api-yatirimim.service';
+import { AppService } from 'src/app/services/app.service';
 
 @Component({
   selector: 'app-choose-card',
@@ -7,9 +9,24 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ChooseCardPage implements OnInit {
 
-  constructor() { }
+  constructor(
+    public appService: AppService,
+    public cardApiService: CardApiService
+  ) { }
 
   ngOnInit() {
+    this.appService.toggleLoader(true).then(()=>{
+      this.cardApiService.getcards()
+        .subscribe(
+          v => {
+            this.appService.toggleLoader(false);
+          },
+          e => {
+            this.appService.toggleLoader(false);
+            console.log(e);
+          }
+        )
+    })
   }
 
 }

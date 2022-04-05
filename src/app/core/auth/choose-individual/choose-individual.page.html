@@ -4,48 +4,34 @@
       <ion-back-button mode="md" defaultHref="app/home"></ion-back-button>
     </ion-buttons>
     <ion-buttons class="p1" slot="end">
-      <div class="stepper-div stepper-div-color"></div>
-      <div class="stepper-div"></div>
-      <div class="stepper-div"></div>
+      <div class="stepper active"></div>
+      <div class="stepper"></div>
+      <div class="stepper"></div>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <div class="form-container" style="margin: 5px; text-align: center">
-    <ion-grid class="gap-list">
-      <ion-row style="margin-top: 10%">
-        <ion-col>
-          <img src="../../../assets/icon/card.svg" alt="" />
-        </ion-col>
-      </ion-row>
-
-      <ion-row    [routerLink]="['../register/1']" class="row-border">
-        <ion-col  style="text-align: start" size="8">
+  <div class="form-container">
+    <div class="form-items">
+      <div class="shield">
+        <img src="../../../../assets/img/auth/shield.svg" alt="" />
+      </div>
+      <ion-item button detail="false" class="item-large-select" lines="none" [routerLink]="['../register/1']">
+        <ion-label>
           <p>Bireysel</p>
-          <ion-note>Kişisel bilgilerinizi kaydettik. </ion-note>
-        </ion-col>
-      </ion-row>
+          <ion-note>Kişisel bilgilerinizi kaydettik.</ion-note>
+        </ion-label>
+      </ion-item>
 
-      <ion-row  [routerLink]="['../register/2']" class="row-border">
-        <ion-col style="text-align: start" size="8">
+      <ion-item button detail="false" class="item-large-select" lines="none" [routerLink]="['../register/2']">
+        <ion-label>
           <p>Kurumsal</p>
-          <ion-note
-            >2 Adımda doğrulama ile hesabınızı güvenli hale getirin.</ion-note
-          >
-        </ion-col>
-      </ion-row>
-
-      <ion-row style="margin-top: 30%">
-        <ion-col>
-          <ion-button
-            size="block"
-         
-            color="primary"
-            style="margin: 0"
-            >DEVAM</ion-button
-          >
-        </ion-col>
-      </ion-row>
-    </ion-grid>
+          <ion-note>2 Adımda doğrulama ile hesabınızı güvenli hale getirin.</ion-note>
+        </ion-label>
+      </ion-item>
+    </div>
+    <div class="form-footer">
+      <ion-button size="block" color="primary">DEVAM</ion-button>
+    </div>
   </div>
 </ion-content>

@@ -6,6 +6,14 @@
     height: 100%;
     padding: 0 20px;
 
+    form {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: stretch;
+        height: 100%;
+    }
+
     .form-header {
         padding-bottom: 2.5em;
 
@@ -41,7 +49,6 @@
                 --padding-bottom: 8px;
                 border-radius: 8px;
                 border: 2px solid #f1f1f1;
-                font-size: 14px;
                 font-weight: 600;
 
                 ion-icon {
@@ -49,7 +56,11 @@
                 }
 
                 ion-label {
+                    text-overflow: initial;
+                    white-space: initial;
+
                     p {
+                        font-size: 16px;
                         color: #080a1e;
                         font-weight: 600;
                         span {
@@ -58,8 +69,10 @@
                     }
 
                     ion-note {
-                        font-size: 12px;
+                        font-size: 14px;
                         font-weight: 500;
+                        padding-top: 4px;
+                        display: block;
                     }
                 }
             }
@@ -68,6 +81,8 @@
                 --padding-start: 0;
                 --padding-end: 0;
                 --padding-top: 1em;
+                --padding-bottom: 0;
+                margin-bottom: 0;
 
                 font-size: 13px;
                 display: flex;
@@ -85,7 +100,7 @@
                     justify-content: center;
 
                     &.active {
-                        background: var(--ion-color-primary);
+                        background: url("../assets/img/icon/check.svg") center no-repeat var(--ion-color-primary);
                         border: 1px solid var(--ion-color-primary) !important;
                         color: #fefefe;
                     }
@@ -109,19 +124,18 @@
             background: #f6f5f1;
             border-radius: 8px;
             padding: 16px 0;
-            
 
             ion-item {
                 --background: transparent;
                 --min-height: 20px;
 
                 ion-label {
-                    color: #4A4D67;
+                    color: #4a4d67;
                     font-weight: 500;
                 }
-    
+
                 p {
-                    color: #080A1E;
+                    color: #080a1e;
                     font-weight: 500;
                     margin-top: 0;
                     margin-bottom: 0;
@@ -130,7 +144,7 @@
 
             hr {
                 margin: 1em;
-                background-color: #E8E8E8;
+                background-color: #e8e8e8;
             }
         }
     }

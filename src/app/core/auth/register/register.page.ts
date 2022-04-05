@@ -35,8 +35,6 @@ export class RegisterPage implements OnInit {
     this.id=this.route.snapshot.paramMap.get('id');
     if (this.id=='1') {
       this.retail= true;
-
-
     } else {
       this.retail= false;
 
@@ -57,7 +55,9 @@ export class RegisterPage implements OnInit {
       taxNo: ['', [Validators.required, Validators.minLength(2)]],
       firstName: ['', [Validators.required, Validators.minLength(2)]],
       lastName: ['', [Validators.required, Validators.minLength(2)]],
+      phone: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(2)]],
     })
   }
 

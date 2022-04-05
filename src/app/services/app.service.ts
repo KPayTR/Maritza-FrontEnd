@@ -91,7 +91,7 @@ export class AppService {
       message = message.message;
     }
 
-    await this.showToast(message, "bottom");
+    await this.showToast(message, "top");
   }
 
   async showToast(

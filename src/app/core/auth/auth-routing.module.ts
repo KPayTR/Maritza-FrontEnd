@@ -6,23 +6,65 @@ import { AuthPage } from './auth.page';
 const routes: Routes = [
   {
     path: '',
-    component: AuthPage
+    children: [
+      {
+        path: 'login',
+        loadChildren: () =>
+          import('./login/login.module').then((m) => m.LoginPageModule),
+      },
+      {
+        path: 'login-approve',
+        loadChildren: () =>
+          import('./login-approve/login-approve.module').then(
+            (m) => m.LoginApprovePageModule
+          ),
+      },
+      {
+        path: 'register-approve',
+        loadChildren: () =>
+          import('./register-approve/register-approve.module').then(
+            (m) => m.RegisterApprovePageModule
+          ),
+      },
+      {
+        path: 'register/:id',
+        loadChildren: () =>
+          import('./register/register.module').then(
+            (m) => m.RegisterPageModule
+          ),
+      },
+      {
+        path: 'choose-individual',
+        loadChildren: () =>
+          import('./choose-individual/choose-individual.module').then(
+            (m) => m.ChooseIndividualPageModule
+          ),
+      },
+      {
+        path: 'phone-approve',
+        loadChildren: () =>
+          import('./phone-approve/phone-approve.module').then(
+            (m) => m.PhoneApprovePageModule
+          ),
+      },
+    ]
   },
+
   {
     path: 'verification-corporate',
-    loadChildren: () => import('./verification-corporate/verification-corporate.module').then( m => m.VerificationCorporatePageModule)
+    loadChildren: () => import('./verification-corporate/verification-corporate.module').then(m => m.VerificationCorporatePageModule)
   },
   {
     path: 'verification-individual',
-    loadChildren: () => import('./verification-individual/verification-individual.module').then( m => m.VerificationIndividualPageModule)
+    loadChildren: () => import('./verification-individual/verification-individual.module').then(m => m.VerificationIndividualPageModule)
   },
   {
     path: 'verification-complate',
-    loadChildren: () => import('./verification-complate/verification-complate.module').then( m => m.VerificationComplatePageModule)
+    loadChildren: () => import('./verification-complate/verification-complate.module').then(m => m.VerificationComplatePageModule)
   },
   {
     path: 'verification-notifiication',
-    loadChildren: () => import('./verification-notifiication/verification-notifiication.module').then( m => m.VerificationNotifiicationPageModule)
+    loadChildren: () => import('./verification-notifiication/verification-notifiication.module').then(m => m.VerificationNotifiicationPageModule)
   }
 ];
 
@@ -30,4 +72,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class AuthPageRoutingModule {}
+export class AuthPageRoutingModule { }

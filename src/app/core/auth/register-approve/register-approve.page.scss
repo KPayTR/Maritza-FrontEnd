@@ -22,36 +22,6 @@ ion-toolbar {
     font-weight: bold;
     margin: 0;
   }
-  .input-checkbox {
-    font-size: 13px;
-    text-align: center;
-    margin: 0 20px;
-    line-height: 20px;
-    .checkbox {
-      // margin-right: 10px;
-  
-      width: 20px;
-      height: 18px;
-      background: #ffffff;
-      border: 1px solid var(--ion-color-light);
-  
-      &.active {
-        background: url("../../../../assets/svg/check.svg") center no-repeat
-          #f1bc00;
-        border: unset;
-      }
-    }
-  
-    .label {
-      line-height: 20px;
-  
-      .link {
-        text-decoration: none;
-        font-weight: 600;
-      }
-    }
-  }
-  
   .register-horizontal {
     position: absolute;
     bottom: -75px;
