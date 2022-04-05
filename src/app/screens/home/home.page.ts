@@ -13,7 +13,7 @@ import { MarketDataService } from 'src/app/services/market-data.service';
 })
 export class Home {
   barcodeResult: string;
-
+  selectedValue='maden';
   selectedSegment = 'gold';
   selectedChartType = 'candle';
   selectedTimeRange = '5';
@@ -155,5 +155,37 @@ export class Home {
       .catch((err) => {
         console.log('Error', err);
       });
+  }
+  allSegmentChanged(e) {
+    this.selectedValue = e.detail.value;
+    this.updateData();
+  }
+
+  updateData() {
+    if (this.marketDataService.symbols == null) return;
+    switch (this.selectedValue) {
+      case 'maden':
+        this.symbols = this.marketDataService.symbols.filter(q => q.symbolType.code == "METALS")
+    console.log("maden"+this.symbols[0])
+
+        break;
+      case 'doviz':
+        this.symbols = this.marketDataService.symbols.filter(q => q.symbolType.code == "FOREX");
+    console.log("doviz"+this.symbols)
+    break;
+      case 'sarrafi':
+        this.symbols = this.marketDataService.symbols.filter(q => q.matriksCode == "METALS");
+    console.log("sarrafi"+this.symbols)
+    break;
+
+      default:
+        break;
+    }
+  }
+  
+  checkImage(e){
+    const target = e.target;
+    target.classList.add('d-none');
+    target.parentElement.getElementsByClassName('currency-symbol')[0].classList.remove('d-none')
   }
 }
