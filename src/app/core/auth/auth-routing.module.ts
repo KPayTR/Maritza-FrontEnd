@@ -63,8 +63,8 @@ const routes: Routes = [
     loadChildren: () => import('./verification-complate/verification-complate.module').then(m => m.VerificationComplatePageModule)
   },
   {
-    path: 'verification-notifiication',
-    loadChildren: () => import('./verification-notifiication/verification-notifiication.module').then(m => m.VerificationNotifiicationPageModule)
+    path: 'verification-notification',
+    loadChildren: () => import('./verification-notification/verification-notification.module').then(m => m.VerificationNotificationPageModule)
   }
 ];
 

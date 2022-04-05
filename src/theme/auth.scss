@@ -1,0 +1,28 @@
+.stepper {
+    background: #f0efe9;
+    margin: 0 1.5px;
+    width: 36px;
+    height: 8px;
+    border-radius: 10px;
+
+    &.active {
+        background: #f1bf4b 50%;
+    }
+
+    &.half-active {
+        background: linear-gradient(90deg, #f1bf4b 50%, #f0efe9 50%);
+    }
+}
+
+.item-input {
+    .prefix {
+      margin-right: 0;
+      span {
+        font-weight: 600;
+        padding-right: 8px;
+        &:last-child {
+          color: #d2d6e1;
+        }
+      }
+    }
+  }

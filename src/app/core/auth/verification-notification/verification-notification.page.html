@@ -1,0 +1,26 @@
+<ion-header mode="ios">
+  <ion-toolbar>
+    <ion-buttons class="p1" slot="start">
+      <ion-back-button mode="md" defaultHref="app/home"></ion-back-button>
+    </ion-buttons>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="form-container">
+      <div class="placeholder"></div>
+      <div class="form-inner">
+      <div class="form-items">
+        <h3>Bildirimler Önemli!</h3>
+        <p>Önemli konularda sana bildirim gönderebilmemiz için bildirimlerini şimdi aç!</p>
+      </div>
+    </div>
+    <div class="placeholder"></div>
+
+    <div class="form-footer">
+      <ion-button size="block" color="primary" style="margin-bottom: 1em">BİLDİRİMLERİ AKTİFLEŞTİR</ion-button>
+      <ion-button routerDirection="forward" [routerLink]="['../../app/home']" size="block" color="medium" fill="outline">BU ADIMI ATLA</ion-button>
+    </div>
+  </div>
+</ion-content>

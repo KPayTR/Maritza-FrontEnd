@@ -1,20 +1,3 @@
-.stepper {
-  background: #f0efe9;
-  margin: 0 1.5px;
-  width: 36px;
-  height: 8px;
-  border-radius: 10px;
-
-  &.active {
-    background: #f1bf4b 50%;
-  }
-
-  &.half-active {
-    background: linear-gradient(90deg, #f1bf4b 50%, #f0efe9 50%);
-  }
-}
-
-
 .shield {
   text-align: center;
   margin: 40px 0 20px 0;
