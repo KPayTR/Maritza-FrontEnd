@@ -28,6 +28,7 @@ export class AppService {
     localStorage.setItem("current_user", JSON.stringify(v.toJSON()));
 
   }
+
   get accessToken(): string {
     return localStorage.getItem("access_token");
   }
@@ -35,6 +36,16 @@ export class AppService {
   set accessToken(v: string) {
     localStorage.setItem("access_token", v);
   }
+
+  get userTheme(): string {
+    return localStorage.getItem("user_theme");
+  }
+
+  set userTheme(v: string) {
+    localStorage.setItem("user_theme", v);
+  }
+  
+
   async toggleLoader(value: boolean = false, message: string = null): Promise<void> {
     if (value) {
       if (this.loaderCount == 0) {

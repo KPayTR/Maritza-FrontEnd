@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { MenuController } from '@ionic/angular';
 import * as moment from 'moment';
-import { MarketDataService } from '../services/market-data.service'; 
+import { AppService } from '../services/app.service';
+import { MarketDataService } from '../services/market-data.service';
 
 interface SideMenuItem {
   title: string;
@@ -69,7 +70,7 @@ export class AppComponent {
       ]
     },
     {
-      id:5,
+      id: 5,
       header: 'YARDIM',
       collapsable: true,
       items: [
@@ -83,7 +84,7 @@ export class AppComponent {
       id: 6,
       header: 'QR ÖDEME & KAMPANYALAR',
       collapsable: false,
-      items: [ 
+      items: [
         { title: "QR ÖDEME YAP", url: " ", icon: "qr-code" },
         { title: "KAMPANYALAR", url: " ", icon: "gift" },
       ]
@@ -92,25 +93,61 @@ export class AppComponent {
       id: 7,
       header: 'ARKADAŞINI DAVET ET',
       collapsable: false,
-      items: [ 
-        { title: "DAVET LİNKİ", url: " ", icon: "share-social" }, 
+      items: [
+        { title: "DAVET LİNKİ", url: " ", icon: "share-social" },
       ]
     }
   ]
 
   constructor(
+    private appService: AppService,
     private menu: MenuController,
-    private coreService : MarketDataService
+    private coreService: MarketDataService
 
   ) {
     moment.locale('tr')
     this.coreService.init()
-   }
-   openEnd() {  
+    this.initTheme();
+  }
+  
+  openEnd() {
     this.menu.close();
-    }
+  }
+  
   openSegment(menuId) {
     this.activeSideMenuId = menuId;
     console.log(menuId)
+  }
+
+  initTheme() {
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+
+    if(this.appService.userTheme == 'dark' || prefersDark.matches) {
+      this.appService.userTheme = 'dark';
+      document.body.classList.add('dark');
+      document.body.setAttribute('data-theme', 'dark');
+      document.documentElement.classList.add('dark-app');
+    }
+    else {
+      this.appService.userTheme = 'light';
+      document.body.classList.remove('dark');
+      document.body.setAttribute('data-theme', 'light');
+      document.documentElement.classList.remove('dark-app');
+    }
+  }
+
+  toggleTheme() {
+    if(this.appService.userTheme == 'light') {
+      this.appService.userTheme = 'dark';
+      document.body.classList.add('dark');
+      document.body.setAttribute('data-theme', 'dark');
+      document.documentElement.classList.add('dark-app');
+    }
+    else {
+      this.appService.userTheme = 'light';
+      document.body.classList.remove('dark');
+      document.body.setAttribute('data-theme', 'light');
+      document.documentElement.classList.remove('dark-app');
+    }
   }
 }
