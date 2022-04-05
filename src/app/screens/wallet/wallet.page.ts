@@ -35,7 +35,7 @@ export class Wallet implements OnInit {
   selectedChartType = 'line';
   lineData: any[] = []
   candleData: any[] = []
-  selectedTimeRange = '15';
+  selectedTimeRange = '0';
   @ViewChild("chart") chart: ChartComponent;
   public chartOptions: Partial<ChartOptions>;
 
@@ -148,8 +148,9 @@ export class Wallet implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log("userid",this.appService.user?.id)
     this.appService.toggleLoader(true).then(() => {
-      this.assetsApiService.getwallet(this.appService.user?.id)
+      this.assetsApiService.getwallet(1)
         .subscribe(
           v => this.initData(v),
           e => {
@@ -158,11 +159,13 @@ export class Wallet implements OnInit {
           }
         )
     });
+    this.loadSegmentData();
   }
 
   initData(v: AssetModel[]): void {
     this.appService.toggleLoader(false)
     this.assets = v;
+    console.log(this.assets)
   }
 
   loadSegmentData() {
@@ -170,17 +173,17 @@ export class Wallet implements OnInit {
   }
   getChartData() {
     this.appService.toggleLoader(true).then((res) => {
-      // this.matriksService.getgraphicdata(parseInt(this.selectedTimeRange), this.symbol.matriksCode).subscribe(
-      //   (v) => this.onChartData(v),
-      //   (e) => this.onError(e)
-      // );
+      this.matriksService.getgraphdata(parseInt(this.selectedTimeRange), "SUSD").subscribe(
+        (v) => this.onChartData(v),
+        (e) => this.onError(e)
+      );
     });
   }
 
   onChartData(v: GraphicDataModel): void {
     this.zone.run(() => {
       this.appService.toggleLoader(false);
-      console.log(v)
+      console.log('chart',v)
       const lineData = v?.data?.map(x => ({
         time: (moment(x.date, 'DD.MM.YYYY HH:mm:ss').toDate().getTime() / 1000),
         value: x.close
@@ -206,7 +209,8 @@ export class Wallet implements OnInit {
   }
 
   segmentChange(e) {
-    this.selectedSegment = e.detail.value;
+    console.log(e.detail.value)
+    this.selectedSegmentVal = e.detail.value;
   }
 
   goBuy() {

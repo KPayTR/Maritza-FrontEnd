@@ -115,6 +115,7 @@ ion-content {
                     font-weight: bold;
                 }
                 p {
+  
                     font-size: 10px;
                     color: black;
                     margin-bottom: -4px;
@@ -149,14 +150,15 @@ ion-content {
             div {
               text-align: center;
               img {
-                width: 35px;
-                height: 35px;
+                width: 40px;
+                height: 40px;
               }
             }
             h4 {
               font-size: 14px; 
             }
             p {
+                font-weight: 500;
               font-size: 10px;
               color: black;
               margin-bottom: -4px;
@@ -309,16 +311,20 @@ ion-content {
     margin: 16px;
   }
   .buy-btn {
-    color: #16c784;
-    --background: #ebebeb;
+    font-size: 14px;
+    font-weight: bold;
+    color: #fff;
+    --background: #16C784    ;
     --background-activated: #a0dbc5;
     min-width: 64px;
     max-height: 25px;
   }
   .sell-btn {
-    color: #ff4747;   
+    font-size: 14px;
+    font-weight: bold;
+    color: #fff;   
      --background-activated: #e1b8b8;
-    --background: #ebebeb;
+    --background: #FF4747;
     min-width: 64px;
     max-height: 25px;
   }
@@ -332,7 +338,8 @@ ion-content {
     float: left;
     h4{
       font-size: 12px !important;
-        
+      font-weight: 600;
+
       }
   }
   .div-right{
@@ -341,5 +348,6 @@ ion-content {
     float: right;
     h4{
     font-size: 12px !important;
-      
+    font-weight: 600;
+
     }}

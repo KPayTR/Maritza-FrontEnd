@@ -14,7 +14,7 @@
     <ion-buttons slot="end">
       <ion-button >
         <div >
-          <img src="../../../../assets/svg/notification.svg" alt="Icon" />
+          <img src="../../../assets/img/icon/notification-filled.svg" alt="Icon" />
           <!-- *ngIf="appService.unreadNotificationsCount > 0"  /// {{appService.unreadNotificationsCount}} -->
           <ion-badge class="badge-notification">1</ion-badge>
         </div> 
@@ -31,24 +31,24 @@
   <div class="segment-container">
     <ion-segment (ionChange)="segmentChanged($event)" class="asset-segment" mode="md" [value]="selectedSegment">
       <ion-segment-button value="gold">
-        <img src="../../../assets/svg/au.svg" />
+        <img src="../../../assets/img/symbol/au.svg" />
         <ion-label>Altın</ion-label>
       </ion-segment-button>
       <ion-segment-button value="silver">
-        <img src="../../../assets/svg/ag.svg" />
+        <img src="../../../assets/img/symbol/ag.svg" />
         <ion-label>Gümüş</ion-label>
       </ion-segment-button>
       <ion-segment-button value="palladium">
-        <img src="../../../assets/svg/pd.svg" />
+        <img src="../../../assets/img/symbol/pd.svg" />
         <ion-label>Paladyum</ion-label>
       </ion-segment-button>
       <ion-segment-button value="platin">
-        <img src="../../../assets/svg/pt.svg" />
+        <img src="../../../assets/img/symbol/pt.svg" />
         <ion-label>Platin</ion-label>
       </ion-segment-button>
       <ion-segment-button value="all"  routerDirection="forward"  
       [routerLink]="['markets']">
-        <img src="../../../assets/svg/tumP.svg" />
+        <img src="../../../assets/img/icon/tumP.svg" />
         <ion-label>Piyasalar</ion-label>
       </ion-segment-button>
     </ion-segment>

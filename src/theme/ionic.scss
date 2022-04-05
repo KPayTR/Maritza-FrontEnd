@@ -36,6 +36,13 @@ ion-footer {
     }
 }
 
+.segment-container::before
+{
+    background-color: transparent !important;
+}
+
+
+
 ion-item {
     font-size: 14px;
 
@@ -109,4 +116,7 @@ ion-action-sheet {
 
 .text-danger {
     color: var(--ion-color-danger);
+}
+.d-none{
+    display: none !important;
 }

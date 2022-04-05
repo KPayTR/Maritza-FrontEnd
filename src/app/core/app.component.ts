@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
+import { MenuController } from '@ionic/angular';
 import * as moment from 'moment';
-import { MarketDataService } from '../services/market-data.service';
+import { MarketDataService } from '../services/market-data.service'; 
 
 interface SideMenuItem {
   title: string;
@@ -64,6 +65,7 @@ export class AppComponent {
         { title: "KİŞİSEL BİLGİLERİM", url: "user/profile", icon: "person-circle" },
         { title: "BİLDİRİM AYARLARI", url: "user/notifications/notification-setting", icon: "notifications" },
         { title: "BLOG", url: "/tabs/home", icon: "create" },
+        { title: "ÇIKIŞ YAP", url: "/auth/login", icon: "exit" },
       ]
     },
     {
@@ -79,22 +81,34 @@ export class AppComponent {
     },
     {
       id: 6,
-      header: '',
+      header: 'QR ÖDEME & KAMPANYALAR',
       collapsable: false,
-      items: [
-        { title: "ÇIKIŞ YAP", url: "/auth/login", icon: "exit" },
+      items: [ 
+        { title: "QR ÖDEME YAP", url: " ", icon: "qr-code" },
+        { title: "KAMPANYALAR", url: " ", icon: "gift" },
+      ]
+    },
+    {
+      id: 7,
+      header: 'ARKADAŞINI DAVET ET',
+      collapsable: false,
+      items: [ 
+        { title: "DAVET LİNKİ", url: " ", icon: "share-social" }, 
       ]
     }
   ]
 
   constructor(
+    private menu: MenuController,
     private coreService : MarketDataService
 
   ) {
     moment.locale('tr')
     this.coreService.init()
    }
-
+   openEnd() {  
+    this.menu.close();
+    }
   openSegment(menuId) {
     this.activeSideMenuId = menuId;
     console.log(menuId)

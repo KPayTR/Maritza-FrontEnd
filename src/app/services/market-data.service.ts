@@ -28,7 +28,7 @@ export class MarketDataService {
   onMarkets(v: SymbolRateModel[]): void {
     this.zone.run(() => {
       if (v != null && v.length > 0) {
-        console.log(v)
+        console.log("marketdata",v)
         this.symbols = v;
         this.symbolsLoad.emit(v);
       }

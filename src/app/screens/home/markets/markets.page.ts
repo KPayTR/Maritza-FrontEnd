@@ -9,12 +9,13 @@ import { MarketDataService } from 'src/app/services/market-data.service';
 })
 export class MarketsPage implements OnInit {
   selectedSegment = 'maden';
+  boolImg: boolean= false;
+  symbols: SymbolRateModel[];
 
   constructor(
-    private coreService: MarketDataService
+    private marketDataService: MarketDataService
 
   ) { }
-  symbols: SymbolRateModel[];
 
   ngOnInit() {
     this.updateData();
@@ -26,19 +27,30 @@ export class MarketsPage implements OnInit {
   }
 
   updateData() {
+    if (this.marketDataService.symbols == null) return;
     switch (this.selectedSegment) {
       case 'maden':
-        this.symbols = this.coreService.symbols.filter(q => q.symbolType.code == "METALS")
+        this.symbols = this.marketDataService.symbols.filter(q => q.symbolType.code == "METALS")
+    console.log("maden"+this.symbols[0])
+
         break;
       case 'doviz':
-        this.symbols = this.coreService.symbols.filter(q => q.symbolType.code == "FOREX");
-        break;
+        this.symbols = this.marketDataService.symbols.filter(q => q.symbolType.code == "FOREX");
+    console.log("doviz"+this.symbols)
+    break;
       case 'sarrafi':
-        this.symbols = this.coreService.symbols.filter(q => q.matriksCode == "SGLD");
-        break;
+        this.symbols = this.marketDataService.symbols.filter(q => q.matriksCode == "METALS");
+    console.log("sarrafi"+this.symbols)
+    break;
 
       default:
         break;
     }
+  }
+  
+  checkImage(e){
+    const target = e.target;
+    target.classList.add('d-none');
+    target.parentElement.getElementsByClassName('currency-symbol')[0].classList.remove('d-none')
   }
 }
