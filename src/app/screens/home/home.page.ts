@@ -16,9 +16,9 @@ export class Home {
 
   selectedSegment = 'gold';
   selectedChartType = 'candle';
-  selectedTimeRange = '0';
-   symbol: SymbolRateModel;
-   symbols: SymbolRateModel[];
+  selectedTimeRange = '5';
+  symbol: SymbolRateModel;
+  symbols: SymbolRateModel[];
 
   candleData: any[] = []
   lineData: any[] = []
@@ -38,17 +38,17 @@ export class Home {
     else {
       this.loadSegmentData();
     }
-   // this.loadSegmentData();
+    // this.loadSegmentData();
 
   }
 
   getChartData() {
     this.appService.toggleLoader(true).then((res) => {
-        this.matriksService.getgraphdata(parseInt(this.selectedTimeRange), this.symbol.matriksCode).subscribe(
+      this.matriksService.getgraphdata(parseInt(this.selectedTimeRange), this.symbol.matriksCode).subscribe(
         // this.matriksService.getgraphdata(parseInt(this.selectedTimeRange), "SUSD").subscribe(
-         (v) => this.onChartData(v),
-         (e) => this.onError(e)
-       );
+        (v) => this.onChartData(v),
+        (e) => this.onError(e)
+      );
     });
   }
 
@@ -112,7 +112,7 @@ export class Home {
         break;
       default:
         break;
-   }
+    }
     this.getChartData();
   }
 
@@ -125,7 +125,7 @@ export class Home {
   timeRangeChange(e) {
     const value = e.detail.value.toString();
     console.log(value, this.selectedTimeRange);
-    
+
     if (this.selectedTimeRange != value) {
       this.selectedTimeRange = value;
       this.getChartData();

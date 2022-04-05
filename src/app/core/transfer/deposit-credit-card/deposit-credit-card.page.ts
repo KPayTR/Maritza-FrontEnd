@@ -6,17 +6,17 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./deposit-credit-card.page.scss'],
 })
 export class DepositCreditCardPage implements OnInit {
-  phone:string=""
-  buttonDisabled: boolean= true;
+  amount: number;
+  isValid: boolean = false;
+
   constructor() { }
 
   ngOnInit() {
   }
-  phoneChange(){
-    console.log(this.phone)
-    if(this.phone.length>0){
-      this.buttonDisabled=false
-    } 
-    console.log(this.buttonDisabled)
+
+  valueChange(event: any) {
+    console.log(event.value)
+    this.amount = event.value;
+    this.isValid = (this.amount > 0);
   }
 }

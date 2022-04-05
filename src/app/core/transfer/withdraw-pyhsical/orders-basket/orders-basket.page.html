@@ -9,78 +9,110 @@
 
 
 <ion-content>
-  <div    class="form-container" style="    margin: 0px 16px;">
-    <ion-grid class="gap-list">
+  <div class="form-container">
+    <div class="form-inner">
+      <div class="form-header">
+        <h3>Sepetim </h3>
+      </div>
+      <div class="form-items">
+        <div class="order-item">
+          <ion-item lines="none">
+            <ion-thumbnail slot="start">
+              <img src="../../../assets/icon/bar.png" alt="" />
+            </ion-thumbnail>
+            <ion-label class="item-detail">
+              <h3>15 kg Nadir Gram</h3>
+              <ion-note>999.9 Külçe Gümüş</ion-note>
+              <p>5.36gr Au</p>
+            </ion-label>
+            <b slot="end">{{1200 | number : '1.2-2'}} TL</b>
+          </ion-item>
+          <ion-item lines="none" class="border-bttm">
+            <div class="counter" slot="start">
+              <ion-button color="white">
+                <svg width="16" height="2" viewBox="0 0 16 2" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" clip-rule="evenodd"
+                    d="M16 1C16 1.55228 15.5523 2 15 2L1 2C0.447715 2 -3.91405e-08 1.55229 -8.74228e-08 1C-1.35705e-07 0.447717 0.447715 1.35962e-06 1 1.31134e-06L15 8.74228e-08C15.5523 3.91405e-08 16 0.447715 16 1Z"
+                    fill="#1D2125" />
+                </svg>
 
-      <ion-row style="margin-top: 0%;">
-        <ion-col>
-          <h3>Sepetim </h3>
-        </ion-col>
-      </ion-row>
-      <div>
-        <ion-item lines="none">
-          <ion-thumbnail slot="start">
-            <img    src="../../../assets/icon/bar.png" alt="" />
-          </ion-thumbnail>
-          <ion-label class="item-detail">
-            <h3>15 kg Nadir Gram</h3>
-            <ion-note>999.9 Külçe Gümüş</ion-note>
-            <p>5.36gr Au</p>
-          </ion-label>
-          <p style="    font-weight: bold;  " slot="end">1200 TL</p>
-        </ion-item>
-        <ion-item lines="none" class="border-bttm">
-          <div class="counter" slot="start">
-            <ion-icon name="remove-outline" style="padding-right: 5px; "></ion-icon>
-            <div>2</div>
-            <ion-icon name="add-outline"   style="padding-left: 5px;"   ></ion-icon>
-          </div>
-          <p slot="end">Sil</p>
-        </ion-item>
+              </ion-button>
+              <div>2</div>
+              <ion-button color="white">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M-6.11959e-07 7C-6.60242e-07 6.44772 0.447715 6 0.999999 6L6 6L6 1C6 0.447716 6.44771 6.60242e-07 7 6.11959e-07C7.55228 5.63677e-07 8 0.447716 8 1L8 6L13 6C13.5523 6 14 6.44772 14 7C14 7.55228 13.5523 8 13 8L8 8L8 13C8 13.5523 7.55228 14 7 14C6.44772 14 6 13.5523 6 13L6 8L0.999999 8C0.447715 8 -5.63677e-07 7.55229 -6.11959e-07 7Z"
+                    fill="#1D2125" />
+                </svg>
+              </ion-button>
+            </div>
+            <ion-button class="remove-button" slot="end" color="white">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M1.05029 10.9497C0.65977 10.5592 0.65977 9.92606 1.05029 9.53553L4.58583 6L1.05029 2.46447C0.65977 2.07394 0.65977 1.44078 1.05029 1.05025C1.44082 0.659728 2.07398 0.659729 2.46451 1.05025L6.00004 4.58579L9.53558 1.05025C9.9261 0.659728 10.5593 0.659728 10.9498 1.05025C11.3403 1.44078 11.3403 2.07394 10.9498 2.46447L7.41425 6L10.9498 9.53553C11.3403 9.92606 11.3403 10.5592 10.9498 10.9497C10.5593 11.3403 9.9261 11.3403 9.53558 10.9497L6.00004 7.41421L2.46451 10.9497C2.07398 11.3403 1.44082 11.3403 1.05029 10.9497Z"
+                  fill="#1D2125" />
+              </svg>
+
+            </ion-button>
+          </ion-item>
+        </div>
+        <div class="order-item">
+          <ion-item lines="none">
+            <ion-thumbnail slot="start">
+              <img src="../../../assets/icon/bar.png" alt="" />
+            </ion-thumbnail>
+            <ion-label class="item-detail">
+              <h3>15 kg Nadir Gram</h3>
+              <ion-note>999.9 Külçe Gümüş</ion-note>
+              <p>5.36gr Au</p>
+            </ion-label>
+            <b slot="end">{{1200 | number : '1.2-2'}} TL</b>
+          </ion-item>
+          <ion-item lines="none" class="border-bttm">
+            <div class="counter" slot="start">
+              <ion-button color="white">
+                <svg width="16" height="2" viewBox="0 0 16 2" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" clip-rule="evenodd"
+                    d="M16 1C16 1.55228 15.5523 2 15 2L1 2C0.447715 2 -3.91405e-08 1.55229 -8.74228e-08 1C-1.35705e-07 0.447717 0.447715 1.35962e-06 1 1.31134e-06L15 8.74228e-08C15.5523 3.91405e-08 16 0.447715 16 1Z"
+                    fill="#1D2125" />
+                </svg>
+
+              </ion-button>
+              <div>2</div>
+              <ion-button color="white">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M-6.11959e-07 7C-6.60242e-07 6.44772 0.447715 6 0.999999 6L6 6L6 1C6 0.447716 6.44771 6.60242e-07 7 6.11959e-07C7.55228 5.63677e-07 8 0.447716 8 1L8 6L13 6C13.5523 6 14 6.44772 14 7C14 7.55228 13.5523 8 13 8L8 8L8 13C8 13.5523 7.55228 14 7 14C6.44772 14 6 13.5523 6 13L6 8L0.999999 8C0.447715 8 -5.63677e-07 7.55229 -6.11959e-07 7Z"
+                    fill="#1D2125" />
+                </svg>
+              </ion-button>
+            </div>
+            <ion-button class="remove-button" slot="end" color="white">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M1.05029 10.9497C0.65977 10.5592 0.65977 9.92606 1.05029 9.53553L4.58583 6L1.05029 2.46447C0.65977 2.07394 0.65977 1.44078 1.05029 1.05025C1.44082 0.659728 2.07398 0.659729 2.46451 1.05025L6.00004 4.58579L9.53558 1.05025C9.9261 0.659728 10.5593 0.659728 10.9498 1.05025C11.3403 1.44078 11.3403 2.07394 10.9498 2.46447L7.41425 6L10.9498 9.53553C11.3403 9.92606 11.3403 10.5592 10.9498 10.9497C10.5593 11.3403 9.9261 11.3403 9.53558 10.9497L6.00004 7.41421L2.46451 10.9497C2.07398 11.3403 1.44082 11.3403 1.05029 10.9497Z"
+                  fill="#1D2125" />
+              </svg>
+
+            </ion-button>
+          </ion-item>
+        </div>
+        <div class="summary">
+          <ion-item lines="none">
+            <ion-label slot="start">KDV</ion-label>
+            <p slot="end">{{200 | number : '1.2-2'}} TL</p>
+          </ion-item>
+          <ion-item lines="none">
+            <ion-label slot="start"><b>TOTAL</b></ion-label>
+            <b slot="end">{{3200 | number : '1.2-2'}} TL</b>
+          </ion-item>
+        </div>
       </div>
-      <div>
-        <ion-item lines="none">
-          <ion-thumbnail slot="start">
-            <img    src="../../../assets/icon/bar.png" alt="" />
-          </ion-thumbnail>
-          <ion-label class="item-detail">
-            <h3>15 kg Nadir Gram</h3>
-            <ion-note>999.9 Külçe Gümüş</ion-note>
-            <p>5.36gr Au</p>
-          </ion-label>
-          <p style="    font-weight: bold;  " slot="end">1200 TL</p>
-        </ion-item>
-        <ion-item lines="none" class="border-bttm">
-          <div class="counter" slot="start">
-            <ion-icon name="remove-outline" style="padding-right: 5px; "></ion-icon>
-            <div>2</div>
-            <ion-icon name="add-outline"   style="padding-left: 5px;"   ></ion-icon>
-          </div>
-          <p slot="end">Sil</p>
-        </ion-item>
-      </div>
-     
-      <div style ='padding-top: 48px; '>
-        <ion-item lines="none">
-          <p slot="start">KDV</p>
-          <p slot="end">200 TL</p> 
-        </ion-item>
-        <ion-item lines="none">
-          <b slot="start">TOTAL</b>
-          <b slot="end">1400 TL</b> 
-        </ion-item>
-      </div>
-      </ion-grid>
     </div>
+    <div class="form-footer">
+      <ion-button routerDirection="forward" [routerLink]="['../orders-address']" size="block" color="primary">DEVAM ET
+      </ion-button>
+    </div>
+
+  </div>
 </ion-content>
-<ion-footer>
-  
-  <ion-button 
-  routerDirection="forward"  
-  [routerLink]="['../orders-address']"
-    size="block" 
-    color="primary" 
-    style="margin: 0" 
-    >DEVAM ET</ion-button
-  >
-</ion-footer>

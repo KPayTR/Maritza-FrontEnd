@@ -74,10 +74,14 @@
     <ion-item lines="none">
       <img src="../../../assets/img/icon/clock.svg" />
       <ion-select (ionChange)="timeRangeChange($event)" [value]="selectedTimeRange" interface="action-sheet" cancelText="İptal">
-        <ion-select-option value="0">Günlük</ion-select-option>
-        <ion-select-option value="1">Haftalık</ion-select-option>
-        <ion-select-option value="2">Aylık</ion-select-option>
-        <!-- <ion-select-option value="60">Yıllık</ion-select-option> -->
+        <ion-select-option value="1">5 Dakika</ion-select-option>
+        <ion-select-option value="2">15 Dakika</ion-select-option>
+        <ion-select-option value="3">30 Dakika</ion-select-option>
+        <ion-select-option value="4">1 Saat</ion-select-option>
+        <ion-select-option value="5">Günlük</ion-select-option>
+        <ion-select-option value="6">Haftalık</ion-select-option>
+        <ion-select-option value="7">Aylık</ion-select-option>
+        <ion-select-option value="8">Yıllık</ion-select-option>
       </ion-select>
     </ion-item>
     <ion-item lines="none">
@@ -159,7 +163,7 @@
   <div class="survey-container">
     <h3>BEKLENTİ</h3>
     <div class="ion-text-center">
-      <h5>{{this.symbol.name}} Beklenti Anketi</h5>
+      <h5>{{symbol?.name}} Beklenti Anketi</h5>
       <div class="survey-inner">
         <div class="survey-chart">
           <div class="survey-chart-side increasing" [style.width]="'50.50%'">

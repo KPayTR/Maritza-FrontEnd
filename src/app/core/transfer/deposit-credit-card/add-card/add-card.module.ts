@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import {InputMaskModule} from 'primeng/inputmask';
 
 import { IonicModule } from '@ionic/angular';
 
@@ -13,7 +14,8 @@ import { AddCardPage } from './add-card.page';
     CommonModule,
     FormsModule,
     IonicModule,
-    AddCardPageRoutingModule
+    AddCardPageRoutingModule,
+    InputMaskModule
   ],
   declarations: [AddCardPage]
 })

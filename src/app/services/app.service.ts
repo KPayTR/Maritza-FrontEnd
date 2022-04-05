@@ -30,92 +30,97 @@ export class AppService {
   }
   get accessToken(): string {
     return localStorage.getItem("access_token");
-}
+  }
 
-set accessToken(v: string) {
+  set accessToken(v: string) {
     localStorage.setItem("access_token", v);
-}
+  }
   async toggleLoader(value: boolean = false, message: string = null): Promise<void> {
     if (value) {
-        if (this.loaderCount == 0) {
-            this.loaderCount++;
+      if (this.loaderCount == 0) {
+        this.loaderCount++;
 
-            this.loader = await this.loadingController.create({
-                backdropDismiss: false,
-                spinner: "circles",
-                message: message
-            });
+        this.loader = await this.loadingController.create({
+          backdropDismiss: false,
+          spinner: "circles",
+          message: message
+        });
 
-            return this.loader.present();
-        } else {
-            this.loaderCount++;
-            return;
-        }
-    } else {
-        this.loaderCount--;
-
-        if (this.loaderCount == 0 && this.loader != null) {
-            await this.loader.dismiss();
-        }
+        return this.loader.present();
+      } else {
+        this.loaderCount++;
         return;
-    }
-}
+      }
+    } else {
+      this.loaderCount--;
 
-async showAlert(message: string, title: string = "Hata!") {
+      if (this.loaderCount == 0 && this.loader != null) {
+        await this.loader.dismiss();
+      }
+      return;
+    }
+  }
+
+  async showAlert(message: string, title: string = "Hata!") {
     const alert = await this.alertController.create({
-        header: title,
-        message,
-        buttons: [
-            {
-                text: "Tamam",
-                role: "cancel",
-                handler: () => {
-                },
-            },
-        ],
+      header: title,
+      message,
+      buttons: [
+        {
+          text: "Tamam",
+          role: "cancel",
+          handler: () => {
+          },
+        },
+      ],
     });
     await alert.present();
-}
+  }
 
-async showErrorAlert(message: any) {
+  async showErrorAlert(message: any) {
+
     if (Array.isArray(message)) {
-        const errorDtos: ErrorDto[] = message;
-        message = errorDtos.map(x => x.message).join(' ');
+      const errorDtos: ErrorDto[] = message;
+      message = errorDtos.map(x => x.message).join(' ');
     }
+    else if(message && message.title) {
+      message.message = 'Sunucu erişiminde bir sorun oluştu';
+    }
+    
     if (message != null && message.message != null) {
-        message = message.message;
+      message = message.message;
     }
 
     await this.showToast(message, "bottom");
-}
+  }
 
-async showToast(
+  async showToast(
     message: string,
     position: "top" | "bottom" | "middle" = "top"
-) {
+  ) {
     const toast = await this.toastController.create({
-        message,
-        position,
-        duration: 3000,
+      message,
+      position,
+      duration: 3000,
     });
     toast.present();
-}
+  }
 }
 
 export class User {
   public id: number | undefined;
   public phone: string | undefined;
-  public pass: string | undefined; 
-  public token: string | undefined; 
-  public fcmToken: string | undefined;  
+  public pass: string | undefined;
+  public token: string | undefined;
+  public fcmToken: string | undefined;
 
   init(_data?: any) {
     if (_data) {
       this.id = _data["id"];
       this.phone = _data["phone"];
-      this.pass = _data["pass"]; 
+      this.pass = _data["pass"];
       this.token = _data["token"];
-      this.fcmToken = _data["fcmToken"];  
+      this.fcmToken = _data["fcmToken"];
     }
   }
 
@@ -130,9 +135,9 @@ export class User {
     data = typeof data === "object" ? data : {};
     data["id"] = this.id;
     data["phone"] = this.phone;
-    data["pass"] = this.pass; 
+    data["pass"] = this.pass;
     data["token"] = this.token;
-    data["fcmToken"] = this.fcmToken;  
+    data["fcmToken"] = this.fcmToken;
     return data;
   }
 }

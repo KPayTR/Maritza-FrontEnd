@@ -60,6 +60,10 @@ ion-fab {
         z-index: -1;
         margin: 0 0 calc(var(--ion-safe-area-bottom) + 32px) 0;
 
+        &.ios {
+            margin: 0 0 calc(var(--ion-safe-area-bottom) + -2px) 0;
+        }
+
         .circle-button {
             &.left {
                 width: 90px;

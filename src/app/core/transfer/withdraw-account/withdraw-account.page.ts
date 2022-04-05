@@ -7,9 +7,14 @@ import { Component, OnInit } from '@angular/core';
 })
 export class WithdrawAccountPage implements OnInit {
 
+  amount: number;
+
   constructor() { }
-  phone=""
+
   ngOnInit() {
   }
-  phoneChange(){}
+
+  valueChange(event: any) {
+    this.amount = event.value;
+  }
 }

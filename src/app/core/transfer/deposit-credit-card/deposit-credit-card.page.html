@@ -7,46 +7,24 @@
 </ion-header>
 
 <ion-content>
-  <div    class="form-container" style="margin:0px 16px">
-    <ion-grid class="gap-list">
-      <ion-row>
-        <ion-col>
-          <h3>Kredi Kartı ile Para Yatır</h3>
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col>
-          <ion-note>Hesabınıza yatırmak istediğiniz miktarı girin. </ion-note>
-        </ion-col>
-      </ion-row>
-      <ion-row style="margin-top: 64px">
-        <ion-col>
-          <ion-item class="username-input" lines="none">
-            <ion-input 
-              type="tel" 
-              (ionChange)="phoneChange()" 
-              placeholder="Tutar"
-              [(ngModel)]="phone"
-            ></ion-input>
-            <span style="padding-left: 3px">TRY</span> 
+  <div class="form-container">
+    <div class="form-inner">
+      <div class="form-header">
+        <h3>Kredi Kartı ile Para Yatır</h3>
+        <ion-note>Hesabınıza yatırmak istediğiniz miktarı girin. </ion-note>
+      </div>
+      <div class="form-items">
+        <ion-item class="item-input" lines="none">
+          <p-inputNumber [min]="0" [max]="999999" placeholder="Tutar" (onInput)="valueChange($event)"></p-inputNumber>
+          <span class="text-muted" slot="end">TRY</span>
+        </ion-item>
+      </div>
+    </div>
 
-          </ion-item>
-        </ion-col>
-      </ion-row>
-    
- 
-    </ion-grid>
-  </div> 
+    <div class="form-footer">
+      <ion-button [disabled]="!isValid" routerDirection="forward" [routerLink]="['choose-card']" size="block"
+        color="primary">DEVAM</ion-button>
+    </div>
+
+  </div>
 </ion-content>
-<ion-footer>
-  <ion-button
-  disabled={{buttonDisabled}}
-  routerDirection="forward"  
-  [routerLink]="['choose-card']"
-    size="block" 
-    color="primary" 
-    style="margin: 0"
-   
-    >DEVAM</ion-button
-  >
-</ion-footer>

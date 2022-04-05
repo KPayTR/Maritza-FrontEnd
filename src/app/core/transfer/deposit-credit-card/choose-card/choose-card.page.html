@@ -8,39 +8,30 @@
 </ion-header>
 
 <ion-content>
-  <div class="form-container" style="margin:0px 16px">
-    <ion-grid class="gap-list">
-      <ion-row>
-        <ion-col>
-          <h3>Kredi Kartlarım</h3>
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col>
-          <ion-note>Para yatırmak istediğiniz kartı seçiniz. Kayıtlı kartınız yok ise yeni kart ekleyerek işleminize
-            devam edebilirsiniz. </ion-note>
-        </ion-col>
-      </ion-row>
-      <ion-row routerDirection="forward" [routerLink]="['../pay-card']" style="margin-top: 64px">
-        <ion-col>
-          <ion-item class="username-input" lines="none">
-            <p slot="start">5507 **** **** 9247</p>
-            <img slot="end" src="../../../assets/icon/master.png" alt="" />
-          </ion-item>
-        </ion-col>
-      </ion-row>
-      <ion-row routerDirection="forward" [routerLink]="['../pay-card']" style="margin-top: 8px">
-        <ion-col>
-          <ion-item class="username-input" lines="none">
-            <p slot="start">5507 **** **** 9247</p>
-            <img slot="end" src="../../../assets/icon/visa.png" alt="" />
-          </ion-item>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
+  <div class="form-container">
+    <div class="form-inner">
+      <div class="form-header">
+        <h3>Kredi Kartlarım</h3>
+        <ion-note>Para yatırmak istediğiniz kartı seçiniz. Kayıtlı kartınız yok ise yeni kart ekleyerek işleminize devam
+          edebilirsiniz. </ion-note>
+      </div>
+      <div class="form-items">
+        <ion-item button detail="false" class="item-large-select" lines="none">
+          <p slot="start">5507 **** **** 9247</p>
+          <img slot="end" src="../../../assets/icon/master.png" alt="" />
+        </ion-item>
+
+        <ion-item button detail="false" class="item-large-select" lines="none">
+          <p slot="start">5507 **** **** 9247</p>
+          <img slot="end" src="../../../assets/icon/visa.png" alt="" />
+        </ion-item>
+      </div>
+    </div>
+
+    <div class="form-footer">
+      <ion-button routerDirection="forward" [routerLink]="['../add-card']" size="block" color="primary">
+        YENİ KART EKLE</ion-button>
+    </div>
+
   </div>
 </ion-content>
-<ion-footer>
-  <ion-button routerDirection="forward" [routerLink]="['../add-card']" size="block" color="primary" style="margin: 0">
-    YENİ KART EKLE</ion-button>
-</ion-footer>
