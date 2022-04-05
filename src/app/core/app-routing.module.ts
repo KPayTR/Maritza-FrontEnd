@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from './helpers/auth.guard';
 
 const routes: Routes = [
   {
@@ -40,6 +41,7 @@ const routes: Routes = [
   },
   {
     path:"transfer",
+    canActivate: [AuthGuard],
     children:[
       {
         path: 'deposit-credit-card',

@@ -4,91 +4,65 @@
       <ion-back-button mode="md" defaultHref="app/home"></ion-back-button>
     </ion-buttons>
     <ion-buttons class="p1" slot="end">
-      <div class="stepper-div"></div>
-      <div class="stepper-div"></div>
-      <div class="stepper-div stepper-div-color"></div>
+      <div class="stepper active"></div>
+      <div class="stepper active"></div>
+      <div class="stepper"></div>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <div>
-    <div class="form-container" style="margin: 16px">
-      <form [formGroup]="myGroup" (ngSubmit)="registerRetail()">
-        <ion-grid class="gap-list">
-          <ion-row>
-            <ion-col>
-              <h3>Bireysel Hesap</h3>
-              <ion-note>
-                Lütfen gerekli belgeleri sisteme yükleyiniz.
-              </ion-note>
-            </ion-col>
-          </ion-row>
+  <div class="form-container">
+    <form [formGroup]="verificationForm" (ngSubmit)="registerRetail()">
+      <div class="form-inner">
+        <div class="form-header">
+          <h3>Bireysel Hesap</h3>
+          <ion-note>Lütfen gerekli belgeleri sisteme yükleyiniz.</ion-note>
+        </div>
+        <div class="form-items">
+          <ion-item button detail="false" class="item-input" lines="none" (click)="chooseSignature()">
+            <span slot="start">
+              <img src="../../../../assets/img/icon/folderAdd.svg" />
+            </span>
+            <ion-input readonly placeholder="Kimlik Ön Yüz" formControlName="idfront"></ion-input>
+            <span slot="end">
+              <p class="btn-choose">SEÇ</p>
+            </span>
+          </ion-item>
+          <ion-item button detail="false" class="item-input" lines="none" (click)="chooseSignature()">
+            <span slot="start">
+              <img src="../../../../assets/img/icon/folderAdd.svg" />
+            </span>
+            <ion-input readonly placeholder="Kimlik Arka Yüz" formControlName="idback"></ion-input>
+            <span slot="end">
+              <p class="btn-choose">SEÇ</p>
+            </span>
+          </ion-item>
+          <ion-item button detail="false" class="item-input" lines="none" (click)="chooseSignature()">
+            <span slot="start">
+              <img src="../../../../assets/img/icon/folderAdd.svg" />
+            </span>
+            <ion-input readonly placeholder="Kimlik Selfie" formControlName="selfie"></ion-input>
+            <span slot="end">
+              <p class="btn-choose">SEÇ</p>
+            </span>
+          </ion-item>
+          <ion-item button detail="false" class="item-input" lines="none" (click)="chooseSignature()">
+            <span slot="start">
+              <img src="../../../../assets/img/icon/folderAdd.svg" />
+            </span>
+            <ion-input readonly placeholder="İkametgah Belgesi" formControlName="residence"></ion-input>
+            <span slot="end">
+              <p class="btn-choose">SEÇ</p>
+            </span>
+          </ion-item>
 
-          <ion-row style="margin-top: 64px" (click)="chooseSignature()">
-            <ion-col>
-              <ion-item class="username-input" lines="none">
-                <span slot="start">
-                  <img src="../../../../assets/svg/folderAdd.svg" />
-                </span>
-                <ion-input
-                  readonly
-                  placeholder="Kimlik ön"
-                  formControlName="idfront"
-                ></ion-input>
-                <span slot="end">
-                  <p class="btn-choose">SEÇ</p>
-                </span>
-              </ion-item>
-            </ion-col>
-          </ion-row>
-
-          <ion-row style="margin-top: 16px" (click)="chooseSignature()">
-            <ion-col>
-              <ion-item class="username-input" lines="none">
-                <span slot="start">
-                  <img src="../../../../assets/svg/folderAdd.svg" />
-                </span>
-                <ion-input
-                  readonly
-                  placeholder="Kimlik arka"
-                  formControlName="idback"
-                ></ion-input>
-                <span slot="end">
-                  <p class="btn-choose">SEÇ</p>
-                </span>
-              </ion-item>
-            </ion-col>
-          </ion-row>
-
-          <ion-row style="margin-top: 16px" (click)="chooseTax()">
-            <ion-col>
-              <ion-item lines="none" class="username-input">
-                <span slot="start">
-                  <img src="../../../../assets/svg/folderAdd.svg" />
-                </span>
-                <ion-input
-                  readonly
-                  placeholder="İkametgah belgesi"
-                  formControlName="residence"
-                ></ion-input>
-                <span slot="end">
-                  <p class="btn-choose">SEÇ</p>
-                </span>
-              </ion-item>
-            </ion-col>
-          </ion-row>
-        </ion-grid>
-      </form>
-    </div>
+        </div>
+      </div>
+      <div class="form-footer">
+        <ion-button routerDirection="forward" [routerLink]="['../verification-complate']" size="block" color="primary">
+          DEVAM</ion-button>
+      </div>
+    </form>
   </div>
 </ion-content>
-<ion-footer>
-  <ion-button 
-  routerDirection="forward" [routerLink]="['../verification-complate']" 
-  size="block" color="primary" style="margin: 0">DEVAM</ion-button>
-
-  <ion-button size="block" color="medium" fill="outline" style="margin: 0"
-    >YENİDEN ÇEK</ion-button
-  >
-</ion-footer>

@@ -16,13 +16,20 @@
 
 .item-input {
     .prefix {
-      margin-right: 0;
-      span {
-        font-weight: 600;
-        padding-right: 8px;
-        &:last-child {
-          color: #d2d6e1;
+        margin-right: 0;
+        span {
+            font-weight: 600;
+            padding-right: 8px;
+            &:last-child {
+                color: #d2d6e1;
+            }
         }
-      }
     }
-  }
+
+    .btn-choose {
+        color: var(--ion-color-primary);
+        font-weight: 600;
+        font-size: 14px;
+    }
+}
+

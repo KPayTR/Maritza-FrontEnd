@@ -8,15 +8,16 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 })
 export class VerificationIndividualPage implements OnInit {
 
-  myGroup: FormGroup;
+  verificationForm: FormGroup;
 
   constructor(
     private formBuilder: FormBuilder,
 
   ) {
-    this.myGroup = this.formBuilder.group({
+    this.verificationForm = this.formBuilder.group({
       idfront: ['', [Validators.required, Validators.minLength(2)]],
       idback: ['', [Validators.required, Validators.minLength(2)]], 
+      selfie: ['', [Validators.required, Validators.minLength(2)]], 
       residence: ['', [Validators.required, Validators.minLength(2)]], 
     })
    }

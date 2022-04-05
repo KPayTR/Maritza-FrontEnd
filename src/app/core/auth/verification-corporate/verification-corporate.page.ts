@@ -7,13 +7,13 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
   styleUrls: ['./verification-corporate.page.scss'],
 })
 export class VerificationCorporatePage implements OnInit {
-  myGroup: FormGroup;
+  verificationForm: FormGroup;
 
   constructor(
     private formBuilder: FormBuilder,
 
   ) {
-    this.myGroup = this.formBuilder.group({
+    this.verificationForm = this.formBuilder.group({
       signature: ['', [Validators.required, Validators.minLength(2)]],
       tax: ['', [Validators.required, Validators.minLength(2)]], 
       news: ['', [Validators.required, Validators.minLength(2)]],
