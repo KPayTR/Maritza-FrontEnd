@@ -1,0 +1,38 @@
+.dark-app {
+    .invertable {
+        filter: brightness(0) invert(1);
+    }
+
+    ion-header {
+        ion-toolbar {
+            --background: #21252f;
+        }
+
+        ion-back-button {
+            filter: brightness(0) invert(1);
+        }
+    }
+
+    ion-item {
+        --background: transparent;
+    }
+
+    ion-list {
+        background-color: transparent !important;
+    }
+
+    .form-container {
+        .form-items {
+            ion-item {
+                &.item-large-select {
+                    --background: #323541;
+                    border-color: #5B5D68;
+
+                    ion-note {
+                        --color: #ffffff;
+                    }
+                }
+            }
+        }
+    }
+}
