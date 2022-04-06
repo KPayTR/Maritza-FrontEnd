@@ -102,7 +102,7 @@ export class AppService {
       message = message.message;
     }
 
-    await this.showToast(message, "top");
+    //await this.showToast(message, "top");
   }
 
   async showToast(

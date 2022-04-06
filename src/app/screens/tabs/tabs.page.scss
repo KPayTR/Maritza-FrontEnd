@@ -50,48 +50,68 @@ ion-fab {
             height: 64px;
         }
     }
+
+    .fab-list-container {
+        position: relative;
+        width: 100%;
+        height: 1px;
+        ion-fab-list {
+            margin: 0;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 33px;
+            z-index: -1;
+            .circle-button-container {
+                display: flex;
+                flex-direction: row;
+                position: relative;
+                .circle-button {
+                    &.left {
+                        width: 90px;
+                        height: 90px;
+                        border-radius: 90px 0 0 0;
+                        -moz-border-radius: 90px 0 0 0;
+                        -webkit-border-radius: 90px 0 0 0;
+
+                        &::after {
+                            position: absolute;
+                            display: block;
+                            background-color: #080a1e;
+                            width: 100%;
+                            height: 12px;
+                            content: " ";
+                            bottom: 0;
+                            z-index: 1;
+                        }
+                    }
+
+                    &.right {
+                        width: 90px;
+                        height: 90px;
+                        border-radius: 0 90px 0 0;
+                        -moz-border-radius: 0 90px 0 0;
+                        -webkit-border-radius: 0 90px 0 0;
+                        margin-left: -1px;
+                    }
+                }
+            }
+        }
+    }
 }
 
+/*
 ::ng-deep {
     .fab-list-side-top {
         top: auto;
         flex-direction: row;
         left: -58px;
-        z-index: -1;
         margin: 0 0 calc(var(--ion-safe-area-bottom) + 32px) 0;
 
         &.ios {
             margin: 0 0 calc(var(--ion-safe-area-bottom) + -2px) 0;
         }
-
-        .circle-button {
-            &.left {
-                width: 90px;
-                height: 90px;
-                border-radius: 90px 0 0 0;
-                -moz-border-radius: 90px 0 0 0;
-                -webkit-border-radius: 90px 0 0 0;
-
-                &::after {
-                    position: absolute;
-                    display: block;
-                    background-color: #080a1e;
-                    width: 100%;
-                    height: 12px;
-                    content: " ";
-                    bottom: 0;
-                    z-index: 1;
-                }
-            }
-
-            &.right {
-                width: 90px;
-                height: 90px;
-                border-radius: 0 90px 0 0;
-                -moz-border-radius: 0 90px 0 0;
-                -webkit-border-radius: 0 90px 0 0;
-                margin-left: -1px;
-            }
-        }
     }
 }
+
+*/
