@@ -1,3 +1,7 @@
+img {
+    transition: filter 300ms linear;
+}
+
 .dark-app {
     .invertable {
         filter: brightness(0) invert(1);
@@ -26,7 +30,7 @@
             ion-item {
                 &.item-large-select {
                     --background: #323541;
-                    border-color: #5B5D68;
+                    border-color: #5b5d68;
 
                     ion-note {
                         --color: #ffffff;
