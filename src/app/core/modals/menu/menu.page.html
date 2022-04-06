@@ -3,62 +3,37 @@
     <ion-item lines="none">
       <ion-note>YATIR</ion-note>
     </ion-item>
-    <ion-item
-      detail 
-      (click)="dismiss()"
-      routerDirection="forward"
-      [routerLink]="['transfer/deposit-credit-card']"
-    >
-     <ion-thumbnail slot="start">
-      <img src="../../../../assets/img/icon/card.svg">
-     </ion-thumbnail>
+    <ion-item detail (click)="dismiss()" routerDirection="forward" [routerLink]="['transfer/deposit-credit-card']">
+      <ion-thumbnail slot="start">
+        <img class="invertable" src="../../../../assets/img/icon/card.svg">
+      </ion-thumbnail>
       <ion-label>KREDİ KARTI İLE</ion-label>
     </ion-item>
-    <ion-item
-      detail
-      (click)="dismiss()"
-      routerDirection="forward"
-      [routerLink]="['transfer/deposit-eft']" 
-    >
-    <ion-thumbnail slot="start">
-      <img src="../../../../assets/img/icon/eft.svg">
-     </ion-thumbnail>
+    <ion-item detail (click)="dismiss()" routerDirection="forward" [routerLink]="['transfer/deposit-eft']">
+      <ion-thumbnail slot="start">
+        <img class="invertable" src="../../../../assets/img/icon/eft.svg">
+      </ion-thumbnail>
       <ion-label>HAVALE / EFT</ion-label>
     </ion-item>
-    <ion-item
-      detail
-      (click)="dismiss()"
-      routerDirection="forward"
-      [routerLink]="['transfer/deposit-pyhsical']"
-    >
-    <ion-thumbnail slot="start">
-      <img src="../../../../assets/img/icon/pyhsical.svg">
-     </ion-thumbnail>
+    <ion-item detail (click)="dismiss()" routerDirection="forward" [routerLink]="['transfer/deposit-pyhsical']">
+      <ion-thumbnail slot="start">
+        <img class="invertable" src="../../../../assets/img/icon/pyhsical.svg">
+      </ion-thumbnail>
       <ion-label>FİZİKİ YATIR</ion-label>
     </ion-item>
     <ion-item lines="none">
       <ion-note>ÇEK</ion-note>
     </ion-item>
-    <ion-item
-      detail
-      (click)="dismiss()"
-      routerDirection="forward"
-      [routerLink]="['transfer/withdraw-account']"
-    >
-    <ion-thumbnail slot="start">
-      <img src="../../../../assets/img/icon/eft.svg">
-     </ion-thumbnail>
+    <ion-item detail (click)="dismiss()" routerDirection="forward" [routerLink]="['transfer/withdraw-account']">
+      <ion-thumbnail slot="start">
+        <img class="invertable" src="../../../../assets/img/icon/eft.svg">
+      </ion-thumbnail>
       <ion-label>HESABA KAYDİ ÇEKİM</ion-label>
     </ion-item>
-    <ion-item
-      (click)="dismiss()"
-      detail
-      routerDirection="forward"
-      [routerLink]="['transfer/withdraw-pyhsical']"
-    >
-    <ion-thumbnail slot="start">
-      <img src="../../../../assets/img/icon/pyhsical.svg">
-     </ion-thumbnail>
+    <ion-item (click)="dismiss()" detail routerDirection="forward" [routerLink]="['transfer/withdraw-pyhsical']">
+      <ion-thumbnail slot="start">
+        <img class="invertable" src="../../../../assets/img/icon/pyhsical.svg">
+      </ion-thumbnail>
       <ion-label>FİZİKİ ÇEKİM</ion-label>
     </ion-item>
   </ion-list>

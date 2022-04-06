@@ -39,9 +39,13 @@
             }
 
             &.item-input {
-                --background: #f6f5f1;
+                --background: var(--ion-color-tertiary);
                 border-radius: 10px;
                 font-size: 14px;
+
+                ::placeholder {
+                    color: var(--ion-text-muted-color);
+                }
             }
 
             &.item-large-select {
@@ -61,7 +65,7 @@
 
                     p {
                         font-size: 16px;
-                        color: #080a1e;
+                        color: var(--ion-color-secondary);
                         font-weight: 600;
                         span {
                             font-weight: 500;
@@ -135,7 +139,7 @@
                 }
 
                 p {
-                    color: #080a1e;
+                    color: var(--ion-color-secondary);
                     font-weight: 500;
                     margin-top: 0;
                     margin-bottom: 0;

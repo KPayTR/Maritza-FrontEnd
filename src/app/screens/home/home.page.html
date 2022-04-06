@@ -5,7 +5,7 @@
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-menu-toggle class="ion-menu-button">
-        <img src="../../../assets/img/icon/menu.svg">
+        <img class="invertable" src="../../../assets/img/icon/menu.svg">
       </ion-menu-toggle>
     </ion-buttons>
     <ion-title>
@@ -14,13 +14,13 @@
     <ion-buttons slot="end">
       <ion-button >
         <div >
-          <img src="../../../assets/img/icon/notification-filled.svg" alt="Icon" />
+          <img class="invertable" src="../../../assets/img/icon/notification-filled.svg" alt="Icon" />
           <!-- *ngIf="appService.unreadNotificationsCount > 0"  /// {{appService.unreadNotificationsCount}} -->
           <ion-badge class="badge-notification">1</ion-badge>
         </div> 
       </ion-button>
       <ion-button (click)="start()" class="ion-menu-button">
-        <img src="../../../assets/img/icon/qrCode.svg">
+        <img class="invertable" src="../../../assets/img/icon/qrCode.svg">
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -75,7 +75,7 @@
     </div>
     <div class="select-container">
       <ion-item lines="none">
-        <img src="../../../assets/img/icon/clock.svg" />
+        <img class="invertable" src="../../../assets/img/icon/clock.svg" />
         <ion-select (ionChange)="timeRangeChange($event)" [value]="selectedTimeRange" interface="action-sheet" cancelText="İptal">
           <ion-select-option value="1">5 Dakika</ion-select-option>
           <ion-select-option value="2">15 Dakika</ion-select-option>
@@ -88,7 +88,7 @@
         </ion-select>
       </ion-item>
       <ion-item lines="none">
-        <img src="../../../assets/img/icon/chart.svg" />
+        <img class="invertable" src="../../../assets/img/icon/chart.svg" />
         <ion-select (ionChange)="chartTypeChange($event)" [value]="selectedChartType" interface="action-sheet" cancelText="İptal">
           <ion-select-option value="candle">Mum Grafik</ion-select-option>
           <ion-select-option value="line">Çizgi Grafik</ion-select-option>

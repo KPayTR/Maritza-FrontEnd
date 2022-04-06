@@ -10,22 +10,21 @@ const routes: Routes = [
     children: [
       {
         path: 'home',
-        // canActivate: [AuthGuard],
         loadChildren: () => import('../home/home.module').then(m => m.HomeModule)
       },
       {
         path: 'wallet',
-        canActivate: [AuthGuard],
+        //canActivate: [AuthGuard],
         loadChildren: () => import('../wallet/wallet.module').then(m => m.WalletModule)
       },
       {
         path: 'analysis',
-        canActivate: [AuthGuard],
+        //canActivate: [AuthGuard],
         loadChildren: () => import('../analysis/analysis.module').then(m => m.AnalysisPageModule)
       },
       {
         path: 'trade',
-        canActivate: [AuthGuard],
+        //canActivate: [AuthGuard],
         loadChildren: () => import('../trade/trade.module').then(m => m.TradePageModule)
       },
       // {
