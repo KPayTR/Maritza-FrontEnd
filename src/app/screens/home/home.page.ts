@@ -31,7 +31,7 @@ export class Home {
     private appService: AppService,
     private matriksService: MatriksApiService,
   ) { 
- 
+    this.updateData();
     if (marketDataService.symbols == null) {
       marketDataService.symbolsLoad.subscribe(v => {
         this.loadSegmentData();
@@ -98,16 +98,16 @@ export class Home {
 
     switch (this.selectedSegment) {
       case 'gold':
-        this.symbol = this.marketDataService.symbols.filter(q => q.matriksCode == "SGLD")[0]
+        this.symbol = this.marketDataService.symbols.filter(q => q.isoCode == "XAU")[0]
         break;
       case 'silver':
-        this.symbol = this.marketDataService.symbols.filter(q => q.matriksCode == "SXAGGR")[0];
+        this.symbol = this.marketDataService.symbols.filter(q => q.isoCode == "XAG")[0];
         break;
       case 'palladium':
-        this.symbol = this.marketDataService.symbols.filter(q => q.matriksCode == "SUSD")[0];
+        this.symbol = this.marketDataService.symbols.filter(q => q.isoCode == "XPD")[0];
         break;
       case 'platin':
-        this.symbol = this.marketDataService.symbols.filter(q => q.matriksCode == "SEURO")[0];
+        this.symbol = this.marketDataService.symbols.filter(q => q.isoCode == "XPT")[0];
         break;
       case 'all':
         this.symbols = this.marketDataService.symbols;

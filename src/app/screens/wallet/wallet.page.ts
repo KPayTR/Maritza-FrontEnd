@@ -11,7 +11,7 @@ import {
   ApexFill
 } from "ng-apexcharts";
 import { AssetModel, AssetsApiService, GraphicDataModel, MatriksApiService, } from 'src/app/services/api-yatirimim.service';
-import { AppService } from 'src/app/services/app.service';
+import { AppService } from 'src/app/services/app.service'; 
 import { MarketDataService } from 'src/app/services/market-data.service';
 
 export type ChartOptions = {
@@ -35,7 +35,7 @@ export class Wallet implements OnInit {
   selectedChartType = 'line';
   lineData: any[] = []
   candleData: any[] = []
-  selectedTimeRange = '0';
+  selectedTimeRange = '1';
   @ViewChild("chart") chart: ChartComponent;
   public chartOptions: Partial<ChartOptions>;
 
@@ -93,7 +93,7 @@ export class Wallet implements OnInit {
     private zone: NgZone,
     private appService: AppService,
     private matriksService: MatriksApiService,
-    private assetsApiService: AssetsApiService,
+    private assetsApiService: AssetsApiService, 
     private router: Router
   ) {
     this.chartOptions = {
@@ -158,8 +158,19 @@ export class Wallet implements OnInit {
             this.appService.showToast('Veri yüklenemedi.', 'bottom')
           }
         )
-    });
-    this.loadSegmentData();
+    }); 
+    if (this.marketDataService.symbols == null) {
+      this.marketDataService.symbolsLoad.subscribe(v => {
+        this.loadSegmentData();
+      })
+    }
+    else {
+      this.loadSegmentData();
+    }
+  }
+  loadSegmentData() {
+    if (this.marketDataService.symbols == null) return;
+    this.getChartData();
   }
 
   initData(v: AssetModel[]): void {
@@ -167,10 +178,7 @@ export class Wallet implements OnInit {
     this.assets = v;
     console.log(this.assets)
   }
-
-  loadSegmentData() {
-    this.getChartData();
-  }
+ 
   getChartData() {
     this.appService.toggleLoader(true).then((res) => {
       this.matriksService.getgraphdata(parseInt(this.selectedTimeRange), "SUSD").subscribe(
@@ -224,5 +232,13 @@ export class Wallet implements OnInit {
   }
   goWithdraw() {
     this.router.navigate(['app/transfer/withdraw-account'])
+  }
+  checkTradeValue(value,trade){
+    // Buy: True -- Sell : False
+    if (trade==true) {
+      return(this.marketDataService.symbols.filter(q => q.isoCode == value)[0].buy);
+    } else {
+      return(this.marketDataService.symbols.filter(q => q.isoCode == value)[0].sell);
+    }
   }
 }

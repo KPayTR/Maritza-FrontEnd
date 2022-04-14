@@ -216,10 +216,10 @@
               <ion-col size="2">
                 <div>
                   <img
-                    src="../../../../assets/img/symbol/{{symbol?.matriksCode}}.svg"
+                  src="../../../assets/img/symbol/{{symbol?.isoCode}}.svg" 
                     (error)="checkImage($event)"
                     alt=""
-                  />
+                  />    
                   <div class="currency-symbol d-none">
                     <div [ngClass]="(symbol.currencySymbol!=null && symbol.currencySymbol.length>1) ? 'font-big': 'font-small'">{{symbol?.currencySymbol}}</div>
                   </div>
