@@ -1,18 +1,8 @@
-.ios-segment {
-  --background: #fdfdfd;
-  border: solid 1px #c3cddb;
-  border-radius: 50px;
-  margin-bottom: 16px;
-  ion-segment-button {
-    letter-spacing: normal;
-    --indicator-color: #f1be4b;
-    --border-radius: 100px;
-    margin: -2px;
-  }
+ios-segment{
+  padding: 0px 16px;
 }
-
 .content {
-  padding: 16px;
+  //padding: 16px;
 
   .heat-map-container {
     display: flex;

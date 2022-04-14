@@ -114,3 +114,21 @@ ion-action-sheet {
 .d-none{
     display: none !important;
 } 
+
+ion-back-button{
+    color: red !important;
+  } 
+
+  .ios-segment {
+    margin-top: 16px; 
+    --background: #fdfdfd !important;
+    border: solid 1px #c3cddb;
+    border-radius: 50px;
+    margin-bottom: 16px;
+    ion-segment-button {
+      letter-spacing: normal;
+      --indicator-color: #f1be4b;
+      --border-radius: 100px;
+      margin: -2px;
+    }
+  }

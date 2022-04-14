@@ -29,6 +29,14 @@ export class AppService {
 
   }
 
+  get userPhone(): string {
+    return localStorage.getItem("user_phone");
+  }
+
+  set userPhone(v: string) {
+    localStorage.setItem("user_phone", v);
+  }
+
   get accessToken(): string {
     return localStorage.getItem("access_token");
   }
@@ -102,7 +110,7 @@ export class AppService {
       message = message.message;
     }
 
-    //await this.showToast(message, "top");
+    await this.showToast(message, "top");
   }
 
   async showToast(

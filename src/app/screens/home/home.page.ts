@@ -2,7 +2,7 @@ import { Component, NgZone } from '@angular/core';
 import { BarcodeScanner } from '@awesome-cordova-plugins/barcode-scanner/ngx';
 import { UTCTimestamp } from 'lightweight-charts';
 import * as moment from 'moment';
-import { GraphicDataModel, MatriksApiService, SymbolRateModel } from 'src/app/services/api-yatirimim.service';
+import { AuthApiService, GraphicDataModel, MatriksApiService, SymbolRateModel, TokenModel } from 'src/app/services/api-yatirimim.service';
 import { AppService } from 'src/app/services/app.service';
 import { MarketDataService } from 'src/app/services/market-data.service';
 
@@ -27,9 +27,11 @@ export class Home {
     private barcodeScanner: BarcodeScanner,
     private marketDataService: MarketDataService,
     private zone: NgZone,
+    private authService: AuthApiService,
     private appService: AppService,
     private matriksService: MatriksApiService,
-  ) {
+  ) { 
+ 
     if (marketDataService.symbols == null) {
       marketDataService.symbolsLoad.subscribe(v => {
         this.loadSegmentData();
@@ -41,7 +43,7 @@ export class Home {
     // this.loadSegmentData();
 
   }
-
+ 
   getChartData() {
     this.appService.toggleLoader(true).then((res) => {
       this.matriksService.getgraphdata(parseInt(this.selectedTimeRange), this.symbol.matriksCode).subscribe(
