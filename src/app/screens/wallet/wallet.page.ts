@@ -56,8 +56,11 @@ export class Wallet implements OnInit {
   ) {
     this.chartOptions = {
       chart: {
-        type: "donut",
+        type: "donut", 
         events: {
+          animationEnd: function(ctx) {
+            ctx.toggleDataPointSelection(1)
+         },
           dataPointSelection: (event, chartContext, config) => {
             if (this.assets.length == 0) {
               event.preventDefault();
@@ -132,7 +135,7 @@ export class Wallet implements OnInit {
 
   initData(v: AssetModel[]): void {
     this.appService.toggleLoader(false)
-    //this.assets = v.sort((a, b) => (a.symbol.isMainCurrency ? -1 : a.symbolId) - (b.symbol.isMainCurrency ? -1 : b.symbolId));
+    this.assets = v;
     this.series = this.assets.map(x => x.price);
 
     if (this.assets.length > 0) {

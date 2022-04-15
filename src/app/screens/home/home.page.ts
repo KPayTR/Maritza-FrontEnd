@@ -31,7 +31,6 @@ export class Home {
     private appService: AppService,
     private matriksService: MatriksApiService,
   ) {
-    this.updateData();
     if (marketDataService.symbols == null) {
       marketDataService.symbolsLoad.subscribe(v => {
         this.loadSegmentData();
@@ -39,8 +38,7 @@ export class Home {
     }
     else {
       this.loadSegmentData();
-    }
-    // this.loadSegmentData();
+    } 
 
   }
 
@@ -110,6 +108,7 @@ export class Home {
         break;
       case 'all':
         this.symbols = this.marketDataService.symbols;
+        this.updateData();
         break;
       default:
         break;
@@ -169,7 +168,7 @@ export class Home {
         this.symbols = this.marketDataService.symbols.filter(q => q.symbolType.code == "FOREX");
         break;
       case 'sarrafi':
-        this.symbols = this.marketDataService.symbols.filter(q => q.matriksCode == "METALS");
+        this.symbols = this.marketDataService.symbols.filter(q => q.matriksCode == "SARRAFI");
         break;
 
       default:

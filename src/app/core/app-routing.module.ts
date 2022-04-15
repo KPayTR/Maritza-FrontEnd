@@ -64,6 +64,10 @@ const routes: Routes = [
         loadChildren: () => import('./transfer/withdraw-pyhsical/withdraw-pyhsical.module').then( m => m.WithdrawPyhsicalPageModule)
       }
     ]
+  },
+  {
+    path: 'alarm',
+    loadChildren: () => import('./alarm/alarm.module').then( m => m.AlarmPageModule)
   }
 ];
 @NgModule({

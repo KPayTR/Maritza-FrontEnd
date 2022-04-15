@@ -10,7 +10,7 @@ const routes: Routes = [
   {
     path: 'markets',
     loadChildren: () => import('./markets/markets.module').then( m => m.MarketsPageModule)
-  }
+  }, 
 ];
 
 @NgModule({
