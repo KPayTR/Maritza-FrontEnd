@@ -8,7 +8,9 @@ import {
   ApexChart,
   ApexPlotOptions,
   ApexDataLabels,
-  ApexFill
+  ApexFill,
+  ApexLegend,
+  ApexTooltip
 } from "ng-apexcharts";
 import { AssetModel, AssetsApiService, GraphicDataModel, MatriksApiService, } from 'src/app/services/api-yatirimim.service';
 import { AppService } from 'src/app/services/app.service';
@@ -40,6 +42,9 @@ export class Wallet implements OnInit {
   @ViewChild("chart") chart: ChartComponent;
   public chartOptions: Partial<ChartOptions>;
 
+  legend: ApexLegend = {show: false};
+  tooltip: ApexTooltip = {enabled: false};
+
   series: any = [1];
   colors: any = ['#B1B1C5'];
   selectedItem: AssetModel;
@@ -58,6 +63,7 @@ export class Wallet implements OnInit {
     this.chartOptions = {
       chart: {
         type: "donut",
+        fontFamily: 'var(--ion-font-family)',
         events: {
           animationEnd: function (ctx) {
             ctx.toggleDataPointSelection(1)
@@ -68,11 +74,14 @@ export class Wallet implements OnInit {
               return false;
             }
             this.selectedItem = this.assets[config.dataPointIndex];
-          }
+          },
         },
         selection: {
-          enabled: false
-        }
+          enabled: false,
+          stroke: {
+            width: 0
+          }
+        },
       },
       labels: this.assets.map(x => x.symbol),
       responsive: [
