@@ -15,7 +15,7 @@ export class CandleChartComponent implements OnInit {
     chart: {
       layout: {
         fontFamily: 'var(--ion-font-family)',
-        backgroundColor: '#2B2B43',
+        backgroundColor: '#21252f',
         lineColor: '#2B2B43',
         textColor: '#D9D9D9',
       },
@@ -145,7 +145,8 @@ export class CandleChartComponent implements OnInit {
       this.candleStickSeries.setData(this.chartData);
     }
 
-    this.syncToTheme('Light');
+    const theme = document.getElementsByTagName('body')[0].classList.contains('dark') ? 'Dark' : 'Light';
+    this.syncToTheme(theme);
   }
 
   syncToTheme(theme) {

@@ -13,7 +13,7 @@ import { MarketDataService } from 'src/app/services/market-data.service';
 })
 export class Home {
   barcodeResult: string;
-  selectedValue='maden';
+  selectedValue = 'maden';
   selectedSegment = 'gold';
   selectedChartType = 'candle';
   selectedTimeRange = '5';
@@ -30,7 +30,7 @@ export class Home {
     private authService: AuthApiService,
     private appService: AppService,
     private matriksService: MatriksApiService,
-  ) { 
+  ) {
     this.updateData();
     if (marketDataService.symbols == null) {
       marketDataService.symbolsLoad.subscribe(v => {
@@ -43,7 +43,7 @@ export class Home {
     // this.loadSegmentData();
 
   }
- 
+
   getChartData() {
     this.appService.toggleLoader(true).then((res) => {
       this.matriksService.getgraphdata(parseInt(this.selectedTimeRange), this.symbol.matriksCode).subscribe(
@@ -57,7 +57,6 @@ export class Home {
   onChartData(v: GraphicDataModel): void {
     this.zone.run(() => {
       this.appService.toggleLoader(false);
-      console.log(v)
       const candleData = v?.data?.map(x => ({
         time: (moment(x.date, 'DD.MM.YYYY HH:mm:ss').toDate().getTime() / 1000),
         open: x.open,
@@ -126,7 +125,6 @@ export class Home {
 
   timeRangeChange(e) {
     const value = e.detail.value.toString();
-    console.log(value, this.selectedTimeRange);
 
     if (this.selectedTimeRange != value) {
       this.selectedTimeRange = value;
@@ -142,10 +140,8 @@ export class Home {
         resultDisplayDuration: 0,
       })
       .then((barcodeData) => {
-        console.log('Barcode data', barcodeData);
         if (barcodeData == undefined || barcodeData.text.length == 0) {
           //this.appService.showAlert("İşlemi İptal Ettiniz.");
-          console.log('Barcode data', barcodeData);
         } else {
           this.barcodeResult = barcodeData.text.trim();
           // this.appService.showErrorAlert(
@@ -168,24 +164,20 @@ export class Home {
     switch (this.selectedValue) {
       case 'maden':
         this.symbols = this.marketDataService.symbols.filter(q => q.symbolType.code == "METALS")
-    console.log("maden"+this.symbols[0])
-
         break;
       case 'doviz':
         this.symbols = this.marketDataService.symbols.filter(q => q.symbolType.code == "FOREX");
-    console.log("doviz"+this.symbols)
-    break;
+        break;
       case 'sarrafi':
         this.symbols = this.marketDataService.symbols.filter(q => q.matriksCode == "METALS");
-    console.log("sarrafi"+this.symbols)
-    break;
+        break;
 
       default:
         break;
     }
   }
-  
-  checkImage(e){
+
+  checkImage(e) {
     const target = e.target;
     target.classList.add('d-none');
     target.parentElement.getElementsByClassName('currency-symbol')[0].classList.remove('d-none')

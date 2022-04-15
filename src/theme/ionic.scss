@@ -20,6 +20,7 @@ ion-header {
         }
     }
 }
+
 ion-footer {
     margin-top: 10px;
     padding: 0px 16px 16px 16px !important;
@@ -27,6 +28,7 @@ ion-footer {
     .secondBtn {
         margin: 8px 24px !important;
     }
+
     ion-button {
         &.ion-color-primary {
             height: 3.25em;
@@ -47,17 +49,18 @@ ion-item {
         --placeholder-opacity: 1;
         color: #080a1e;
 
-        & + span {
+        &+span {
             color: #7c7f97;
         }
     }
 
     &.item-has-value {
+
         ion-input,
         ion-input.sc-ion-input-ios-h {
             font-weight: 600;
 
-            & + span {
+            &+span {
                 color: #080a1e;
                 font-weight: 600;
             }
@@ -78,7 +81,7 @@ ion-button {
     font-weight: 600;
     outline: none !important;
     margin: 0;
-    
+
     &.ion-color-primary {
         --box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.1);
         height: 3.25em;
@@ -111,24 +114,25 @@ ion-action-sheet {
     color: var(--ion-color-danger);
 }
 
-.d-none{
+.d-none {
     display: none !important;
-} 
+}
 
-ion-back-button{
+ion-back-button {
     color: red !important;
-  } 
+}
 
-  .ios-segment {
-    margin-top: 16px; 
-    --background: #fdfdfd !important;
+.ios-segment {
+    margin-top: 16px;
+    --background: #fdfdfd;
     border: solid 1px #c3cddb;
     border-radius: 50px;
     margin-bottom: 16px;
+
     ion-segment-button {
-      letter-spacing: normal;
-      --indicator-color: #f1be4b;
-      --border-radius: 100px;
-      margin: -2px;
+        letter-spacing: normal;
+        --indicator-color: #f1be4b;
+        --border-radius: 100px;
+        margin: -2px;
     }
-  }
+}

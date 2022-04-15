@@ -2,7 +2,7 @@ ios-segment{
   padding: 0px 16px;
 }
 .content {
-  //padding: 16px;
+  padding: 16px;
 
   .heat-map-container {
     display: flex;
@@ -16,7 +16,7 @@ ios-segment{
       align-items: stretch;
       padding: 0;
       box-sizing: border-box;
-      border: 0.01em solid black;
+      border: 0.1pt solid black;
       background-color: rgb(193, 196, 205);
 
       &:before {

@@ -11,7 +11,7 @@ import {
   ApexFill
 } from "ng-apexcharts";
 import { AssetModel, AssetsApiService, GraphicDataModel, MatriksApiService, } from 'src/app/services/api-yatirimim.service';
-import { AppService } from 'src/app/services/app.service'; 
+import { AppService } from 'src/app/services/app.service';
 import { MarketDataService } from 'src/app/services/market-data.service';
 
 export type ChartOptions = {
@@ -39,61 +39,19 @@ export class Wallet implements OnInit {
   @ViewChild("chart") chart: ChartComponent;
   public chartOptions: Partial<ChartOptions>;
 
-  // symbol: SymbolRateModel;
-  // symbols: SymbolRateModel[];
-  assetsx: any = [
-    {
-      symbol: 'Altın',
-      isPrimary: false,
-      price: 1200,
-      amountGR: 10,
-      amountTRY: 20000,
-      color: 'rgba(248, 192, 47, 1)'
-    },
-    {
-      symbol: 'Gümüş',
-      isPrimary: false,
-      price: 1200,
-      amountGR: 10,
-      amountTRY: 3000,
-      color: 'rgba(234, 234, 234)'
-    },
-    {
-      symbol: 'Paladyum',
-      isPrimary: false,
-      price: 1200,
-      amountGR: 10,
-      amountTRY: 5000,
-      color: 'rgba(186, 181, 181)'
-    },
-    {
-      symbol: 'Platin',
-      isPrimary: false,
-      price: 1200,
-      amountGR: 10,
-      amountTRY: 6000,
-      color: 'rgba(55, 54, 54, 1)'
-    },
-    {
-      symbol: 'Nakit',
-      isPrimary: true,
-      price: 0,
-      amountGR: 0,
-      amountTRY: 10000,
-      color: 'rgba(2, 117, 74)'
-    }
-  ];
   series: any = [1];
   colors: any = ['#B1B1C5'];
-  selectedItem: any;
+  selectedItem: AssetModel;
   assets: AssetModel[] = [];
+
+  totalPrice: number = 0;
 
   constructor(
     private marketDataService: MarketDataService,
     private zone: NgZone,
     private appService: AppService,
     private matriksService: MatriksApiService,
-    private assetsApiService: AssetsApiService, 
+    private assetsApiService: AssetsApiService,
     private router: Router
   ) {
     this.chartOptions = {
@@ -148,7 +106,6 @@ export class Wallet implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log("userid",this.appService.user?.id)
     this.appService.toggleLoader(true).then(() => {
       this.assetsApiService.getwallet(1)
         .subscribe(
@@ -158,7 +115,7 @@ export class Wallet implements OnInit {
             this.appService.showToast('Veri yüklenemedi.', 'bottom')
           }
         )
-    }); 
+    });
     if (this.marketDataService.symbols == null) {
       this.marketDataService.symbolsLoad.subscribe(v => {
         this.loadSegmentData();
@@ -175,10 +132,24 @@ export class Wallet implements OnInit {
 
   initData(v: AssetModel[]): void {
     this.appService.toggleLoader(false)
-    this.assets = v;
-    console.log(this.assets)
+    //this.assets = v.sort((a, b) => (a.symbol.isMainCurrency ? -1 : a.symbolId) - (b.symbol.isMainCurrency ? -1 : b.symbolId));
+    this.series = this.assets.map(x => x.price);
+
+    if (this.assets.length > 0) {
+      this.colors = [];
+      for (let i = 0; i < this.assets.length; i++) {
+        const asset = this.assets[i];
+        if (asset.symbol.isoCode == 'XAU') this.colors.push('#BF8E31')
+        else if (asset.symbol.isoCode == 'XAG') this.colors.push('#818C95')
+        else if (asset.symbol.isoCode == 'XPD') this.colors.push('#9C9C9C')
+        else if (asset.symbol.isoCode == 'XPT') this.colors.push('#535353')
+        else if (asset.symbol.isoCode == 'TRY') this.colors.push('#269194')
+      }
+
+      this.totalPrice = this.assets.reduce((sum, current) => sum + current.price, 0);
+    }
   }
- 
+
   getChartData() {
     this.appService.toggleLoader(true).then((res) => {
       this.matriksService.getgraphdata(parseInt(this.selectedTimeRange), "SUSD").subscribe(
@@ -191,7 +162,6 @@ export class Wallet implements OnInit {
   onChartData(v: GraphicDataModel): void {
     this.zone.run(() => {
       this.appService.toggleLoader(false);
-      console.log('chart',v)
       const lineData = v?.data?.map(x => ({
         time: (moment(x.date, 'DD.MM.YYYY HH:mm:ss').toDate().getTime() / 1000),
         value: x.close
@@ -213,11 +183,10 @@ export class Wallet implements OnInit {
 
   ionViewDidEnter() {
     //this.colors= this.assets.map(x => x.color);
-    //this.series = this.assets.map(x => x.amountTRY);;
+    //this.series = this.assets.map(x => x.amountTRY);
   }
 
   segmentChange(e) {
-    console.log(e.detail.value)
     this.selectedSegmentVal = e.detail.value;
   }
 
@@ -233,12 +202,12 @@ export class Wallet implements OnInit {
   goWithdraw() {
     this.router.navigate(['app/transfer/withdraw-account'])
   }
-  checkTradeValue(value,trade){
+  checkTradeValue(value, trade) {
     // Buy: True -- Sell : False
-    if (trade==true) {
-      return(this.marketDataService.symbols.filter(q => q.isoCode == value)[0].buy);
+    if (trade == true) {
+      return (this.marketDataService.symbols.filter(q => q.isoCode == value)[0].buy);
     } else {
-      return(this.marketDataService.symbols.filter(q => q.isoCode == value)[0].sell);
+      return (this.marketDataService.symbols.filter(q => q.isoCode == value)[0].sell);
     }
   }
 }
