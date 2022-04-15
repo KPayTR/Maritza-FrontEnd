@@ -33,7 +33,8 @@ export class Wallet implements OnInit {
   selectedSegment = 'gold';
   selectedSegmentVal = 'assets';
   selectedChartType = 'line';
-  lineData: any[] = []
+  lineData: any[] = [];
+  lineDatas: any = {};
   candleData: any[] = []
   selectedTimeRange = '1';
   @ViewChild("chart") chart: ChartComponent;
@@ -56,11 +57,11 @@ export class Wallet implements OnInit {
   ) {
     this.chartOptions = {
       chart: {
-        type: "donut", 
+        type: "donut",
         events: {
-          animationEnd: function(ctx) {
+          animationEnd: function (ctx) {
             ctx.toggleDataPointSelection(1)
-         },
+          },
           dataPointSelection: (event, chartContext, config) => {
             if (this.assets.length == 0) {
               event.preventDefault();
@@ -150,7 +151,27 @@ export class Wallet implements OnInit {
       }
 
       this.totalPrice = this.assets.reduce((sum, current) => sum + current.price, 0);
+
+      this.getAssetChartsData();
     }
+  }
+
+  getAssetChartsData() {
+    for (const asset of this.assets) {
+      this.matriksService.getgraphdata(5, asset.symbol.matriksCode).subscribe(
+        (v) => {
+          this.zone.run(() => {
+            const lineData = v?.data?.map(x => ({
+              time: (moment(x.date, 'DD.MM.YYYY HH:mm:ss').toDate().getTime() / 1000),
+              value: x.close
+            })).sort((a, b) => (a.time > b.time ? 1 : -1));
+            this.lineDatas[asset.symbol.matriksCode] = lineData;
+          });
+        },
+        (e) => this.onError(e)
+      );
+    }
+
   }
 
   getChartData() {
