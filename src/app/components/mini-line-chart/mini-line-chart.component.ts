@@ -1,6 +1,7 @@
 import { Component, OnInit, AfterViewInit, Input } from '@angular/core';
 import { createChart, CrosshairMode, IChartApi, ISeriesApi, SingleValueData, UTCTimestamp, WhitespaceData } from 'lightweight-charts';
 import UniqueId from 'src/app/helpers/UniqueId';
+import { AppService } from 'src/app/services/app.service';
 
 @Component({
   selector: 'app-mini-line-chart',
@@ -34,9 +35,14 @@ export class MiniLineChartComponent implements AfterViewInit {
       },
     },
     series: {
-      topColor: 'rgba(32, 226, 47, 0.56)',
-      bottomColor: 'rgba(32, 226, 47, 0.04)',
-      lineColor: 'rgba(32, 226, 47, 1)',
+      topColor: 'rgba(254, 81, 80, 0.54)',
+      bottomColor: 'rgba(254, 81, 80, 0)',
+      lineColor: 'rgba(254, 81, 80, 1)',
+    },
+    seriesIncreasing: {
+      topColor: 'rgba(22, 199, 132, 0.54)',
+      bottomColor: 'rgba(22, 199, 132, 0.04)',
+      lineColor: 'rgba(22, 199, 132, 1)',
     },
   };
 
@@ -60,9 +66,14 @@ export class MiniLineChartComponent implements AfterViewInit {
       },
     },
     series: {
-      topColor: 'rgba(255, 213, 67, 0.9)',
-      bottomColor: 'rgba(255, 213, 67, 0.04)',
-      lineColor: 'rgba(255, 213, 67, 1)',
+      topColor: 'rgba(254, 81, 80, 0.54)',
+      bottomColor: 'rgba(254, 81, 80, 0)',
+      lineColor: 'rgba(254, 81, 80, 1)',
+    },
+    seriesIncreasing: {
+      topColor: 'rgba(22, 199, 132, 0.54)',
+      bottomColor: 'rgba(22, 199, 132, 0)',
+      lineColor: 'rgba(22, 199, 132, 1)',
     },
   };
 
@@ -74,9 +85,9 @@ export class MiniLineChartComponent implements AfterViewInit {
   private chartData: (SingleValueData | WhitespaceData)[];
 
   private _isIncreasing = false;
-  
+
   @Input()
-  set isIncreasing(v:boolean) {
+  set isIncreasing(v: boolean) {
     this._isIncreasing = v;
   }
 
@@ -97,14 +108,18 @@ export class MiniLineChartComponent implements AfterViewInit {
   chart: IChartApi;
   baseLineSeries: ISeriesApi<"Baseline">;
 
-  constructor() { }
+  constructor(
+    private appService: AppService
+  ) { }
 
   ngAfterViewInit() {
     this.initChart();
+    this.appService.themeChange.subscribe(() => {
+      const theme: any = document.getElementsByTagName('body')[0].classList.contains('dark') ? 'Light' : 'Dark';
+      this.chart.applyOptions(this.themesData[theme].chart);
+    })
   }
   initChart() {
-    var switcherElement = this.createSimpleSwitcher(['Dark', 'Light'], 'Dark', this.syncToTheme);
-
     var chartElement = document.getElementById(this.chartId);
 
     this.chart = createChart(chartElement, {
@@ -148,59 +163,24 @@ export class MiniLineChartComponent implements AfterViewInit {
       handleScroll: false
     });
 
+    const theme: any = document.getElementsByTagName('body')[0].classList.contains('dark') ? 'Dark' : 'Light';
+    const themeSeries = this._isIncreasing ? this.themesData[theme].seriesIncreasing : this.themesData[theme].series;
+
     this.baseLineSeries = this.chart.addBaselineSeries({
       lineWidth: 2,
       crosshairMarkerVisible: false,
       lastValueVisible: false,
       priceLineVisible: false,
+      topLineColor: themeSeries.lineColor,
+      topFillColor1: themeSeries.topColor,
+      bottomFillColor1: themeSeries.bottomColor
     });
+
+
+    this.chart.applyOptions(this.themesData[theme].chart);
 
     if (this.chartData) {
       this.baseLineSeries.setData(this.chartData);
     }
-
-    const theme = document.getElementsByTagName('body')[0].classList.contains('dark') ? 'Dark' : 'Light';
-    this.syncToTheme(theme);
   }
-
-  syncToTheme(theme) {
-    this.chart.applyOptions(this.themesData[theme].chart);
-    this.baseLineSeries.applyOptions(this.themesData[theme].series);
-  }
-
-  createSimpleSwitcher(items, activeItem, activeItemChangedCallback) {
-    var switcherElement = document.createElement('div');
-    switcherElement.classList.add('switcher');
-
-    var intervalElements = items.map(function (item) {
-      var itemEl = document.createElement('button');
-      itemEl.innerText = item;
-      itemEl.classList.add('switcher-item');
-      itemEl.classList.toggle('switcher-active-item', item === activeItem);
-      itemEl.addEventListener('click', function () {
-        onItemClicked(item);
-      });
-      switcherElement.appendChild(itemEl);
-      return itemEl;
-    });
-
-    function onItemClicked(item) {
-      if (item === activeItem) {
-        return;
-      }
-
-      intervalElements.forEach(function (element, index) {
-        element.classList.toggle('switcher-active-item', items[index] === item);
-      });
-
-      activeItem = item;
-
-      activeItemChangedCallback(item);
-    }
-
-    return switcherElement;
-  }
-
-
-
 }

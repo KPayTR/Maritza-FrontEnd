@@ -42,8 +42,8 @@ export class Wallet implements OnInit {
   @ViewChild("chart") chart: ChartComponent;
   public chartOptions: Partial<ChartOptions>;
 
-  legend: ApexLegend = {show: false};
-  tooltip: ApexTooltip = {enabled: false};
+  legend: ApexLegend = { show: false };
+  tooltip: ApexTooltip = { enabled: false };
 
   series: any = [1];
   colors: any = ['#B1B1C5'];
@@ -65,8 +65,12 @@ export class Wallet implements OnInit {
         type: "donut",
         fontFamily: 'var(--ion-font-family)',
         events: {
-          animationEnd: function (ctx) {
-            ctx.toggleDataPointSelection(1)
+          animationEnd: (ctx) => {
+            if (this.assets && this.assets.length > 0) {
+              const tryIndex = this.assets.findIndex(x => x.symbol.isoCode == 'TRY') ?? 0;
+              ctx.toggleDataPointSelection(tryIndex);
+              (document.querySelector('path[selected="true"]') as HTMLElement).style.filter = 'none';
+            }
           },
           dataPointSelection: (event, chartContext, config) => {
             if (this.assets.length == 0) {
@@ -74,6 +78,7 @@ export class Wallet implements OnInit {
               return false;
             }
             this.selectedItem = this.assets[config.dataPointIndex];
+            (document.querySelector('path[selected="true"]') as HTMLElement).style.filter = 'none';
           },
         },
         selection: {
@@ -120,7 +125,7 @@ export class Wallet implements OnInit {
 
   ngOnInit(): void {
     this.appService.toggleLoader(true).then(() => {
-      this.assetsApiService.getwallet(1)
+      this.assetsApiService.getwallet(this.appService.user.id)
         .subscribe(
           v => this.initData(v),
           e => {
@@ -184,12 +189,10 @@ export class Wallet implements OnInit {
   }
 
   getChartData() {
-    this.appService.toggleLoader(true).then((res) => {
-      this.matriksService.getgraphdata(parseInt(this.selectedTimeRange), "SUSD").subscribe(
-        (v) => this.onChartData(v),
-        (e) => this.onError(e)
-      );
-    });
+    this.matriksService.getgraphdata(parseInt(this.selectedTimeRange), "SUSD").subscribe(
+      (v) => this.onChartData(v),
+      (e) => this.onError(e)
+    );
   }
 
   onChartData(v: GraphicDataModel): void {
@@ -242,5 +245,9 @@ export class Wallet implements OnInit {
     } else {
       return (this.marketDataService.symbols.filter(q => q.isoCode == value)[0].sell);
     }
+  }
+
+  checkTradeDifference(isoCode: string): number {
+    return this.marketDataService.symbols.find(q => q.isoCode == isoCode)?.difference;
   }
 }

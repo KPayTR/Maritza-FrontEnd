@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
+import { Clipboard } from '@capacitor/clipboard';
 import { MenuController } from '@ionic/angular';
-import * as moment from 'moment';
+import { TranslateService } from '@ngx-translate/core';
 import { AppService } from '../services/app.service';
 import { MarketDataService } from '../services/market-data.service';
-import { TokenRefreshService } from '../services/token-refresh.service';
 
 interface SideMenuItem {
   title: string;
@@ -25,6 +25,7 @@ interface SideMenu {
 export class AppComponent {
 
   activeSideMenuId = 1;
+  isCopied = false;
 
   menuItems: SideMenu[] = [
     {
@@ -101,18 +102,17 @@ export class AppComponent {
   ]
 
   constructor(
-    private appService: AppService,
+    public appService: AppService,
     private menu: MenuController,
     private coreService: MarketDataService,
-    private tokenService: TokenRefreshService
-
+    private translate: TranslateService
   ) {
-    moment.locale('tr')
+    translate.addLangs(['tr', 'en']);
+    translate.setDefaultLang('tr');
+    this.translate.use(this.appService.currentLanguage);
+
     this.coreService.init()
-    console.log('tok tok',this.appService.accessToken )
-    if (this.appService.accessToken) {
-      
-    }
+  
     this.initTheme();
   }
   
@@ -155,5 +155,16 @@ export class AppComponent {
       document.body.setAttribute('data-theme', 'light');
       document.documentElement.classList.remove('dark-app');
     }
+  }
+
+  async copyUserId() {
+    await Clipboard.write({
+      string: this.appService.user.id.toString()
+    });
+    this.isCopied = true;
+
+    setTimeout(() => {
+      this.isCopied = false;
+    }, 2000);
   }
 }

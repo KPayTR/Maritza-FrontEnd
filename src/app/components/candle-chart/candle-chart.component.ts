@@ -1,6 +1,7 @@
 import { Component, OnInit, AfterViewInit, Input } from '@angular/core';
 import { CandlestickData, createChart, CrosshairMode, IChartApi, ISeriesApi, UTCTimestamp, WhitespaceData } from 'lightweight-charts';
 import UniqueId from 'src/app/helpers/UniqueId';
+import { AppService } from 'src/app/services/app.service';
 
 @Component({
   selector: 'app-candle-chart',
@@ -94,9 +95,15 @@ export class CandleChartComponent implements OnInit {
   chart: IChartApi;
   candleStickSeries: ISeriesApi<"Candlestick">;
 
-  constructor() { }
+  constructor(
+    private appService: AppService
+  ) { }
 
   ngOnInit() {
+    this.appService.themeChange.subscribe((v) => {
+      this.syncToTheme(v == 'dark' ? 'Dark' : 'Light');
+    });
+    
     setTimeout(() => {
       this.initChart();
     }, 300);

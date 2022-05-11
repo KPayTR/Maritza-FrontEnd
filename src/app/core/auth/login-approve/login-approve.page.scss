@@ -1,7 +1,7 @@
 ion-input {
   --background: #f4f4f5;
-  width: 60px;
-  height: 60px;
+  width: 12vw;
+  height: 12vw;
   text-align: center;
   margin: auto;
   --padding-start: 10px;
@@ -9,17 +9,17 @@ ion-input {
   border-radius: 50%;
   font-weight: bold;
 }
-ion-button{
+ion-button {
   margin: 20px 0px;
 }
-.ion-text-center{
-  p{
+.ion-text-center {
+  p {
     font-size: 14px;
   }
 }
-ion-row{
+ion-row {
   margin: 18px 0px;
 }
-.btn-height{
+.btn-height {
   height: 3.25em;
 }

@@ -10,81 +10,99 @@
   <ion-content>
     <div class="form-container">
       <div class="form-inner">
-        <div class="form-header">
+        <div class="form-header" *ngIf="isViaSmsCode">
           <h3>Mobil Onay</h3>
           <ion-note>
             Yeni kod gönderilecek
-            <a>00:{{counter}} </a>
+            <a>00:{{counter | number:'2.0'}} </a>
           </ion-note>
         </div>
+        <div class="form-header" *ngIf="!isViaSmsCode">
+          <h3>Google Authenticator Onay</h3>
+          <ion-button fill="outlined" color="light" class="ion-no-padding ion-no-margin" (click)="copyAuthKey()">
+            <img style="margin-right: 6px" src="../../../../assets/img/icon/copy.svg" />
+            <ion-note *ngIf="!isCopied">Anahtarı kopyala</ion-note>
+            <ion-note *ngIf="isCopied">Anahtar kopyalandı</ion-note>
+          </ion-button>
+        </div>
         <div class="form-items">
-          <div class="ion-text-center">
+          <div class="ion-text-center" *ngIf="isViaSmsCode">
             <p>Onay Kodu Gönderildi</p>
-            <ion-note>+90 533 111 22 33</ion-note>
+            <ion-note>{{formattedPhone}}</ion-note>
 
             <ion-row>
               <ion-col>
-                <ion-input
-                  [(ngModel)]="p1"
-                  (keyup)="gotoNextField(Field2,Field1,$event)" 
-                  maxlength="1"
-                  type="tel" 
-                  name="password"
-                  value=""
-                  #Field1
-                >
+                <ion-input [(ngModel)]="p1" (keyup)="gotoNextField(Field2,Field1,$event)" maxlength="1" type="tel"
+                  name="password" value="" #Field1>
                 </ion-input>
               </ion-col>
               <ion-col>
-                <ion-input
-                  [(ngModel)]="p2"
-                  (keyup)="gotoNextField(Field3,Field1,$event)" 
-                  maxlength="1"
-                  type="tel" 
-                  name="password"
-                  value=""
-                  #Field2
-                >
+                <ion-input [(ngModel)]="p2" (keyup)="gotoNextField(Field3,Field1,$event)" maxlength="1" type="tel"
+                  name="password" value="" #Field2>
                 </ion-input>
               </ion-col>
               <ion-col>
-                <ion-input
-                  [(ngModel)]="p3"
-                  (keyup)="gotoNextField(Field4,Field2,$event)" 
-                  maxlength="1"
-                  type="tel" 
-                  name="password"
-                  value=""
-                  #Field3
-                >
+                <ion-input [(ngModel)]="p3" (keyup)="gotoNextField(Field4,Field2,$event)" maxlength="1" type="tel"
+                  name="password" value="" #Field3>
                 </ion-input>
               </ion-col>
               <ion-col>
-                <ion-input
-                  [(ngModel)]="p4" 
-                  (keyup)="gotoNextField(Field4,Field3,$event)" 
-                  maxlength="1"
-                  type="tel" 
-                  name="password"
-                  value=""
-                  #Field4
-                >
+                <ion-input [(ngModel)]="p4" (keyup)="gotoNextField(Field4,Field3,$event)" maxlength="1" type="tel"
+                  name="password" value="" #Field4>
                 </ion-input>
               </ion-col>
             </ion-row>
           </div>
 
-       
-          <ion-button
-            size="block"
-            color="primary"
-            (click)="login()"
-            style="margin: 0"
-            >GİRİŞ YAP</ion-button
-          >
-          <ion-button class="btn-height" [disabled]="!isValid" size="block" color="medium" fill="outline"       (click)="reCode()"
-          >YENİ KOD GÖNDER</ion-button
-        >
+          <div class="ion-text-center" *ngIf="!isViaSmsCode">
+            <p>Uygulamadaki kodu girin </p>
+
+            <ion-row>
+              <ion-col>
+                <ion-input [(ngModel)]="p1" (keyup)="gotoNextField(Field6,Field5,$event)" maxlength="1" type="tel"
+                  name="password" value="" #Field5>
+                </ion-input>
+              </ion-col>
+              <ion-col>
+                <ion-input [(ngModel)]="p2" (keyup)="gotoNextField(Field7,Field5,$event)" maxlength="1" type="tel"
+                  name="password" value="" #Field6>
+                </ion-input>
+              </ion-col>
+              <ion-col>
+                <ion-input [(ngModel)]="p3" (keyup)="gotoNextField(Field8,Field6,$event)" maxlength="1" type="tel"
+                  name="password" value="" #Field7>
+                </ion-input>
+              </ion-col>
+              <ion-col>
+                <ion-input [(ngModel)]="p4" (keyup)="gotoNextField(Field9,Field7,$event)" maxlength="1" type="tel"
+                  name="password" value="" #Field8>
+                </ion-input>
+              </ion-col>
+              <ion-col>
+                <ion-input [(ngModel)]="p5" (keyup)="gotoNextField(Field10,Field8,$event)" maxlength="1" type="tel"
+                  name="password" value="" #Field9>
+                </ion-input>
+              </ion-col>
+              <ion-col>
+                <ion-input [(ngModel)]="p6" (keyup)="gotoNextField(Field10,Field9,$event)" maxlength="1" type="tel"
+                  name="password" value="" #Field10>
+                </ion-input>
+              </ion-col>
+            </ion-row>
+          </div>
+
+
+          <ion-button size="block" color="primary" (click)="login()" style="margin: 0">GİRİŞ YAP</ion-button>
+          <ion-button *ngIf="isViaSmsCode" class="btn-height" [disabled]="!isValid" size="block" color="medium"
+            fill="outline" (click)="reCode()">YENİ KOD GÖNDER</ion-button>
+
+          <ion-button *ngIf="isViaSmsCode" class="btn-height" size="block" color="medium" fill="outline"
+            (click)="toggleVerifyMethod('google')">
+            AUTHENTICATOR İLE GİRİŞ</ion-button>
+
+          <ion-button *ngIf="!isViaSmsCode" class="btn-height" size="block" color="medium" fill="outline"
+            (click)="toggleVerifyMethod('otp')">
+            OTP İLE GİRİŞ</ion-button>
         </div>
       </div>
     </div>

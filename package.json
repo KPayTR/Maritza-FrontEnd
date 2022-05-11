@@ -6,6 +6,7 @@
   "description": "Yatirimim.com trade application",
   "private": true,
   "scripts": {
+    "sloc": "sloc src/",
     "ng": "ng",
     "start": "ng serve",
     "build": "ionic build --prod",
@@ -22,7 +23,7 @@
     "nswag-gen-kpay-fixedqrpayment": "nswag openapi2tsclient /input:https://api.kpay.com.tr/fixedqrpayment/KPay.API.FixedQRPayment.V1.yaml /output:src/app/services/api-kpay-fixedqrpayment.service.ts /Template:Angular /InjectionTokenType:InjectionToken /OperationGenerationMode:MultipleClientsFromFirstTagAndOperationId /ClassName:KpayFixedqrPayment{controller}ApiService /DateTimeType:MomentJS /BaseUrlTokenName:KPAY_FIXEDQRPAYMENT_API_URL && node --max-old-space-size=4096 ./api/api.js",
     "nswag-gen-kpay": "npm run nswag-gen-kpay-backend && npm run nswag-gen-kpay-ccpayment && npm run nswag-gen-kpay-fixedqr && npm run nswag-gen-kpay-fixedqrpayment",
     "nswag-gen-yatirimim": "nswag openapi2tsclient /input:http://api.yatirimim.com/apidoc/v1/api.json?key=yatirimim /output:src/app/services/api-yatirimim.service.ts /Template:Angular /InjectionTokenType:InjectionToken /OperationGenerationMode:MultipleClientsFromPathSegments /ClassName:{controller}ApiService /DateTimeType:MomentJS /BaseUrlTokenName:MARITZA_API_URL && node --max-old-space-size=4096 ./api/api.js",
-    "nswag-gen-yatirimim-local": "nswag openapi2tsclient /input:http://192.168.253.100:5000/swagger/v1/swagger.json /output:src/app/services/api-yatirimim.service.ts /Template:Angular /InjectionTokenType:InjectionToken /OperationGenerationMode:MultipleClientsFromPathSegments /ClassName:{controller}ApiService /DateTimeType:MomentJS /BaseUrlTokenName:MARITZA_API_URL && node --max-old-space-size=4096 ./api/api.js"
+    "nswag-gen-yatirimim-local": "nswag openapi2tsclient /input:https://localhost:5001/swagger/v1/swagger.json /output:src/app/services/api-yatirimim.service.ts /Template:Angular /InjectionTokenType:InjectionToken /OperationGenerationMode:MultipleClientsFromPathSegments /ClassName:{controller}ApiService /DateTimeType:MomentJS /BaseUrlTokenName:MARITZA_API_URL && node --max-old-space-size=4096 ./api/api.js"
   },
   "dependencies": {
     "@angular/common": "~13.0.0",
@@ -34,13 +35,17 @@
     "@awesome-cordova-plugins/barcode-scanner": "^5.40.0",
     "@awesome-cordova-plugins/core": "^5.40.0",
     "@capacitor/app": "1.1.1",
+    "@capacitor/clipboard": "^1.0.8",
     "@capacitor/core": "3.4.3",
     "@capacitor/haptics": "1.1.4",
     "@capacitor/ios": "^3.4.3",
     "@capacitor/keyboard": "1.2.2",
     "@capacitor/status-bar": "1.0.8",
     "@ionic/angular": "^6.0.0",
+    "@ngx-translate/core": "^14.0.0",
+    "@ngx-translate/http-loader": "^7.0.0",
     "apexcharts": "^3.33.2",
+    "jwt-decode": "^3.1.2",
     "lightweight-charts": "^3.8.0",
     "moment": "^2.29.1",
     "ng-apexcharts": "^1.7.0",
@@ -48,6 +53,7 @@
     "primeicons": "^5.0.0",
     "primeng": "^13.3.2",
     "rxjs": "~6.6.0",
+    "sloc": "^0.2.1",
     "tslib": "^2.2.0",
     "zone.js": "~0.11.4"
   },

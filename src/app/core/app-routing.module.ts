@@ -41,7 +41,7 @@ const routes: Routes = [
   },
   {
     path:"transfer",
-    //canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
     children:[
       {
         path: 'deposit-credit-card',

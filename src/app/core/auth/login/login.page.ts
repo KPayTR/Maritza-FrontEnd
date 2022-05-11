@@ -1,8 +1,8 @@
 import { Component, NgZone, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController, LoadingController } from '@ionic/angular';
-import { AuthApiService, LoginModel } from 'src/app/services/api-yatirimim.service';
-import { AppService, User } from 'src/app/services/app.service';
+import { AuthApiService, LoginModel, LoginResponseModel } from 'src/app/services/api-yatirimim.service';
+import { AppService } from 'src/app/services/app.service';
 
 @Component({
   selector: 'app-login',
@@ -12,53 +12,48 @@ import { AppService, User } from 'src/app/services/app.service';
 export class LoginPage implements OnInit {
   phone: string;
   password: string;
-  tempUser: User;
   constructor(
     private router: Router,
     private alertController: AlertController,
     public loadingController: LoadingController,
-    private authService:AuthApiService,
+    private authService: AuthApiService,
     private zone: NgZone,
     private appService: AppService
-  ) {}
+  ) { }
 
-  ngOnInit() {}
-  openReset() {}
+  ngOnInit() { }
+
+  openReset() { }
+
   login() {
-    //routerDirection="forward"    [routerLink]="['../login-approve']"
-    console.log('ss');
     if (this.phone != null && this.password != null) {
       this.phone = this.phone.replace(/[\s.*+\-?^${}()|[\]\\]/g, '');
 
-      this.tempUser = new User();
-      this.tempUser.phone = '+90' + this.phone;
-      this.tempUser.pass = this.password; 
-
       const model = new LoginModel();
-      model.phoneNumber= this.tempUser.phone;
-      model.password= this.tempUser.pass;
+      model.phoneNumber = '90' + this.phone;
+      model.password = this.password;
       this.appService.toggleLoader(true).then((res) => {
         this.authService.login(model)
-            .subscribe(
-                v => this.onLogin(v),
-                e => this.onError(e)
-            ) 
-          }); 
-    } else { 
+          .subscribe(
+            v => this.onLogin(v),
+            e => this.onError(e)
+          )
+      });
+    } else {
 
       this.presentAlert(
         'Yanlış telefon numarası yada şifre girdiniz. Lütfen kontrol edip tekrar deneyiniz.'
       );
     }
-  }  
-  onLogin(v: void): void {
+  }
+
+  onLogin(v: LoginResponseModel): void {
     this.zone.run(() => {
       this.appService.toggleLoader(false);
-      this.appService.user = this.tempUser; 
-      console.log(v);
-    this.router.navigate(['/auth/login-approve'])
+      this.router.navigate(['/auth/login-approve'], { queryParams: { phone: this.phone, authKey: v.authenticatorKey } })
     });
   }
+
   onError(e: any): void {
     this.zone.run(() => {
       this.appService.toggleLoader(false);
