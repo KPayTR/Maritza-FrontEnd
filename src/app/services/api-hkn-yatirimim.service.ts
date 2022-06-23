@@ -18,14 +18,14 @@ import * as moment from 'moment';
 export const MARITZA_API_URL = new InjectionToken<string>('MARITZA_API_URL');
 
 @Injectable()
-export class ApiService {
+export class ServiceApiService {
     private http: HttpClient;
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://api.yatirimim.com/AppBackend/V1";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "/AppBackend/V1";
     }
 
     /**
@@ -91,7 +91,7 @@ export class ApiService {
      * Returns a list of API Result codes and descriptions
      * @return Operation completed successfully
      */
-    aPIResult(): Observable<APIResultDTO[]> {
+    getAPIResultList(): Observable<APIResultDTO[]> {
         let url_ = this.baseUrl + "/APIResult";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -104,11 +104,11 @@ export class ApiService {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processAPIResult(response_);
+            return this.processGetAPIResultList(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processAPIResult(response_ as any);
+                    return this.processGetAPIResultList(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<APIResultDTO[]>;
                 }
@@ -117,7 +117,7 @@ export class ApiService {
         }));
     }
 
-    protected processAPIResult(response: HttpResponseBase): Observable<APIResultDTO[]> {
+    protected processGetAPIResultList(response: HttpResponseBase): Observable<APIResultDTO[]> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -152,397 +152,6 @@ export class ApiService {
         }
         return _observableOf<APIResultDTO[]>(null as any);
     }
-
-    /**
-     * Creates a member
-     * @param body Information about the member
-     * @return The member created successfully
-     */
-    memberPost(body: MemberCreateDTO): Observable<MemberDTO> {
-        let url_ = this.baseUrl +"/Member";
-        url_ = url_.replace(/[?&]$/, "");
-        console.log("urlddd ",this.baseUrl,MARITZA_API_URL,url_)
-        const content_ = JSON.stringify(body);
-
-        let options_ : any = {
-            body: content_,
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processMemberPost(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processMemberPost(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<MemberDTO>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<MemberDTO>;
-        }));
-    }
-
-    protected processMemberPost(response: HttpResponseBase): Observable<MemberDTO> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 201) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result201: any = null;
-            let resultData201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result201 = MemberDTO.fromJS(resultData201);
-            return _observableOf(result201);
-            }));
-        } else if (status === 400) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result400: any = null;
-            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result400 = APIResultDTO.fromJS(resultData400);
-            return throwException("Bad Request", status, _responseText, _headers, result400);
-            }));
-        } else if (status === 401) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result401: any = null;
-            let resultData401 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result401 = APIResultDTO.fromJS(resultData401);
-            return throwException("Unauthorized", status, _responseText, _headers, result401);
-            }));
-        } else if (status === 403) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result403: any = null;
-            let resultData403 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result403 = APIResultDTO.fromJS(resultData403);
-            return throwException("Forbidden", status, _responseText, _headers, result403);
-            }));
-        } else if (status === 409) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result409: any = null;
-            let resultData409 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result409 = APIResultDTO.fromJS(resultData409);
-            return throwException("Conflict", status, _responseText, _headers, result409);
-            }));
-        } else if (status === 422) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result422: any = null;
-            let resultData422 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result422 = APIResultDTO.fromJS(resultData422);
-            return throwException("Unprocessable Entity", status, _responseText, _headers, result422);
-            }));
-        } else if (status === 500) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result500: any = null;
-            let resultData500 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result500 = APIResultDTO.fromJS(resultData500);
-            return throwException("Internal Server Error", status, _responseText, _headers, result500);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<MemberDTO>(null as any);
-    }
-
-    /**
-     * Gets member information
-     * @return The member found
-     */
-    memberGet(): Observable<MemberDTO> {
-        let url_ = this.baseUrl + "/Member";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processMemberGet(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processMemberGet(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<MemberDTO>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<MemberDTO>;
-        }));
-    }
-
-    protected processMemberGet(response: HttpResponseBase): Observable<MemberDTO> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = MemberDTO.fromJS(resultData200);
-            return _observableOf(result200);
-            }));
-        } else if (status === 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("No Content (Requested resource not found)", status, _responseText, _headers);
-            }));
-        } else if (status === 400) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result400: any = null;
-            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result400 = APIResultDTO.fromJS(resultData400);
-            return throwException("Bad Request", status, _responseText, _headers, result400);
-            }));
-        } else if (status === 401) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result401: any = null;
-            let resultData401 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result401 = APIResultDTO.fromJS(resultData401);
-            return throwException("Unauthorized", status, _responseText, _headers, result401);
-            }));
-        } else if (status === 403) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result403: any = null;
-            let resultData403 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result403 = APIResultDTO.fromJS(resultData403);
-            return throwException("Forbidden", status, _responseText, _headers, result403);
-            }));
-        } else if (status === 422) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result422: any = null;
-            let resultData422 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result422 = APIResultDTO.fromJS(resultData422);
-            return throwException("Unprocessable Entity", status, _responseText, _headers, result422);
-            }));
-        } else if (status === 500) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result500: any = null;
-            let resultData500 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result500 = APIResultDTO.fromJS(resultData500);
-            return throwException("Internal Server Error", status, _responseText, _headers, result500);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<MemberDTO>(null as any);
-    }
-
-    /**
-     * Updates a member
-     * @param body Information about the member
-     * @return The member updated successfully
-     */
-    memberPatch(body: MemberDTO): Observable<MemberDTO> {
-        let url_ = this.baseUrl + "/Member";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_ : any = {
-            body: content_,
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("patch", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processMemberPatch(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processMemberPatch(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<MemberDTO>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<MemberDTO>;
-        }));
-    }
-
-    protected processMemberPatch(response: HttpResponseBase): Observable<MemberDTO> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = MemberDTO.fromJS(resultData200);
-            return _observableOf(result200);
-            }));
-        } else if (status === 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("No Content (Requested resource not found)", status, _responseText, _headers);
-            }));
-        } else if (status === 400) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result400: any = null;
-            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result400 = APIResultDTO.fromJS(resultData400);
-            return throwException("Bad Request", status, _responseText, _headers, result400);
-            }));
-        } else if (status === 401) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result401: any = null;
-            let resultData401 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result401 = APIResultDTO.fromJS(resultData401);
-            return throwException("Unauthorized", status, _responseText, _headers, result401);
-            }));
-        } else if (status === 403) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result403: any = null;
-            let resultData403 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result403 = APIResultDTO.fromJS(resultData403);
-            return throwException("Forbidden", status, _responseText, _headers, result403);
-            }));
-        } else if (status === 409) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result409: any = null;
-            let resultData409 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result409 = APIResultDTO.fromJS(resultData409);
-            return throwException("Conflict", status, _responseText, _headers, result409);
-            }));
-        } else if (status === 422) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result422: any = null;
-            let resultData422 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result422 = APIResultDTO.fromJS(resultData422);
-            return throwException("Unprocessable Entity", status, _responseText, _headers, result422);
-            }));
-        } else if (status === 500) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result500: any = null;
-            let resultData500 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result500 = APIResultDTO.fromJS(resultData500);
-            return throwException("Internal Server Error", status, _responseText, _headers, result500);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<MemberDTO>(null as any);
-    }
-
-    /**
-     * Gets list of symbols
-     * @return Symbol list
-     */
-    symbol(): Observable<SymbolDTO[]> {
-        let url_ = this.baseUrl + "/Symbol";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processSymbol(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processSymbol(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<SymbolDTO[]>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<SymbolDTO[]>;
-        }));
-    }
-
-    protected processSymbol(response: HttpResponseBase): Observable<SymbolDTO[]> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(SymbolDTO.fromJS(item));
-            }
-            else {
-                result200 = <any>null;
-            }
-            return _observableOf(result200);
-            }));
-        } else if (status === 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("No Content (Requested resource not found)", status, _responseText, _headers);
-            }));
-        } else if (status === 400) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result400: any = null;
-            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result400 = APIResultDTO.fromJS(resultData400);
-            return throwException("Bad Request", status, _responseText, _headers, result400);
-            }));
-        } else if (status === 401) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result401: any = null;
-            let resultData401 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result401 = APIResultDTO.fromJS(resultData401);
-            return throwException("Unauthorized", status, _responseText, _headers, result401);
-            }));
-        } else if (status === 403) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result403: any = null;
-            let resultData403 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result403 = APIResultDTO.fromJS(resultData403);
-            return throwException("Forbidden", status, _responseText, _headers, result403);
-            }));
-        } else if (status === 422) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result422: any = null;
-            let resultData422 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result422 = APIResultDTO.fromJS(resultData422);
-            return throwException("Unprocessable Entity", status, _responseText, _headers, result422);
-            }));
-        } else if (status === 500) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result500: any = null;
-            let resultData500 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result500 = APIResultDTO.fromJS(resultData500);
-            return throwException("Internal Server Error", status, _responseText, _headers, result500);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<SymbolDTO[]>(null as any);
-    }
 }
 
 @Injectable()
@@ -553,8 +162,7 @@ export class AuthenticationApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://api.yatirimim.com/AppBackend/V1";
-
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "/AppBackend/V1";
     }
 
     /**
@@ -562,7 +170,7 @@ export class AuthenticationApiService {
      * @param body Logon information
      * @return Operation completed successfully
      */
-    authenticate(body: AuthenticationRequestDTO): Observable<AuthenticationResponseDTO> {
+    authenticateMember(body: AuthenticationRequestDTO): Observable<AuthenticationResponseDTO> {
         let url_ = this.baseUrl + "/Authentication/Authenticate";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -579,11 +187,11 @@ export class AuthenticationApiService {
         };
 
         return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processAuthenticate(response_);
+            return this.processAuthenticateMember(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processAuthenticate(response_ as any);
+                    return this.processAuthenticateMember(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<AuthenticationResponseDTO>;
                 }
@@ -592,7 +200,7 @@ export class AuthenticationApiService {
         }));
     }
 
-    protected processAuthenticate(response: HttpResponseBase): Observable<AuthenticationResponseDTO> {
+    protected processAuthenticateMember(response: HttpResponseBase): Observable<AuthenticationResponseDTO> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -859,8 +467,300 @@ export class MemberApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://api.yatirimim.com/AppBackend/V1";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "/AppBackend/V1";
+    }
 
+    /**
+     * Creates a member
+     * @param body Information about the member
+     * @return The member created successfully
+     */
+    createMember(body: MemberCreateDTO): Observable<MemberDTO> {
+        let url_ = this.baseUrl + "/Member";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreateMember(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreateMember(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<MemberDTO>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<MemberDTO>;
+        }));
+    }
+
+    protected processCreateMember(response: HttpResponseBase): Observable<MemberDTO> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 201) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result201: any = null;
+            let resultData201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result201 = MemberDTO.fromJS(resultData201);
+            return _observableOf(result201);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = APIResultDTO.fromJS(resultData400);
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+            }));
+        } else if (status === 401) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result401: any = null;
+            let resultData401 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result401 = APIResultDTO.fromJS(resultData401);
+            return throwException("Unauthorized", status, _responseText, _headers, result401);
+            }));
+        } else if (status === 403) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result403: any = null;
+            let resultData403 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result403 = APIResultDTO.fromJS(resultData403);
+            return throwException("Forbidden", status, _responseText, _headers, result403);
+            }));
+        } else if (status === 409) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result409: any = null;
+            let resultData409 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result409 = APIResultDTO.fromJS(resultData409);
+            return throwException("Conflict", status, _responseText, _headers, result409);
+            }));
+        } else if (status === 422) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result422: any = null;
+            let resultData422 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result422 = APIResultDTO.fromJS(resultData422);
+            return throwException("Unprocessable Entity", status, _responseText, _headers, result422);
+            }));
+        } else if (status === 500) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result500: any = null;
+            let resultData500 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result500 = APIResultDTO.fromJS(resultData500);
+            return throwException("Internal Server Error", status, _responseText, _headers, result500);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<MemberDTO>(null as any);
+    }
+
+    /**
+     * Gets member information
+     * @return The member found
+     */
+    getMember(): Observable<MemberDTO> {
+        let url_ = this.baseUrl + "/Member";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetMember(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetMember(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<MemberDTO>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<MemberDTO>;
+        }));
+    }
+
+    protected processGetMember(response: HttpResponseBase): Observable<MemberDTO> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = MemberDTO.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("No Content (Requested resource not found)", status, _responseText, _headers);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = APIResultDTO.fromJS(resultData400);
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+            }));
+        } else if (status === 401) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result401: any = null;
+            let resultData401 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result401 = APIResultDTO.fromJS(resultData401);
+            return throwException("Unauthorized", status, _responseText, _headers, result401);
+            }));
+        } else if (status === 403) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result403: any = null;
+            let resultData403 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result403 = APIResultDTO.fromJS(resultData403);
+            return throwException("Forbidden", status, _responseText, _headers, result403);
+            }));
+        } else if (status === 422) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result422: any = null;
+            let resultData422 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result422 = APIResultDTO.fromJS(resultData422);
+            return throwException("Unprocessable Entity", status, _responseText, _headers, result422);
+            }));
+        } else if (status === 500) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result500: any = null;
+            let resultData500 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result500 = APIResultDTO.fromJS(resultData500);
+            return throwException("Internal Server Error", status, _responseText, _headers, result500);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<MemberDTO>(null as any);
+    }
+
+    /**
+     * Updates a member
+     * @param body Information about the member
+     * @return The member updated successfully
+     */
+    updateMember(body: MemberDTO): Observable<MemberDTO> {
+        let url_ = this.baseUrl + "/Member";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("patch", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdateMember(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdateMember(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<MemberDTO>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<MemberDTO>;
+        }));
+    }
+
+    protected processUpdateMember(response: HttpResponseBase): Observable<MemberDTO> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = MemberDTO.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("No Content (Requested resource not found)", status, _responseText, _headers);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = APIResultDTO.fromJS(resultData400);
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+            }));
+        } else if (status === 401) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result401: any = null;
+            let resultData401 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result401 = APIResultDTO.fromJS(resultData401);
+            return throwException("Unauthorized", status, _responseText, _headers, result401);
+            }));
+        } else if (status === 403) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result403: any = null;
+            let resultData403 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result403 = APIResultDTO.fromJS(resultData403);
+            return throwException("Forbidden", status, _responseText, _headers, result403);
+            }));
+        } else if (status === 409) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result409: any = null;
+            let resultData409 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result409 = APIResultDTO.fromJS(resultData409);
+            return throwException("Conflict", status, _responseText, _headers, result409);
+            }));
+        } else if (status === 422) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result422: any = null;
+            let resultData422 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result422 = APIResultDTO.fromJS(resultData422);
+            return throwException("Unprocessable Entity", status, _responseText, _headers, result422);
+            }));
+        } else if (status === 500) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result500: any = null;
+            let resultData500 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result500 = APIResultDTO.fromJS(resultData500);
+            return throwException("Internal Server Error", status, _responseText, _headers, result500);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<MemberDTO>(null as any);
     }
 
     /**
@@ -868,7 +768,7 @@ export class MemberApiService {
      * @param body Information about the address
      * @return The address created successfully
      */
-    addressPost(body: MemberAddressDTO): Observable<MemberAddressDTO> {
+    createMemberAddress(body: MemberAddressDTO): Observable<MemberAddressDTO> {
         let url_ = this.baseUrl + "/Member/Address";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -885,11 +785,11 @@ export class MemberApiService {
         };
 
         return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processAddressPost(response_);
+            return this.processCreateMemberAddress(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processAddressPost(response_ as any);
+                    return this.processCreateMemberAddress(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<MemberAddressDTO>;
                 }
@@ -898,7 +798,7 @@ export class MemberApiService {
         }));
     }
 
-    protected processAddressPost(response: HttpResponseBase): Observable<MemberAddressDTO> {
+    protected processCreateMemberAddress(response: HttpResponseBase): Observable<MemberAddressDTO> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -966,7 +866,7 @@ export class MemberApiService {
      * Gets address list
      * @return The address list
      */
-    addressGet(): Observable<MemberAddressDTO[]> {
+    getMemberAddresses(): Observable<MemberAddressDTO[]> {
         let url_ = this.baseUrl + "/Member/Address";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -979,11 +879,11 @@ export class MemberApiService {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processAddressGet(response_);
+            return this.processGetMemberAddresses(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processAddressGet(response_ as any);
+                    return this.processGetMemberAddresses(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<MemberAddressDTO[]>;
                 }
@@ -992,7 +892,7 @@ export class MemberApiService {
         }));
     }
 
-    protected processAddressGet(response: HttpResponseBase): Observable<MemberAddressDTO[]> {
+    protected processGetMemberAddresses(response: HttpResponseBase): Observable<MemberAddressDTO[]> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -1066,7 +966,7 @@ export class MemberApiService {
      * @param rID Unique integer ID for the entity
      * @return The Address updated successfully
      */
-    addressPatch(body: MemberAddressDTO, rID: number): Observable<MemberAddressDTO> {
+    updateMemberAddress(body: MemberAddressDTO, rID: number): Observable<MemberAddressDTO> {
         let url_ = this.baseUrl + "/Member/Address/{RID}";
         if (rID === undefined || rID === null)
             throw new Error("The parameter 'rID' must be defined.");
@@ -1086,11 +986,11 @@ export class MemberApiService {
         };
 
         return this.http.request("patch", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processAddressPatch(response_);
+            return this.processUpdateMemberAddress(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processAddressPatch(response_ as any);
+                    return this.processUpdateMemberAddress(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<MemberAddressDTO>;
                 }
@@ -1099,7 +999,7 @@ export class MemberApiService {
         }));
     }
 
-    protected processAddressPatch(response: HttpResponseBase): Observable<MemberAddressDTO> {
+    protected processUpdateMemberAddress(response: HttpResponseBase): Observable<MemberAddressDTO> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -1172,7 +1072,7 @@ export class MemberApiService {
      * @param rID Unique integer ID for the entity
      * @return The address deleted successfully
      */
-    addressDelete(rID: number): Observable<void> {
+    deleteMemberAddress(rID: number): Observable<void> {
         let url_ = this.baseUrl + "/Member/Address/{RID}";
         if (rID === undefined || rID === null)
             throw new Error("The parameter 'rID' must be defined.");
@@ -1187,11 +1087,11 @@ export class MemberApiService {
         };
 
         return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processAddressDelete(response_);
+            return this.processDeleteMemberAddress(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processAddressDelete(response_ as any);
+                    return this.processDeleteMemberAddress(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<void>;
                 }
@@ -1200,7 +1100,7 @@ export class MemberApiService {
         }));
     }
 
-    protected processAddressDelete(response: HttpResponseBase): Observable<void> {
+    protected processDeleteMemberAddress(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -1263,7 +1163,7 @@ export class MemberApiService {
      * @param body Information about the bank account
      * @return The bank account created successfully
      */
-    bankAccountPost(body: MemberBankAccountDTO): Observable<MemberBankAccountDTO> {
+    createMemberBankAccount(body: MemberBankAccountDTO): Observable<MemberBankAccountDTO> {
         let url_ = this.baseUrl + "/Member/BankAccount";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1280,11 +1180,11 @@ export class MemberApiService {
         };
 
         return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processBankAccountPost(response_);
+            return this.processCreateMemberBankAccount(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processBankAccountPost(response_ as any);
+                    return this.processCreateMemberBankAccount(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<MemberBankAccountDTO>;
                 }
@@ -1293,7 +1193,7 @@ export class MemberApiService {
         }));
     }
 
-    protected processBankAccountPost(response: HttpResponseBase): Observable<MemberBankAccountDTO> {
+    protected processCreateMemberBankAccount(response: HttpResponseBase): Observable<MemberBankAccountDTO> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -1361,7 +1261,7 @@ export class MemberApiService {
      * Gets bank account list
      * @return The bank account list
      */
-    bankAccountGet(): Observable<MemberBankAccountDTO[]> {
+    getMemberBankAccounts(): Observable<MemberBankAccountDTO[]> {
         let url_ = this.baseUrl + "/Member/BankAccount";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1374,11 +1274,11 @@ export class MemberApiService {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processBankAccountGet(response_);
+            return this.processGetMemberBankAccounts(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processBankAccountGet(response_ as any);
+                    return this.processGetMemberBankAccounts(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<MemberBankAccountDTO[]>;
                 }
@@ -1387,7 +1287,7 @@ export class MemberApiService {
         }));
     }
 
-    protected processBankAccountGet(response: HttpResponseBase): Observable<MemberBankAccountDTO[]> {
+    protected processGetMemberBankAccounts(response: HttpResponseBase): Observable<MemberBankAccountDTO[]> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -1461,7 +1361,7 @@ export class MemberApiService {
      * @param rID Unique integer ID for the entity
      * @return The BankAccount updated successfully
      */
-    bankAccountPatch(body: MemberBankAccountDTO, rID: number): Observable<MemberBankAccountDTO> {
+    updateMemberBankAccount(body: MemberBankAccountDTO, rID: number): Observable<MemberBankAccountDTO> {
         let url_ = this.baseUrl + "/Member/BankAccount/{RID}";
         if (rID === undefined || rID === null)
             throw new Error("The parameter 'rID' must be defined.");
@@ -1481,11 +1381,11 @@ export class MemberApiService {
         };
 
         return this.http.request("patch", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processBankAccountPatch(response_);
+            return this.processUpdateMemberBankAccount(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processBankAccountPatch(response_ as any);
+                    return this.processUpdateMemberBankAccount(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<MemberBankAccountDTO>;
                 }
@@ -1494,7 +1394,7 @@ export class MemberApiService {
         }));
     }
 
-    protected processBankAccountPatch(response: HttpResponseBase): Observable<MemberBankAccountDTO> {
+    protected processUpdateMemberBankAccount(response: HttpResponseBase): Observable<MemberBankAccountDTO> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -1567,7 +1467,7 @@ export class MemberApiService {
      * @param rID Unique integer ID for the entity
      * @return The bank account deleted successfully
      */
-    bankAccountDelete(rID: number): Observable<void> {
+    deleteMemberBankAccount(rID: number): Observable<void> {
         let url_ = this.baseUrl + "/Member/BankAccount/{RID}";
         if (rID === undefined || rID === null)
             throw new Error("The parameter 'rID' must be defined.");
@@ -1582,11 +1482,11 @@ export class MemberApiService {
         };
 
         return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processBankAccountDelete(response_);
+            return this.processDeleteMemberBankAccount(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processBankAccountDelete(response_ as any);
+                    return this.processDeleteMemberBankAccount(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<void>;
                 }
@@ -1595,7 +1495,7 @@ export class MemberApiService {
         }));
     }
 
-    protected processBankAccountDelete(response: HttpResponseBase): Observable<void> {
+    protected processDeleteMemberBankAccount(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -1658,7 +1558,7 @@ export class MemberApiService {
      * @param body Information about the comment
      * @return The comment created successfully
      */
-    commentPost(body: MemberCommentDTO): Observable<void> {
+    postMemberComment(body: MemberCommentDTO): Observable<void> {
         let url_ = this.baseUrl + "/Member/Comment";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1674,11 +1574,11 @@ export class MemberApiService {
         };
 
         return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processCommentPost(response_);
+            return this.processPostMemberComment(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processCommentPost(response_ as any);
+                    return this.processPostMemberComment(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<void>;
                 }
@@ -1687,7 +1587,7 @@ export class MemberApiService {
         }));
     }
 
-    protected processCommentPost(response: HttpResponseBase): Observable<void> {
+    protected processPostMemberComment(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -1755,7 +1655,7 @@ export class MemberApiService {
      * @param pageSize The requested page size
      * @return List of Member Comments
      */
-    commentGet(symbolRID: number, pageNumber: number, pageSize: number): Observable<PaginatedMemberCommentListDTO> {
+    getPaginatedMemberCommentList(symbolRID: number, pageNumber: number, pageSize: number): Observable<PaginatedMemberCommentListDTO> {
         let url_ = this.baseUrl + "/Member/Comment?";
         if (symbolRID === undefined || symbolRID === null)
             throw new Error("The parameter 'symbolRID' must be defined and cannot be null.");
@@ -1780,11 +1680,11 @@ export class MemberApiService {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processCommentGet(response_);
+            return this.processGetPaginatedMemberCommentList(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processCommentGet(response_ as any);
+                    return this.processGetPaginatedMemberCommentList(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<PaginatedMemberCommentListDTO>;
                 }
@@ -1793,7 +1693,7 @@ export class MemberApiService {
         }));
     }
 
-    protected processCommentGet(response: HttpResponseBase): Observable<PaginatedMemberCommentListDTO> {
+    protected processGetPaginatedMemberCommentList(response: HttpResponseBase): Observable<PaginatedMemberCommentListDTO> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -1865,7 +1765,7 @@ export class MemberApiService {
      * Gets member devices
      * @return Device list
      */
-    device(): Observable<MemberDeviceDTO[]> {
+    getMemberDevices(): Observable<MemberDeviceDTO[]> {
         let url_ = this.baseUrl + "/Member/Device";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1878,11 +1778,11 @@ export class MemberApiService {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processDevice(response_);
+            return this.processGetMemberDevices(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processDevice(response_ as any);
+                    return this.processGetMemberDevices(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<MemberDeviceDTO[]>;
                 }
@@ -1891,7 +1791,7 @@ export class MemberApiService {
         }));
     }
 
-    protected processDevice(response: HttpResponseBase): Observable<MemberDeviceDTO[]> {
+    protected processGetMemberDevices(response: HttpResponseBase): Observable<MemberDeviceDTO[]> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -1964,7 +1864,7 @@ export class MemberApiService {
      * @param body Information about the document
      * @return The document created successfully
      */
-    document(body: MemberDocumentDTO): Observable<void> {
+    postMemberDocument(body: MemberDocumentDTO): Observable<void> {
         let url_ = this.baseUrl + "/Member/Document";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1980,11 +1880,11 @@ export class MemberApiService {
         };
 
         return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processDocument(response_);
+            return this.processPostMemberDocument(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processDocument(response_ as any);
+                    return this.processPostMemberDocument(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<void>;
                 }
@@ -1993,7 +1893,7 @@ export class MemberApiService {
         }));
     }
 
-    protected processDocument(response: HttpResponseBase): Observable<void> {
+    protected processPostMemberDocument(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -2059,7 +1959,7 @@ export class MemberApiService {
      * @param body Information about the vote
      * @return The vote created successfully
      */
-    vote(body: MemberVoteDTO): Observable<SymbolVoteDTO> {
+    postMemberVote(body: MemberVoteDTO): Observable<SymbolVoteDTO> {
         let url_ = this.baseUrl + "/Member/Vote";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -2076,11 +1976,11 @@ export class MemberApiService {
         };
 
         return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processVote(response_);
+            return this.processPostMemberVote(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processVote(response_ as any);
+                    return this.processPostMemberVote(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<SymbolVoteDTO>;
                 }
@@ -2089,7 +1989,7 @@ export class MemberApiService {
         }));
     }
 
-    protected processVote(response: HttpResponseBase): Observable<SymbolVoteDTO> {
+    protected processPostMemberVote(response: HttpResponseBase): Observable<SymbolVoteDTO> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -2155,15 +2055,112 @@ export class MemberApiService {
 }
 
 @Injectable()
-export class SymbolApiService {
+export class FinanceApiService {
     private http: HttpClient;
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://api.yatirimim.com/AppBackend/V1";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "/AppBackend/V1";
+    }
 
+    /**
+     * Gets list of symbols
+     * @return Symbol list
+     */
+    getSymbolList(): Observable<SymbolDTO[]> {
+        let url_ = this.baseUrl + "/Symbol";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetSymbolList(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetSymbolList(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<SymbolDTO[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<SymbolDTO[]>;
+        }));
+    }
+
+    protected processGetSymbolList(response: HttpResponseBase): Observable<SymbolDTO[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(SymbolDTO.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status === 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("No Content (Requested resource not found)", status, _responseText, _headers);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = APIResultDTO.fromJS(resultData400);
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+            }));
+        } else if (status === 401) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result401: any = null;
+            let resultData401 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result401 = APIResultDTO.fromJS(resultData401);
+            return throwException("Unauthorized", status, _responseText, _headers, result401);
+            }));
+        } else if (status === 403) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result403: any = null;
+            let resultData403 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result403 = APIResultDTO.fromJS(resultData403);
+            return throwException("Forbidden", status, _responseText, _headers, result403);
+            }));
+        } else if (status === 422) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result422: any = null;
+            let resultData422 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result422 = APIResultDTO.fromJS(resultData422);
+            return throwException("Unprocessable Entity", status, _responseText, _headers, result422);
+            }));
+        } else if (status === 500) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result500: any = null;
+            let resultData500 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result500 = APIResultDTO.fromJS(resultData500);
+            return throwException("Internal Server Error", status, _responseText, _headers, result500);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<SymbolDTO[]>(null as any);
     }
 
     /**
@@ -2171,7 +2168,7 @@ export class SymbolApiService {
      * @param rIDList List of comma delimited RIDs
      * @return Symbol info
      */
-    rate(rIDList: string): Observable<SymbolRateDTO[]> {
+    getSymbolRates(rIDList: string): Observable<SymbolRateDTO[]> {
         let url_ = this.baseUrl + "/Symbol/Rate?";
         if (rIDList === undefined || rIDList === null)
             throw new Error("The parameter 'rIDList' must be defined and cannot be null.");
@@ -2188,11 +2185,11 @@ export class SymbolApiService {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processRate(response_);
+            return this.processGetSymbolRates(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processRate(response_ as any);
+                    return this.processGetSymbolRates(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<SymbolRateDTO[]>;
                 }
@@ -2201,7 +2198,7 @@ export class SymbolApiService {
         }));
     }
 
-    protected processRate(response: HttpResponseBase): Observable<SymbolRateDTO[]> {
+    protected processGetSymbolRates(response: HttpResponseBase): Observable<SymbolRateDTO[]> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -2274,7 +2271,7 @@ export class SymbolApiService {
      * @param rID Unique integer ID for the entity
      * @return Symbol vote for the day
      */
-    vote(rID: number): Observable<SymbolVoteDTO> {
+    getSymbolVote(rID: number): Observable<SymbolVoteDTO> {
         let url_ = this.baseUrl + "/Symbol/{RID}/Vote";
         if (rID === undefined || rID === null)
             throw new Error("The parameter 'rID' must be defined.");
@@ -2290,11 +2287,11 @@ export class SymbolApiService {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processVote(response_);
+            return this.processGetSymbolVote(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processVote(response_ as any);
+                    return this.processGetSymbolVote(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<SymbolVoteDTO>;
                 }
@@ -2303,7 +2300,7 @@ export class SymbolApiService {
         }));
     }
 
-    protected processVote(response: HttpResponseBase): Observable<SymbolVoteDTO> {
+    protected processGetSymbolVote(response: HttpResponseBase): Observable<SymbolVoteDTO> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -2373,15 +2370,14 @@ export class SystemApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://api.yatirimim.com/AppBackend/V1";
-
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "/AppBackend/V1";
     }
 
     /**
      * Returns list of provinces
      * @return OK (The request has succeeded)
      */
-    province(): Observable<ProvinceDTO[]> {
+    getProvinces(): Observable<ProvinceDTO[]> {
         let url_ = this.baseUrl + "/System/Province";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -2394,11 +2390,11 @@ export class SystemApiService {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processProvince(response_);
+            return this.processGetProvinces(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processProvince(response_ as any);
+                    return this.processGetProvinces(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<ProvinceDTO[]>;
                 }
@@ -2407,7 +2403,7 @@ export class SystemApiService {
         }));
     }
 
-    protected processProvince(response: HttpResponseBase): Observable<ProvinceDTO[]> {
+    protected processGetProvinces(response: HttpResponseBase): Observable<ProvinceDTO[]> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -2463,26 +2459,13 @@ export class SystemApiService {
         }
         return _observableOf<ProvinceDTO[]>(null as any);
     }
-}
-
-@Injectable()
-export class ProvinceApiService {
-    private http: HttpClient;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
-        this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://api.yatirimim.com/AppBackend/V1";
-
-    }
 
     /**
      * Returns list of districts for a province
      * @param provinceRID Unique integer ID for a Province
      * @return OK (The request has succeeded)
      */
-    district(provinceRID: number): Observable<DistrictDTO[]> {
+    getDistricts(provinceRID: number): Observable<DistrictDTO[]> {
         let url_ = this.baseUrl + "/System/Province/{ProvinceRID}/District";
         if (provinceRID === undefined || provinceRID === null)
             throw new Error("The parameter 'provinceRID' must be defined.");
@@ -2498,11 +2481,11 @@ export class ProvinceApiService {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processDistrict(response_);
+            return this.processGetDistricts(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processDistrict(response_ as any);
+                    return this.processGetDistricts(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<DistrictDTO[]>;
                 }
@@ -2511,7 +2494,7 @@ export class ProvinceApiService {
         }));
     }
 
-    protected processDistrict(response: HttpResponseBase): Observable<DistrictDTO[]> {
+    protected processGetDistricts(response: HttpResponseBase): Observable<DistrictDTO[]> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :

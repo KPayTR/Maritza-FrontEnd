@@ -3,7 +3,7 @@ import { NavigationExtras, Router } from '@angular/router';
 import { BarcodeScanner } from '@awesome-cordova-plugins/barcode-scanner/ngx';
 import { UTCTimestamp } from 'lightweight-charts';
 import * as moment from 'moment';
-import { AuthApiService, GraphicDataModel, MatriksApiService, SymbolRateModel, TokenModel } from 'src/app/services/api-yatirimim.service';
+import { AuthApiService, GraphicDataModel, MatriksApiService, SymbolRateModel, SymbolsApiService, SymbolVoteRequestModel, SymbolVoteSummaryModel, TokenModel } from 'src/app/services/api-yatirimim.service';
 import { AppService } from 'src/app/services/app.service';
 import { MarketDataService } from 'src/app/services/market-data.service';
 import { MarketSymbolsService } from 'src/app/services/market-symbols.service';
@@ -24,7 +24,7 @@ export class Home {
 
   candleData: any[] = []
   lineData: any[] = []
-
+  voteSummary: SymbolVoteSummaryModel;
   constructor(
     private barcodeScanner: BarcodeScanner,
     private marketDataService: MarketDataService,
@@ -34,6 +34,7 @@ export class Home {
     private authService: AuthApiService,
     private appService: AppService,
     private matriksService: MatriksApiService,
+    private symbolApiService: SymbolsApiService
   ) {
     if (marketSymbolService.symbols == null) {
       marketSymbolService.symbolsLoad.subscribe(v => {
@@ -198,4 +199,42 @@ export class Home {
   goNotification(){  
     this.router.navigate(['user/notifications']);
   }
+
+  getVoteData() {
+    const body = new SymbolVoteRequestModel();
+    body.customerId = this.appService.user?.id ?? 1;
+    body.symbolId = this.symbol.symbolId;
+
+    this.symbolApiService.getsymbolvotesummary(body)
+      .subscribe(
+        v => {
+          this.voteSummary = v;
+        },
+        e => this.onError(e)
+      )
+  }
+
+  getVotePercent(type: 'increasing' | 'decreasing') {
+    if(this.voteSummary && (this.voteSummary.increasingCount > 0 || this.voteSummary.decreasingCount > 0)) {
+      if(type == 'increasing') {
+        if(this.voteSummary.decreasingCount == 0 && this.voteSummary.increasingCount == 0) return 50;
+        if(this.voteSummary.decreasingCount == 0 && this.voteSummary.increasingCount > 0) return 100;
+        if(this.voteSummary.increasingCount == 0 && this.voteSummary.decreasingCount > 0) return 0;
+
+        return (this.voteSummary.increasingCount * 100 / (this.voteSummary.decreasingCount+this.voteSummary.increasingCount))
+      }
+      else if(type == 'decreasing') {
+        if(this.voteSummary.decreasingCount == 0 && this.voteSummary.increasingCount == 0) return 50;
+        if(this.voteSummary.increasingCount == 0 && this.voteSummary.decreasingCount > 0) return 100;
+        if(this.voteSummary.decreasingCount == 0 && this.voteSummary.increasingCount > 0) return 0;
+
+        return (this.voteSummary.decreasingCount * 100 / (this.voteSummary.decreasingCount+this.voteSummary.increasingCount))
+      }
+    }
+    return 50;
+  }
+
+
+
+
 }

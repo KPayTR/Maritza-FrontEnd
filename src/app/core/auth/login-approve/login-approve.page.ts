@@ -15,17 +15,20 @@ import { Clipboard } from '@capacitor/clipboard';
   templateUrl: './login-approve.page.html',
   styleUrls: ['./login-approve.page.scss'],
 })
-export class LoginApprovePage implements OnInit {
+export class LoginApprovePage  {
   p1: string;
   p2: string;
   p3: string;
   p4: string;
   p5: string;
-  p6: string;
+  p6: string; 
   counter=60;
   isValid: boolean = false;
   phone;
   pass;
+  isCopied: boolean;
+  isViaSmsCode: boolean;
+  authKey: string;
   constructor(
     private route: ActivatedRoute,
     private zone: NgZone,
@@ -37,7 +40,7 @@ export class LoginApprovePage implements OnInit {
     this.phone=this.appService.userPhone.replace(/\s/g, "");
     this.pass=this.appService.userPass;
     console.log("s",this.phone)
-    this.timer()
+    this.startTimer()
   }
 
   startTimer() {

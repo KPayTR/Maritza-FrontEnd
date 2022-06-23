@@ -3,16 +3,17 @@ import { Router } from '@angular/router';
 import { AlertController, LoadingController } from '@ionic/angular';
 import { AuthenticationApiService, AuthenticationRequestDTO, AuthenticationResponseDTO, DeviceTypeEnum } from 'src/app/services/api-hkn-yatirimim.service';
 import { AuthApiService, LoginModel } from 'src/app/services/api-yatirimim.service';
-import { AppService, User } from 'src/app/services/app.service';
+import { AppService, LocalUser } from 'src/app/services/app.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
 })
-export class LoginPage implements OnInit {
+export class LoginPage  {
   phone: string;
   password: string;
+  tempUser: LocalUser;
   constructor(
     private router: Router,
     private alertController: AlertController,
@@ -28,9 +29,9 @@ export class LoginPage implements OnInit {
     if (this.phone != null && this.password != null) {
       this.phone = this.phone.replace(/[\s.*+\-?^${}()|[\]\\]/g, '');
 
-      this.tempUser = new User();
-      this.tempUser.phone = '90' + this.phone;
-      this.tempUser.pass = this.password; 
+      this.tempUser = new LocalUser();
+      this.tempUser.phoneNumber = '90' + this.phone;
+      this.tempUser.password = this.password; 
 
       // const model = new LoginModel();
       // model.phoneNumber= this.tempUser.phone;
@@ -40,7 +41,7 @@ export class LoginPage implements OnInit {
       model.deviceID= "123";
       model.deviceType=DeviceTypeEnum.AndroidPhone;
       model.fCMToken="123123"
-      model.gSMNo=this.tempUser.phone
+      model.gSMNo=this.tempUser.phoneNumber
       model.isNewDevice=true;
       model.password=this.password; 
 
@@ -67,7 +68,7 @@ export class LoginPage implements OnInit {
   onLogin(v: AuthenticationResponseDTO): void {
     this.zone.run(() => {
       this.appService.toggleLoader(false);
-      this.appService.user = this.tempUser; 
+      //this.appService.user = this.tempUser; 
       this.appService.accessToken = v.jWT;  
     this.router.navigate(['/auth/login-approve'])
     });
@@ -81,7 +82,7 @@ export class LoginPage implements OnInit {
   }
 
   async presentAlert(txt) {
-    const alert = await this.alertController.create({
+    const alert = await this.alertController.create({ 
       cssClass: 'my-custom-class',
       header: 'UYARI',
       mode: 'ios',

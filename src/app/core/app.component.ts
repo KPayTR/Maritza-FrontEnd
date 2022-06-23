@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Clipboard } from '@capacitor/clipboard';
 import { MenuController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
+import * as moment from 'moment';
 import { AppService } from '../services/app.service';
 import { MarketDataService } from '../services/market-data.service';
 import { MarketSymbolsService } from '../services/market-symbols.service';

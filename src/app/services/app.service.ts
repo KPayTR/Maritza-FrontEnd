@@ -16,6 +16,7 @@ export class AppService {
 
   @Output() 
   themeChange: EventEmitter<string> = new EventEmitter<string>();
+  
 
   constructor(
     private toastController: ToastController,
@@ -30,6 +31,14 @@ export class AppService {
 
   set userPass(v: string) {
     localStorage.setItem("user_pass", v);
+  }
+
+  get userPhone(): string {
+    return localStorage.getItem("user_phone");
+  }
+
+  set userPhone(v: string) {
+    localStorage.setItem("user_phone", v);
   }
 
   get accessToken(): string {
@@ -175,6 +184,7 @@ export class LocalUser {
   corporateName?: string | undefined;
   email?: string | undefined;
   phoneNumber?: string | undefined;
+  password?: string | undefined;
   roles?: string | string[] | undefined;
 
   init(_data?: any) {
@@ -183,6 +193,8 @@ export class LocalUser {
       this.userName = _data['userName'];
       this.retailName = _data['retailName'];
       this.corporateName = _data['corporateName'];
+      this.phoneNumber = _data['phoneNumber'];
+      this.password = _data['password'];
       this.email = _data['email'];
       this.roles = _data['roles'];
     }
