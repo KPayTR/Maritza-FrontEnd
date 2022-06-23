@@ -84,7 +84,7 @@ export class LoginApprovePage  {
       model.isNewDevice=false;
       model.password=this.pass;
 
-      this.authApi.authenticate(model)
+      this.authApi.authenticateMember(model)
       .subscribe(
         (v) => this.onAuth(v),
         (e) => this.onError(e)

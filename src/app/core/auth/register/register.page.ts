@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute, ActivatedRouteSnapshot, Router } from "@angular/router";
 import { ModalController } from "@ionic/angular"; 
 import { PrivacyPolicyComponent } from "src/app/components/privacy-policy/privacy-policy.component";
-import { ApiService, LanguageEnum, MemberCreateDTO, MemberDTO, MemberTypeEnum } from "src/app/services/api-hkn-yatirimim.service";
+import { LanguageEnum, MemberApiService, MemberCreateDTO, MemberDTO, MemberTypeEnum } from "src/app/services/api-hkn-yatirimim.service";
 import { AuthApiService, RegisterModel, TokenModel } from "src/app/services/api-yatirimim.service";
 import { AppService } from "src/app/services/app.service";
 
@@ -34,7 +34,7 @@ export class RegisterPage implements OnInit {
     private appService:AppService,
     private authService:AuthApiService,
     private modalController: ModalController,
-    private apiHknService : ApiService
+    private apiHknService : MemberApiService
   ) {
     console.log('the id', this.route.snapshot.paramMap.get('id'));
     this.id = this.route.snapshot.paramMap.get('id');
@@ -105,7 +105,7 @@ export class RegisterPage implements OnInit {
     // model.isCorporate=false;
     console.log("mo ",mo)
     this.appService.toggleLoader(true).then((res) => {
-      this.apiHknService.memberPost(mo)
+      this.apiHknService.createMember(mo)
       .subscribe(
         v => this.onRegister(v, mo.gSMNo,mo.password),
         e => this.onError(e)
@@ -170,7 +170,7 @@ export class RegisterPage implements OnInit {
     // model.isCorporate=true;
 
     this.appService.toggleLoader(true).then((res) => {
-      this.apiHknService.memberPost(mo)
+      this.apiHknService.createMember(mo)
       .subscribe(
           v => this.onRegister(v,mo.gSMNo,mo.password),
           e => this.onError(e)

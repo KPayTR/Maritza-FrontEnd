@@ -47,7 +47,7 @@ export class LoginPage  {
 
 
       this.appService.toggleLoader(true).then((res) => {
-        this.authApi.authenticate(model)
+        this.authApi.authenticateMember(model)
         .subscribe(
           (v) => this.onLogin(v),
           (e) => this.onError(e)

@@ -1,5 +1,5 @@
 import { EventEmitter, Injectable, NgZone } from '@angular/core';
-import { SymbolApiService, SymbolRateDTO } from './api-hkn-yatirimim.service'; 
+import { FinanceApiService, SymbolRateDTO } from './api-hkn-yatirimim.service'; 
 import { AppService } from './app.service';
 
 @Injectable({
@@ -14,14 +14,14 @@ export class MarketSymbolsService {
   constructor( 
     private appService: AppService,
     private zone: NgZone,
-    private symbolData: SymbolApiService
+    private symbolData: FinanceApiService
   ) {
   }
 
   public init() {
    // this.symbolApiService.getsymbolrates().subscribe(
 
-    this.symbolData.rate("1,2,3,4,5,6,7,8").subscribe(
+    this.symbolData.getSymbolRates("1,2,3,4,5,6,7,8").subscribe(
       (v) => this.onMarketData(v),
       (e) => this.onError(e)
     );

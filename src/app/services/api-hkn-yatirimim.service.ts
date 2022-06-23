@@ -25,7 +25,7 @@ export class ServiceApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "/AppBackend/V1";
+      this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://api.yatirimim.com/AppBackend/V1";
     }
 
     /**
@@ -162,7 +162,7 @@ export class AuthenticationApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "/AppBackend/V1";
+      this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://api.yatirimim.com/AppBackend/V1";
     }
 
     /**
@@ -467,7 +467,7 @@ export class MemberApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "/AppBackend/V1";
+      this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://api.yatirimim.com/AppBackend/V1";
     }
 
     /**
@@ -2062,7 +2062,7 @@ export class FinanceApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "/AppBackend/V1";
+      this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://api.yatirimim.com/AppBackend/V1";
     }
 
     /**
@@ -2370,7 +2370,7 @@ export class SystemApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "/AppBackend/V1";
+      this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://api.yatirimim.com/AppBackend/V1";
     }
 
     /**

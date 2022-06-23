@@ -10,7 +10,7 @@ import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 
 import { SharedComponentsModule } from '../components/shared-components.module';
 import { TokenInterceptor } from '../helpers/token.interceptor';
-import { ApiService, AuthenticationApiService, SymbolApiService } from '../services/api-hkn-yatirimim.service';
+import { AuthenticationApiService, FinanceApiService, MemberApiService, ServiceApiService, } from '../services/api-hkn-yatirimim.service';
 import { AssetsApiService, AuthApiService, CardApiService, MARITZA_API_URL, MatriksApiService, SymbolsApiService } from '../services/api-yatirimim.service';
 import { AppService } from '../services/app.service';
 import { AppRoutingModule } from './app-routing.module';
@@ -53,9 +53,10 @@ export function createTranslateLoader(http: HttpClient) {
   ],
   providers: [
     BarcodeScanner,
-    ApiService,
+    ServiceApiService,
+    MemberApiService,
+    FinanceApiService,
     AuthenticationApiService,
-    SymbolApiService,
     AppService,
     MatriksApiService,
     AuthApiService,
