@@ -91,7 +91,7 @@
     <div *ngFor="let asset of assets" class="trade-list">
       <ion-row>
         <ion-col size="2">
-          <div class="no-padding-center">
+          <div class="no-padding-center flex-start">
             <img src="../../../assets/img/symbol/{{asset?.symbol?.isoCode}}.svg" alt="" />
           </div>
         </ion-col>
@@ -102,7 +102,7 @@
           </ion-label>
         </ion-col>
         <ion-col size="2">
-          <div *ngIf="!asset.symbol.isMainCurrency">
+          <div *ngIf="!asset.symbol.isMainCurrency" class="no-padding-center flex-end">
             <img src="../../../assets/img/icon/alarm.svg" />
           </div>
         </ion-col>
@@ -111,7 +111,7 @@
         <ion-col size="4">
           <div class="div-left">
             <ion-label>
-              <h4>{{checkTradeValue(asset.symbol.isoCode,true)}} TL</h4>
+              <h4>{{checkTradeValue(asset.symbol.isoCode,true) | number : '1.2-2'}} TL</h4>
               <ion-button class="buy-btn" size="small">AL</ion-button>
             </ion-label>
           </div>
@@ -119,15 +119,15 @@
         <ion-col size="4">
           <ion-label class="center">
             <div class="center">
-              <app-mini-line-chart [data]="lineDatas[asset.symbol.matriksCode]"></app-mini-line-chart>
+              <app-mini-line-chart [data]="lineDatas[asset.symbol.matriksCode]" [isIncreasing]="checkTradeDifference(asset.symbol.isoCode) > 0"></app-mini-line-chart>
             </div>
-            <p>%0</p>
+            <p>%{{checkTradeDifference(asset.symbol.isoCode)}}</p>
           </ion-label>
         </ion-col>
         <ion-col size="4">
           <div class="div-right">
             <ion-label>
-              <h4>{{checkTradeValue(asset.symbol.isoCode,false)}} TL</h4>
+              <h4>{{checkTradeValue(asset.symbol.isoCode,false) | number : '1.2-2'}} TL</h4>
               <ion-button class="sell-btn" size="small">SAT</ion-button>
             </ion-label>
           </div>

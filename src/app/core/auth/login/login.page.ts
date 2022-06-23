@@ -13,23 +13,18 @@ import { AppService, User } from 'src/app/services/app.service';
 export class LoginPage implements OnInit {
   phone: string;
   password: string;
-  tempUser: User;
   constructor(
     private router: Router,
     private alertController: AlertController,
     public loadingController: LoadingController,
-    private authService:AuthApiService,
+    private authService: AuthApiService,
     private zone: NgZone,
     private appService: AppService,
     private authApi : AuthenticationApiService
 
   ) {}
 
-  ngOnInit() {}
-  openReset() {}
   login() {
-    //routerDirection="forward"    [routerLink]="['../login-approve']"
-    console.log('ss');
     if (this.phone != null && this.password != null) {
       this.phone = this.phone.replace(/[\s.*+\-?^${}()|[\]\\]/g, '');
 
@@ -77,6 +72,7 @@ export class LoginPage implements OnInit {
     this.router.navigate(['/auth/login-approve'])
     });
   }
+
   onError(e: any): void {
     this.zone.run(() => {
       this.appService.toggleLoader(false);

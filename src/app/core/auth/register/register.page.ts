@@ -13,17 +13,19 @@ import { AppService } from "src/app/services/app.service";
   styleUrls: ["./register.page.scss"],
 })
 export class RegisterPage implements OnInit {
+
   retail: boolean = true;
   isUserAgreementAccepted: boolean = false;
   isPrivacyAgreementAccepted: boolean = false;
   isContactAgreementAccepted: boolean = false;
-  step: number = 1; 
-  id='' 
+  step: number = 1;
+  id = ''
   retailRegisterForm: FormGroup;
   corporateRegisterForm: FormGroup;
-  isValidMail?:  boolean | null;
-  isValidPhone ?: boolean| null;
-  isValidId ?: boolean| null;
+  isValidMail?: boolean | null;
+  isValidPhone?: boolean | null;
+  isValidId?: boolean | null;
+
   constructor(
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
@@ -34,12 +36,12 @@ export class RegisterPage implements OnInit {
     private modalController: ModalController,
     private apiHknService : ApiService
   ) {
-    console.log('the id', this.route.snapshot.paramMap.get('id')); 
-    this.id=this.route.snapshot.paramMap.get('id');
-    if (this.id=='1') {
-      this.retail= true;
+    console.log('the id', this.route.snapshot.paramMap.get('id'));
+    this.id = this.route.snapshot.paramMap.get('id');
+    if (this.id == '1') {
+      this.retail = true;
     } else {
-      this.retail= false;
+      this.retail = false;
 
     }
 
@@ -67,6 +69,7 @@ export class RegisterPage implements OnInit {
   ngOnInit() {
     this.step = 1;
   }
+
   step2() {
     this.step++;
   }
@@ -126,11 +129,12 @@ export class RegisterPage implements OnInit {
       this.router.navigate(['/auth/login-approve'])
     });
   }
+
   onError(e: any): void {
     console.log("erro ",e)
 
     this.zone.run(() => {
-      this.appService.toggleLoader(false); 
+      this.appService.toggleLoader(false);
       this.appService.showErrorAlert(e);
     });
   }
@@ -170,11 +174,11 @@ export class RegisterPage implements OnInit {
       .subscribe(
           v => this.onRegister(v,mo.gSMNo,mo.password),
           e => this.onError(e)
-      )
-       
-        });
-    //this.router.navigate(['/auth/verification-corporate'])
+        )
+
+    });
   }
+
   async privacyModal() {
     const modal = await this.modalController.create({
       component: PrivacyPolicyComponent,

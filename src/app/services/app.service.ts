@@ -1,5 +1,9 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable, Output } from '@angular/core';
 import { AlertController, LoadingController, ToastController } from '@ionic/angular';
+import { TranslateService } from '@ngx-translate/core';
+import jwt_decode from 'jwt-decode';
+import * as moment from 'moment';
+
 import { ErrorDto } from './api-yatirimim.service';
 
 @Injectable({
@@ -8,34 +12,17 @@ import { ErrorDto } from './api-yatirimim.service';
 export class AppService {
   loaderCount = 0;
   loader: HTMLIonLoadingElement;
+  private mUser: LocalUser;
 
+  @Output() 
+  themeChange: EventEmitter<string> = new EventEmitter<string>();
 
   constructor(
     private toastController: ToastController,
     private alertController: AlertController,
     private loadingController: LoadingController,
+    private translate: TranslateService
   ) { }
-  public get user(): User {
-    try {
-      const memberJson = localStorage.getItem("current_user");
-      return User.fromJS(JSON.parse(memberJson));
-    } catch (e) {
-      return null;
-    }
-  }
-
-  public set user(v: User) {
-    localStorage.setItem("current_user", JSON.stringify(v.toJSON()));
-
-  }
-
-  get userPhone(): string {
-    return localStorage.getItem("user_phone");
-  }
-
-  set userPhone(v: string) {
-    localStorage.setItem("user_phone", v);
-  }
 
   get userPass(): string {
     return localStorage.getItem("user_pass");
@@ -59,8 +46,55 @@ export class AppService {
 
   set userTheme(v: string) {
     localStorage.setItem("user_theme", v);
+    this.themeChange.emit(v);
   }
-  
+
+  get currentLanguage(): string {
+    let lang = localStorage.getItem("user_lang");
+
+    if (lang == undefined || lang.length == 0) {
+      const browserLang = this.translate.getBrowserLang();
+      lang = browserLang.match(/tr|en/) ? browserLang : 'tr';
+      localStorage.setItem("user_lang", lang);
+    }
+
+    moment.locale(lang);
+
+    return lang;
+  }
+
+  set currentLanguage(v: string) {
+    localStorage.setItem("user_lang", v);
+
+    this.translate.use(v);
+    moment.locale(v);
+
+  }
+
+  public get user(): LocalUser {
+
+    if (this.mUser != undefined && this.mUser.id > 0) return this.mUser;
+
+    try {
+      const token = localStorage.getItem("access_token");
+
+      if (token != undefined && token.length > 0) {
+        const decoded = jwt_decode(token);
+
+        var user = new LocalUser();
+        user.id = parseInt(decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier']);
+        user.userName = decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'];
+        user.roles = decoded['Roles'];
+        user.retailName = decoded['RetailName'];
+        user.corporateName = decoded['CorporateName'];
+
+        if (user.id > 0) this.mUser = user;
+        return this.mUser;
+      }
+    } catch (e) {
+      return null;
+    }
+  }
 
   async toggleLoader(value: boolean = false, message: string = null): Promise<void> {
     if (value) {
@@ -110,10 +144,10 @@ export class AppService {
       const errorDtos: ErrorDto[] = message;
       message = errorDtos.map(x => x.message).join(' ');
     }
-    else if(message && message.title) {
+    else if (message && message.title) {
       message.message = 'Sunucu erişiminde bir sorun oluştu';
     }
-    
+
     if (message != null && message.message != null) {
       message = message.message;
     }
@@ -134,37 +168,42 @@ export class AppService {
   }
 }
 
-export class User {
-  public id: number | undefined;
-  public phone: string | undefined;
-  public pass: string | undefined;
-  public token: string | undefined;
-  public fcmToken: string | undefined;
+export class LocalUser {
+  id?: number;
+  userName?: string | undefined;
+  retailName?: string | undefined;
+  corporateName?: string | undefined;
+  email?: string | undefined;
+  phoneNumber?: string | undefined;
+  roles?: string | string[] | undefined;
 
   init(_data?: any) {
     if (_data) {
-      this.id = _data["id"];
-      this.phone = _data["phone"];
-      this.pass = _data["pass"];
-      this.token = _data["token"];
-      this.fcmToken = _data["fcmToken"];
+      this.id = _data['id'];
+      this.userName = _data['userName'];
+      this.retailName = _data['retailName'];
+      this.corporateName = _data['corporateName'];
+      this.email = _data['email'];
+      this.roles = _data['roles'];
     }
   }
 
-  static fromJS(data: any): User {
-    data = typeof data === "object" ? data : {};
-    let result = new User();
+  static fromJS(data: any): LocalUser {
+    data = typeof data === 'object' ? data : {};
+    let result = new LocalUser();
     result.init(data);
     return result;
   }
 
   toJSON(data?: any) {
-    data = typeof data === "object" ? data : {};
-    data["id"] = this.id;
-    data["phone"] = this.phone;
-    data["pass"] = this.pass;
-    data["token"] = this.token;
-    data["fcmToken"] = this.fcmToken;
+    data = typeof data === 'object' ? data : {};
+    data['id'] = this.id;
+    data['userName'] = this.userName;
+    data['retailName'] = this.retailName;
+    data['corporateName'] = this.corporateName;
+    data['email'] = this.email;
+    data['phoneNumber'] = this.phoneNumber;
+    data['roles'] = this.roles;
     return data;
   }
 }

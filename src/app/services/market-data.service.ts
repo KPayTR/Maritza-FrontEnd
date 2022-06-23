@@ -19,10 +19,12 @@ export class MarketDataService {
   }
 
   public init() {
-    this.symbolApiService.getsymbolrates().subscribe(
-      (v) => this.onMarkets(v),
-      (e) => this.onError(e)
-    );
+    setInterval(()=>{
+      this.symbolApiService.getsymbolrates().subscribe(
+        (v) => this.onMarkets(v),
+        (e) => this.onError(e)
+      );
+    }, 3000)
   }
 
   onMarkets(v: SymbolRateModel[]): void {
@@ -37,7 +39,6 @@ export class MarketDataService {
 
   onError(e: any): void {
     this.zone.run(() => {
-      this.appService.toggleLoader(false);
       this.appService.showErrorAlert(e);
     });
   }

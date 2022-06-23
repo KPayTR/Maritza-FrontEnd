@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
+import { Clipboard } from '@capacitor/clipboard';
 import { MenuController } from '@ionic/angular';
-import * as moment from 'moment';
+import { TranslateService } from '@ngx-translate/core';
 import { AppService } from '../services/app.service';
 import { MarketDataService } from '../services/market-data.service';
 import { MarketSymbolsService } from '../services/market-symbols.service';
@@ -26,6 +27,7 @@ interface SideMenu {
 export class AppComponent {
 
   activeSideMenuId = 1;
+  isCopied = false;
 
   menuItems: SideMenu[] = [
     {
@@ -102,7 +104,7 @@ export class AppComponent {
   ]
 
   constructor(
-    private appService: AppService,
+    public appService: AppService,
     private menu: MenuController,
    // private coreService: MarketDataService,
     private coreService: MarketSymbolsService,
@@ -157,5 +159,16 @@ export class AppComponent {
       document.body.setAttribute('data-theme', 'light');
       document.documentElement.classList.remove('dark-app');
     }
+  }
+
+  async copyUserId() {
+    await Clipboard.write({
+      string: this.appService.user.id.toString()
+    });
+    this.isCopied = true;
+
+    setTimeout(() => {
+      this.isCopied = false;
+    }, 2000);
   }
 }
