@@ -6,23 +6,23 @@
   </ion-toolbar>
 </ion-header>
 
+
 <ion-content>
   <div class="form-container">
     <div class="form-inner">
       <div class="form-header">
-        <h3>Hesaba Çekim </h3>
+        <h3>Hesaba Çekim</h3>
         <ion-note>Hesabınıza para çekmek için aşağıdaki bilgileri kontrol edin ve onaylayın.</ion-note>
       </div>
       <div class="form-items">
         <ion-item button detail="false" class="item-large-select" lines="none">
-          <img slot="start" src="../../../../assets/img/bank/fiba.svg" alt="" />
+          <img slot="start" src="../../../../../assets/img/bank/fiba.svg" alt="" />
           <ion-label>
             <p>Ev <span>- Fibabanka</span></p>
             <ion-note>TR99 9999 9999 9999 9999 99</ion-note>
-          </ion-label>
-          <ion-icon slot="end" name="chevron-down-outline"></ion-icon>
+          </ion-label> 
         </ion-item>
-
+       
         <div class="summary">
           <ion-item lines="none">
             <ion-label slot="start">Çekilecek Tutar</ion-label>
@@ -40,10 +40,11 @@
         </div>
       </div>
     </div>
-
     <div class="form-footer">
-      <ion-button routerDirection="forward" [routerLink]="['../../../home']" size="block" color="primary">
-        ONAYLA</ion-button>
+      <ion-button routerDirection="forward" [routerLink]="['approve-account']" size="block" color="primary">ONAYLA
+      </ion-button>
     </div>
   </div>
 </ion-content>
+
+ 

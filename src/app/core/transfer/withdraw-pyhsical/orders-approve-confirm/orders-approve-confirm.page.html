@@ -6,35 +6,36 @@
   
   </ion-toolbar>
 </ion-header>
+ 
 
 <ion-content>
-  <div    class="form-container" style="margin: 16px">
-    <ion-grid class="gap-list">
-      <ion-row style="margin-top: 20%">
-        <ion-col style="text-align: center;">
-          <img   src="../../../assets/icon/tick.png" alt="" /> 
-          
-        </ion-col>
+  <div    class="form-container"  >
+    <div class="form-items">
+      <div class="list-row">
+        <ion-row  > 
+          <ion-col>
+            <img   src="../../../../../assets/img/iconx/tick.png" alt="" />  
+          </ion-col>
       </ion-row>
-      <ion-row style="margin-top: 5%; text-align: center;" >
-        <ion-col>
+      <ion-row   > 
+        <ion-col> 
           <h3>Siparişiniz İşleme Alındı!</h3>
-          <p style="  margin: 0px 20px;  font-size: 14px;
-          ">İşleminizin gerçekleşmesi 24 saat içinde olacaktır.</p>
+          <p  >İşleminizin gerçekleşmesi 24 saati bulabilir..</p> 
         </ion-col>
       </ion-row>
+      </div>
+    </div>
+   
  
- 
-    </ion-grid>
+  
+    <div class="form-footer">
+      <ion-button
+      routerDirection="forward"  
+    [routerLink]="['../../../app/home']" 
+        size="block" 
+        color="primary"  
+        >ANASAYFAYA DÖN</ion-button
+      >
+    </div>
   </div> 
-</ion-content>
-<ion-footer>
-  <ion-button
-  routerDirection="forward"  
-[routerLink]="['../../../app/home']" 
-    size="block" 
-    color="primary" 
-    style="margin: 0" 
-    >ANASAYFAYA DÖN</ion-button
-  >
-</ion-footer>
+</ion-content> 

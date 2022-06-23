@@ -1,70 +1,78 @@
- 
 <ion-header mode="ios">
   <ion-toolbar>
     <ion-buttons class="p1" slot="start">
       <ion-back-button mode="md" defaultHref="app/home"></ion-back-button>
     </ion-buttons>
-  
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <div style="text-align: center; margin: 16px;">
-    <ion-label>
-      <h4><b>1 gr Altın = 130 TRY</b></h4>
-      <ion-note style="font-size: 12px;">
-        Size özel döviz kuru 5 sn ile sabitlenmiştir.
-      </ion-note>
-    </ion-label>
+  <div class="form-container">
+    <div class="form-inner"> 
+      <div class="form-items">
+
+        <div class="header-center">
+          <ion-label>
+            <h4><b>1 gr Altın = 130 TRY</b></h4>
+            <ion-note  >
+              Size özel döviz kuru 10 sn ile sabitlenmiştir.
+            </ion-note>
+          </ion-label>
+          <div *ngIf="countdown!=0" id="countdown">
+            <div id="countdown-number">
+              {{countdown}}
+            </div>
+            <svg>
+              <circle r="18" cx="20" cy="20"></circle>
+            </svg>
+          </div>
+        </div> 
+
+        <ion-item lines="none">
+          <h4><b>İşlemi Onayla</b></h4>
+        </ion-item>
+
+
+        <ion-item class="item-p" lines="none">
+          <p slot="start">Alınan Ürün</p>
+          <p slot="end" class="bold-black">Altın Satış</p>
+        </ion-item> 
+        <ion-item class="item-p"  lines="none">
+          <p slot="start">Çıktı Ürün, Miktar</p>
+          <p slot="end" class="bold-black">5,000,000 TRY</p>
+        </ion-item> 
+        <ion-item class="item-p" lines="none">
+          <ion-label  >
+            <p class="p-color">Teslimat Adresi</p>
+            <ion-note   class="ion-text-wrap"  >Ofis - Kuruçeşme Mahallesi Yeşilpınar Sokak Seden Apt. No:8/2 Beşiktaş / İSTANBUL 34345 </ion-note>
+          </ion-label> 
+        </ion-item> 
+        <ion-item class="item-p" lines="none">
+          <p slot="start">İşlem Zamanı</p>
+          <p slot="end" class="bold-black">12.01.2022</p>
+        </ion-item> 
+        <ion-item class="item-p" lines="none">
+          <p slot="start">Komisyon Hizmeti</p>
+          <p slot="end" class="bold-black">0,25 TRY</p>
+        </ion-item> 
+        <ion-item class="item-p" lines="none">
+          <p slot="start">Toplam Miktar</p>
+          <p slot="end" class="bold-black">5,000,025 TRY</p>
+        </ion-item> 
+
+      </div>
+    </div>
+
+    <div class="form-footer"> 
+        <ion-button *ngIf="countdown!=0"    routerDirection="forward"  
+        [routerLink]="['../orders-approve-confirm']" size="block"
+        color="primary" >ONAYLA</ion-button>
+        <ion-button *ngIf="countdown==0"    routerDirection="forward"  
+        [routerLink]="['../orders-approve-confirm']" size="block"
+        color="primary" >KURLARI YENİLE</ion-button>
+    </div>
+
   </div>
-  <div style="text-align: center; margin-bottom: 36px;">
+</ion-content> 
 
-  <img src="../../../assets/icon/loader.png" alt="" />
-
-  </div>
-  <ion-item lines="none">
-    <h4><b>İşlemi Onayla</b></h4>
-
-  </ion-item>
-
-    <ion-item style=" --background: #F6F5F1;    ;font-size: 12px; margin:0px 16px;
-    " lines="none">
-      <p slot="start">Alınan Ürün</p>
-      <p slot="end" style="color: #080A1E; font-weight: bold;">Altın Satış</p>
-    </ion-item> 
-    <ion-item style=" --background: #F6F5F1;    ;font-size: 12px; margin:0px 16px;
-    " lines="none">
-      <p slot="start">Çıktı Ürün, Miktar</p>
-      <p slot="end" style="color: #080A1E; font-weight: bold;">5,000,000 TRY</p>
-    </ion-item> 
-    <ion-item style=" --background: #F6F5F1;    ;font-size: 12px; margin:0px 16px;
-    " lines="none">
-      <ion-label  >
-        <p style="    font-size: 13px;
-        color: #010101;">Teslimat Adresi</p>
-        <ion-note   class="ion-text-wrap"  >Ofis - Kuruçeşme Mahallesi Yeşilpınar Sokak Seden Apt. No:8/2 Beşiktaş / İSTANBUL 34345 </ion-note>
-      </ion-label> 
-    </ion-item> 
-    <ion-item style=" --background: #F6F5F1;    ;font-size: 12px; margin:0px 16px;
-    " lines="none">
-      <p slot="start">İşlem Zamanı</p>
-      <p slot="end" style="color: #080A1E; font-weight: bold;">12.01.2022</p>
-    </ion-item> 
-    <ion-item style=" --background: #F6F5F1;    ;font-size: 12px; margin:0px 16px;
-    " lines="none">
-      <p slot="start">Komisyon Hizmeti</p>
-      <p slot="end" style="color: #080A1E; font-weight: bold;">0,25 TRY</p>
-    </ion-item> 
-    <ion-item style=" --background: #F6F5F1;    ;font-size: 12px; margin:0px 16px;
-    " lines="none">
-      <p slot="start">Toplam Miktar</p>
-      <p slot="end" style="color: #080A1E; font-weight: bold;">5,000,025 TRY</p>
-    </ion-item> 
- 
   
-</ion-content>
-<ion-footer> 
-  <ion-button   routerDirection="forward"  
-  [routerLink]="['../orders-approve-confirm']"
-  color="primary" expand="full">ONAYLA</ion-button>
-</ion-footer>

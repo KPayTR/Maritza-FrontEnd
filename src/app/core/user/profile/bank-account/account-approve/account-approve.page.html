@@ -3,46 +3,40 @@
     <ion-buttons class="p1" slot="start">
       <ion-back-button mode="md" defaultHref="app/home"></ion-back-button>
     </ion-buttons>
-  
   </ion-toolbar>
 </ion-header>
+ 
+
+ 
 
 <ion-content>
   <div    class="form-container" style="margin: 10px">
     <ion-grid class="gap-list">
-      <ion-row style="margin-top: 20%">
-        <ion-col style="text-align: center;">
-          <img   src="../../../assets/icon/cancel.png" alt="" /> 
-          
+      <ion-row class="row-margin">
+        <ion-col  >
+          <img   src="../../../../../../assets/img/iconx/cancel.png" alt="" />  
         </ion-col>
       </ion-row>
-      <ion-row style="margin-top: 5%; text-align: center;" >
+      <ion-row class="row-detail"  >
         <ion-col>
           <h3>İşlem Onayı</h3>
-          <p style="  margin: 0px 20px;  font-size: 14px;
-          ">Bu banka hesabını silmek istediğine emin misin?</p>
+          <p>Bu banka hesabını silmek istediğine emin misin?</p>
         </ion-col>
-      </ion-row>
-      <ion-row style="margin-top: 35%">
-        <ion-col>
-          <ion-button routerDirection="forward" [routerLink]="['../']" size="block" color="medium"
-            fill="outline" style="margin: 0"  >VAZGEÇ</ion-button>
-        </ion-col>
-      </ion-row>
-      <ion-row style="margin-top: 0%">
-        <ion-col>
-          <ion-button
-          routerDirection="forward"  
-          [routerLink]="['../../bank-account']"
-            size="block" 
-            color="primary" 
-            style="margin: 0"
-             
-            >ONAYLA</ion-button
-          >
-        </ion-col>
-      </ion-row>
- 
+      </ion-row>  
     </ion-grid>
+
+
+    <div class="form-footer">  
+      <ion-button routerDirection="forward" [routerLink]="['../']" size="block" color="medium"
+      fill="outline" style="margin: 0"  >VAZGEÇ</ion-button>
+
+      <ion-button
+      routerDirection="forward"  
+    [routerLink]="['../../../../app/home']" 
+        size="block" 
+        color="primary"  
+        >ONAYLA</ion-button  > 
+    </div>
+
   </div> 
 </ion-content>

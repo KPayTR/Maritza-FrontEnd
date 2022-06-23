@@ -3,6 +3,7 @@ import { MenuController } from '@ionic/angular';
 import * as moment from 'moment';
 import { AppService } from '../services/app.service';
 import { MarketDataService } from '../services/market-data.service';
+import { MarketSymbolsService } from '../services/market-symbols.service';
 import { TokenRefreshService } from '../services/token-refresh.service';
 
 interface SideMenuItem {
@@ -103,12 +104,13 @@ export class AppComponent {
   constructor(
     private appService: AppService,
     private menu: MenuController,
-    private coreService: MarketDataService,
+   // private coreService: MarketDataService,
+    private coreService: MarketSymbolsService,
     private tokenService: TokenRefreshService
 
   ) {
     moment.locale('tr')
-    this.coreService.init()
+    this.coreService.init() 
     console.log('tok tok',this.appService.accessToken )
     if (this.appService.accessToken) {
       

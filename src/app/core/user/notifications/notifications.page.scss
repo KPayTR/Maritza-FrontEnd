@@ -1,0 +1,19 @@
+p{
+    font-size: 14px; 
+    color: #080A1E;
+}
+ion-note{
+    font-size: 12px;  
+    color: #7C7F97;
+}
+ion-item{
+    --border-color:#e8e9ec;
+    ion-label{
+        margin-left: 22px;
+    }
+    ion-icon{
+        margin-right: -12px;
+        color: #F1BC00;
+        width: 14px;
+    }
+}

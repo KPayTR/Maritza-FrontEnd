@@ -1,10 +1,12 @@
 import { Component, NgZone } from '@angular/core';
+import { NavigationExtras, Router } from '@angular/router';
 import { BarcodeScanner } from '@awesome-cordova-plugins/barcode-scanner/ngx';
 import { UTCTimestamp } from 'lightweight-charts';
 import * as moment from 'moment';
 import { AuthApiService, GraphicDataModel, MatriksApiService, SymbolRateModel, TokenModel } from 'src/app/services/api-yatirimim.service';
 import { AppService } from 'src/app/services/app.service';
 import { MarketDataService } from 'src/app/services/market-data.service';
+import { MarketSymbolsService } from 'src/app/services/market-symbols.service';
 
 @Component({
   selector: 'app-home',
@@ -26,13 +28,15 @@ export class Home {
   constructor(
     private barcodeScanner: BarcodeScanner,
     private marketDataService: MarketDataService,
+    private marketSymbolService: MarketSymbolsService,
     private zone: NgZone,
+    private router: Router,
     private authService: AuthApiService,
     private appService: AppService,
     private matriksService: MatriksApiService,
   ) {
-    if (marketDataService.symbols == null) {
-      marketDataService.symbolsLoad.subscribe(v => {
+    if (marketSymbolService.symbols == null) {
+      marketSymbolService.symbolsLoad.subscribe(v => {
         this.loadSegmentData();
       })
     }
@@ -91,23 +95,24 @@ export class Home {
   }
 
   loadSegmentData() {
-    if (this.marketDataService.symbols == null) return;
+    console.log()
+    if (this.marketSymbolService.symbols == null) return;
 
     switch (this.selectedSegment) {
       case 'gold':
-        this.symbol = this.marketDataService.symbols.filter(q => q.isoCode == "XAU")[0]
+        this.symbol = this.marketSymbolService.symbols.filter(q => q.symbolRID == 1)[0]
         break;
       case 'silver':
-        this.symbol = this.marketDataService.symbols.filter(q => q.isoCode == "XAG")[0];
+        this.symbol = this.marketSymbolService.symbols.filter(q => q.symbolRID == 2)[0];
         break;
       case 'palladium':
-        this.symbol = this.marketDataService.symbols.filter(q => q.isoCode == "XPD")[0];
+        this.symbol = this.marketSymbolService.symbols.filter(q => q.symbolRID == 3)[0];
         break;
       case 'platin':
-        this.symbol = this.marketDataService.symbols.filter(q => q.isoCode == "XPT")[0];
+        this.symbol = this.marketSymbolService.symbols.filter(q => q.symbolRID == 4)[0];
         break;
       case 'all':
-        this.symbols = this.marketDataService.symbols;
+        this.symbols = this.marketSymbolService.symbols;
         this.updateData();
         break;
       default:
@@ -180,5 +185,17 @@ export class Home {
     const target = e.target;
     target.classList.add('d-none');
     target.parentElement.getElementsByClassName('currency-symbol')[0].classList.remove('d-none')
+  }
+  goAlarm(sym){
+    console.log(sym)
+    let navigationExtras: NavigationExtras = {
+      state: {
+        symbol: sym
+      }
+    };
+    this.router.navigate(['alarm'], navigationExtras);
+  }
+  goNotification(){  
+    this.router.navigate(['user/notifications']);
   }
 }

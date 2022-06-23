@@ -1,0 +1,43 @@
+<ion-header mode="ios">
+  <ion-toolbar>
+    <ion-buttons class="p1" slot="start">
+      <ion-back-button mode="md" defaultHref="app/home"></ion-back-button>
+    </ion-buttons> 
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="form-container">  
+      <div class="form-inner">
+        <div class="form-header">
+          <h3>Kişisel Bilgilerim</h3>
+        </div>
+        <div class="form-items">
+          <ion-item button detail="false" class="item-large-select" lines="none">
+            <ion-input placeholder="Ad" value="Hande Türkmen"></ion-input>
+
+          </ion-item>
+          <ion-item button detail="false" class="item-large-select" lines="none">
+            <ion-input placeholder="Mail" value="hello@gmail.com"></ion-input>
+
+          </ion-item>
+          <ion-item button detail="false" class="item-large-select" lines="none">
+            <div class="prefix" slot="start">
+              <span>+90</span>
+              <span>|</span>
+            </div>
+            <ion-input placeholder="Telefon" value="5398282288"></ion-input>
+
+          </ion-item>
+          <ion-item button detail="false" class="item-large-select" lines="none">
+            <ion-input placeholder="Adres" value="Türkiye"></ion-input>
+
+          </ion-item>
+        </div>
+      </div>
+      <div class="form-footer">
+        <ion-button size="block" color="primary"     routerDirection="forward"  
+        [routerLink]="['../']" >DEĞİŞİKLİKLERİ KAYDET</ion-button>
+      </div>  
+  </div>
+</ion-content>

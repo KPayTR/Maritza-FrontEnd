@@ -1,5 +1,6 @@
 import { Component, NgZone, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AuthenticationApiService, AuthenticationRequestDTO, AuthenticationResponseDTO, DeviceTypeEnum, OTPTypeEnum } from 'src/app/services/api-hkn-yatirimim.service';
 import {
   AuthApiService,
   ForgotModel,
@@ -18,17 +19,23 @@ export class LoginApprovePage implements OnInit {
   p2: string;
   p3: string;
   p4: string;
+  p5: string;
+  p6: string;
   counter=60;
   isValid: boolean = false;
   phone;
+  pass;
   constructor(
     private route: ActivatedRoute,
     private zone: NgZone,
     private router: Router,
     private appService: AppService,
-    private authService: AuthApiService
+    private authService: AuthApiService,
+    private authApi : AuthenticationApiService
   ) { 
     this.phone=this.appService.userPhone.replace(/\s/g, "");
+    this.pass=this.appService.userPass;
+    console.log("s",this.phone)
     this.timer()
   }
   timer(){
@@ -45,23 +52,41 @@ export class LoginApprovePage implements OnInit {
   ngOnInit() {}
   login() {
     const model = new VerifyModel();
-    model.otp = this.p1 + this.p2 + this.p3 + this.p4;
+    model.otp = this.p1 + this.p2 + this.p3 + this.p4+ this.p5 + this.p6;
     model.phoneNumber = this.phone;
     console.log(model);
     this.appService.toggleLoader(true).then((res) => {
-      this.authService.verify(model).subscribe(
+      this.authApi.checkOTP(OTPTypeEnum.SMS,model.phoneNumber,model.otp)
+      .subscribe(
         (v) => this.onLogin(v),
         (e) => this.onError(e)
       );
     });
   }
-  onLogin(v: TokenModel): void {
+  onLogin(v): void {
     this.zone.run(() => {
-      this.appService.toggleLoader(false);
-      this.appService.accessToken = v.token;
-      console.log(v);
-      this.router.navigate(['/app/home']);
+      console.log("sd")
+      const model = new AuthenticationRequestDTO();
+      model.deviceID= "123";
+      model.deviceType=DeviceTypeEnum.AndroidPhone;
+      model.fCMToken="123123"
+      model.gSMNo=this.phone;
+      model.isNewDevice=false;
+      model.password=this.pass;
+
+      this.authApi.authenticate(model)
+      .subscribe(
+        (v) => this.onAuth(v),
+        (e) => this.onError(e)
+      );
+     
     });
+  }
+  onAuth(v: AuthenticationResponseDTO): void {
+      this.appService.toggleLoader(false);
+      console.log(v)
+      this.appService.accessToken = v.jWT; 
+      this.router.navigate(['/app/home']);
   }
   reCode() {
     const model  = new ForgotModel()
@@ -84,7 +109,8 @@ export class LoginApprovePage implements OnInit {
   onError(e: any): void {
     this.zone.run(() => {
       this.appService.toggleLoader(false);
-      this.appService.showErrorAlert(e);
+      console.log(e)
+      this.appService.showErrorAlert(e.message);
     });
   }
 

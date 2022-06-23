@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AppService } from 'src/app/services/app.service';
 
 @Component({
   selector: 'app-bank-detail',
@@ -7,9 +8,14 @@ import { Component, OnInit } from '@angular/core';
 })
 export class BankDetailPage implements OnInit {
 
-  constructor() { }
+  constructor(
+    private appService: AppService,
+
+  ) { }
 
   ngOnInit() {
   }
-
+  getCopy(){
+    this.appService.showToast("Kopyalandı",'bottom')
+  }
 }

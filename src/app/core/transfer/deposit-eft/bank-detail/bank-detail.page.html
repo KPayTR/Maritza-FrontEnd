@@ -1,80 +1,61 @@
 <ion-header mode="ios">
   <ion-toolbar>
     <ion-buttons class="p1" slot="start">
-      <ion-back-button mode="md" defaultHref="app/transfer/deposit-eft"></ion-back-button>
+      <ion-back-button mode="md" defaultHref="transfer/deposit-eft"></ion-back-button>
     </ion-buttons>
   
   </ion-toolbar>
 </ion-header>
 
+
 <ion-content>
-  <div    class="form-container" style="margin:0px 16px">
-    <ion-grid class="gap-list">
-      <ion-row  >
-        <ion-col>
-          <h3>Banka Transferi ile Para Yatır</h3>
-        </ion-col>
-      </ion-row>
-
-      <div    class="haber">
-        <div style="margin-top: 16px;">
-          <ion-item class="border" lines="none" style="margin-bottom: 0px;"> 
-            
-         
-            <img slot="start" style="    padding: 8% 0;" src="../../../assets/icon/bank/akbank.png" alt="" />  
-       
-              <h4 slot="end" class="ion-text-wrap" style="margin-top: 0px; ">
-               Akbank
-              </h4> 
-        
-          
-          </ion-item>
-          <ion-item class="border" lines="none" style="margin-top: 0px;">  
-                  <ion-label>
-                    <p style="font-size: 14px;
-                    line-height: 14px; font-weight: bold;
-                     color: #000000;">Yatırılacak IBAN</p>
-                    <p style="font-size: 12px;
-                    line-height: 16px;   letter-spacing: 0.5px; color: #000000;">TR73 3383 8339 9393 3738 3373</p>
-                  </ion-label>
-                  <img slot="end"   src="../../../assets/icon/paste.png" alt="" />   
-          </ion-item>
-          <ion-item class="border" lines="none" style="margin-top: 0px !important;">  
-            <ion-label>
-              <p style="font-size: 14px;
-              line-height: 14px; font-weight: bold;
-               color: #000000;">Hesap Sahibi</p>
-              <p style="font-size: 12px;
-              line-height: 16px;   letter-spacing: 0.5px; color: #000000;">Aritmetik Yazılım Ticaret A.Ş.</p>
-            </ion-label>
-            <img slot="end"   src="../../../assets/icon/paste.png" alt="" />   
-    </ion-item>
-        </div>
-  
+  <div class="form-container">
+    <div class="form-inner">
+      <div class="form-header">
+        <h3>Banka Transferi ile Para Yatır</h3> 
       </div>
+      <div class="form-items">
+        <ion-list>
+          <div class="items-border">
+            <ion-item class="item-input double" lines="none">  
+              <img slot="start"   src="../../../../../assets/img/bank/akbank.svg" alt="" />   
+                <h5 slot="end" class="ion-text-wrap" >
+                 Akbank
+                </h5>  
+            </ion-item> 
+            <ion-item class="item-input" lines="none">   
+              <ion-label>
+                <p class="title">Yatırılacak IBAN</p>
+                <p class="desc">TR73 3383 8339 9393 3738 3373</p>
+              </ion-label>
+              <ion-thumbnail (click)="getCopy()" class="btn-icon" slot="end" >
+                <ion-icon name="copy-outline"></ion-icon>
+              </ion-thumbnail> 
+            </ion-item> 
+            <ion-item class="item-input" lines="none">   
+              <ion-label>
+                <p class="title">Hesap Sahibi</p>
+                <p class="desc">Aritmetik Yazılım Ticaret A.Ş.</p>
+              </ion-label>
+              <ion-thumbnail (click)="getCopy()"  class="btn-icon" slot="end" >
+                <ion-icon name="copy-outline"></ion-icon>
+              </ion-thumbnail>
+            </ion-item> 
+          </div> 
+          <div class="item-txt">
+            <ion-item lines="none">
+              <ion-note>• Türkiye’de yerleşik bankalardan adınıza açılmış vadesiz Türk Lirası hesabınız ile aşağıdaki bankalara havale ve FAST ile 7/24 veya EFT saatlerinde Türk Lirası yatırabilirsiniz.</ion-note> 
+            </ion-item>
+            <ion-item lines="none">
+              <ion-note>• Türkiye’de yerleşik bankalardan adınıza açılmış vadesiz Türk Lirası hesabınız ile aşağıdaki bankalara havale ve FAST ile 7/24 veya EFT saatlerinde Türk Lirası yatırabilirsiniz.</ion-note> 
+            </ion-item>
+          </div> 
+        </ion-list>
+      </div>
+    </div>
 
-      <ion-row style="margin: 16px 0px;">
-        <ion-col>
-          <ion-note>• Türkiye’de yerleşik bankalardan adınıza açılmış vadesiz Türk Lirası hesabınız ile aşağıdaki bankalara havale ve FAST ile 7/24 veya EFT saatlerinde Türk Lirası yatırabilirsiniz.</ion-note>
-        </ion-col>
-      </ion-row>   
-         <ion-row style="margin: 16px 0px;">
-        <ion-col>
-          <ion-note>• Türkiye’de yerleşik bankalardan adınıza açılmış vadesiz Türk Lirası hesabınız ile aşağıdaki bankalara havale ve FAST ile 7/24 veya EFT saatlerinde Türk Lirası yatırabilirsiniz.</ion-note>
-        </ion-col>
-      </ion-row>
-      <!-- <ion-row style="margin-top: 35%">
-        <ion-col>
-          <ion-button 
-            size="block" 
-            color="primary" 
-            style="margin: 0"
-            (click)="stepContinue()"
-            >YENİ KART EKLE</ion-button
-          >
-        </ion-col>
-      </ion-row> -->
- 
-    </ion-grid>
-  </div> 
+  </div>
 </ion-content>
+
+
+

@@ -6,3 +6,18 @@
     text-align: center
   }
 }
+ion-select{
+  height: 50px;
+
+  width: 100%; 
+  --placeholder-color: #7c7f97;
+  --placeholder-opacity: 1;
+  color: #080a1e;
+}
+ion-item{
+  min-height: 50px !important;
+  ion-icon{
+    color: #7C7F97
+    ;
+}
+}

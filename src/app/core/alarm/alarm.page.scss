@@ -1,0 +1,19 @@
+.segments{
+    ion-segment{
+        max-width: 110px; font-weight: none;
+        margin-right: 0;
+        ion-segment-button{
+            min-width: auto;
+        }
+    }
+}
+ion-label{
+    font-size: 14px !important;
+}
+.no-start-mar{
+    --padding-start: 0px;
+    --padding-end: 0px; 
+}
+ion-toggle{
+    padding-right: 0px;
+}

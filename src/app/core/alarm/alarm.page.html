@@ -16,15 +16,63 @@
 
 <ion-content>
   <div class="form-container">
-    <div class="form-inner">
-      <div class="form-header">
-        <h3>Altın</h3> 
-      </div>
+    <div class="form-inner"> 
       <div class="form-items">
-        <ion-item class="item-input" lines="none">
-        
+        <h3>Altın</h3> 
+        <ion-item class="segments no-start-mar" lines="none"> 
+            <ion-segment 
+              slot="start"
+              class="ios-segment"
+              mode="ios"
+              value="cevirici"
+            >
+              <ion-segment-button value="tumu">
+                <ion-label>Alış</ion-label>
+              </ion-segment-button>
+              <ion-segment-button value="cevirici">
+                <ion-label>Satış</ion-label>
+              </ion-segment-button>
+            </ion-segment> 
+            <ion-segment 
+            slot="end"
+            class="ios-segment"
+            mode="ios"
+            value="big"
+          >
+            <ion-segment-button value="small">
+              <ion-label><</ion-label>
+            </ion-segment-button>
+            <ion-segment-button value="equal">
+              <ion-label>=</ion-label>
+            </ion-segment-button>
+            <ion-segment-button value="big">
+              <ion-label>></ion-label>
+            </ion-segment-button>
+          </ion-segment> 
         </ion-item>
-      </div>
+        <ion-item class="item-input" lines="none">
+          <p-inputNumber [min]="0" [max]="999999" placeholder=""></p-inputNumber>
+          <span class="text-muted" slot="end">TRY/Altın</span>
+        </ion-item>
+      </div> 
+
+      <app-line-chart [data]="lineData"></app-line-chart>
+
+      <ion-item class="no-start-mar" lines="none" > 
+        <ion-label class="font-bold">Alarmlar şu şekilde gelsin</ion-label>  
+      </ion-item>
+      <ion-item class="no-start-mar" >
+        <ion-label class="font-regular">Uygulama Açıkken</ion-label>
+        <ion-toggle slot="end" checked color="primary"></ion-toggle> 
+      </ion-item>
+      <ion-item class="no-start-mar" >
+        <ion-label class="font-regular">Her zaman</ion-label>
+        <ion-toggle slot="end"   color="primary"></ion-toggle> 
+      </ion-item>
+      <ion-item class="no-start-mar" lines="none">
+        <ion-label class="font-regular">Alarmı Kapat</ion-label>
+        <ion-toggle slot="end" checked color="primary"></ion-toggle> 
+      </ion-item>
     </div>
 
     <div class="form-footer">

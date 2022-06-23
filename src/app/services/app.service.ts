@@ -37,6 +37,14 @@ export class AppService {
     localStorage.setItem("user_phone", v);
   }
 
+  get userPass(): string {
+    return localStorage.getItem("user_pass");
+  }
+
+  set userPass(v: string) {
+    localStorage.setItem("user_pass", v);
+  }
+
   get accessToken(): string {
     return localStorage.getItem("access_token");
   }

@@ -1,6 +1,7 @@
 import { Component, NgZone, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController, LoadingController } from '@ionic/angular';
+import { AuthenticationApiService, AuthenticationRequestDTO, AuthenticationResponseDTO, DeviceTypeEnum } from 'src/app/services/api-hkn-yatirimim.service';
 import { AuthApiService, LoginModel } from 'src/app/services/api-yatirimim.service';
 import { AppService, User } from 'src/app/services/app.service';
 
@@ -19,7 +20,9 @@ export class LoginPage implements OnInit {
     public loadingController: LoadingController,
     private authService:AuthApiService,
     private zone: NgZone,
-    private appService: AppService
+    private appService: AppService,
+    private authApi : AuthenticationApiService
+
   ) {}
 
   ngOnInit() {}
@@ -31,18 +34,33 @@ export class LoginPage implements OnInit {
       this.phone = this.phone.replace(/[\s.*+\-?^${}()|[\]\\]/g, '');
 
       this.tempUser = new User();
-      this.tempUser.phone = '+90' + this.phone;
+      this.tempUser.phone = '90' + this.phone;
       this.tempUser.pass = this.password; 
 
-      const model = new LoginModel();
-      model.phoneNumber= this.tempUser.phone;
-      model.password= this.tempUser.pass;
+      // const model = new LoginModel();
+      // model.phoneNumber= this.tempUser.phone;
+      // model.password= this.tempUser.pass;
+
+      const model = new AuthenticationRequestDTO();
+      model.deviceID= "123";
+      model.deviceType=DeviceTypeEnum.AndroidPhone;
+      model.fCMToken="123123"
+      model.gSMNo=this.tempUser.phone
+      model.isNewDevice=true;
+      model.password=this.password; 
+
+
       this.appService.toggleLoader(true).then((res) => {
-        this.authService.login(model)
-            .subscribe(
-                v => this.onLogin(v),
-                e => this.onError(e)
-            ) 
+        this.authApi.authenticate(model)
+        .subscribe(
+          (v) => this.onLogin(v),
+          (e) => this.onError(e)
+        );
+        // this.authService.login(model)
+        //     .subscribe(
+        //         v => this.onLogin(v),
+        //         e => this.onError(e)
+        //     ) 
           }); 
     } else { 
 
@@ -51,11 +69,11 @@ export class LoginPage implements OnInit {
       );
     }
   }  
-  onLogin(v: void): void {
+  onLogin(v: AuthenticationResponseDTO): void {
     this.zone.run(() => {
       this.appService.toggleLoader(false);
       this.appService.user = this.tempUser; 
-      console.log(v);
+      this.appService.accessToken = v.jWT;  
     this.router.navigate(['/auth/login-approve'])
     });
   }

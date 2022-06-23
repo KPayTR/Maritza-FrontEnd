@@ -2,81 +2,69 @@
   <ion-toolbar>
     <ion-buttons class="p1" slot="start">
       <ion-back-button mode="md" defaultHref="app/home"></ion-back-button>
-    </ion-buttons>
-  
+    </ion-buttons> 
   </ion-toolbar>
 </ion-header>
 
- 
-
-<ion-content> 
-      <div class="form-container" style="margin: 16px">
-        <div style="text-align: start; margin: 16px 0px 0px 0px;">
-          <ion-item lines="none">
-            <h4><b>Kullanıcı Bildirim Ayarları</b></h4> 
+<ion-content>
+  <div class="form-container">  
+      <div class="form-inner">
+        <div class="form-header">
+          <h3>Kullanıcı Bildirim Ayarları</h3>
+        </div>
+        <div class="form-items">
+          <ion-item lines="none"> 
+            <ion-note >
+              ERİŞİM AYARLARI
+            </ion-note>
           </ion-item>
-        </div> 
-        
-        <ion-item lines="none"> 
-          <ion-note >
-            ERİŞİM AYARLARI
-          </ion-note>
-        </ion-item>
-          <ion-item style="  font-size: 12px;   
-          " lines="none">
+          <ion-item lines="none">
             <p slot="start">Sms ile Giriş</p>
             <ion-toggle slot="end"  color="primary"></ion-toggle>
           </ion-item> 
-          <ion-item style="  font-size: 12px;   
-          " lines="none">
+          <ion-item class="bottom-margin" lines="none">
             <p slot="start">İki Aşamalı Doğrulama</p>
             <ion-toggle slot="end"   color="primary"></ion-toggle>
           </ion-item>  
-          
+
           <ion-item lines="none"> 
             <ion-note >
               ONAY BİLDİRİM AYARLARI
             </ion-note>
           </ion-item>
-            <ion-item style="  font-size: 12px;   
-            " lines="none">
-              <p slot="start">Sms ile</p>
-              <ion-toggle slot="end" checked color="primary"></ion-toggle> 
-            </ion-item> 
-            <ion-item style="  font-size: 12px;   
-            " lines="none">
-              <p slot="start">E-posta ile</p>
-              <ion-toggle slot="end" checked color="primary"></ion-toggle> 
-            </ion-item> 
-      
-            <ion-item lines="none"> 
-              <ion-note >
-                İLETİŞİM AYARLARI
-              </ion-note>
-            </ion-item>
-              <ion-item style="  font-size: 12px;   
-              " lines="none">
-                <p slot="start">Telefon</p>
-                <ion-toggle slot="end" checked color="primary"></ion-toggle> 
-              </ion-item> 
-              <ion-item style="  font-size: 12px;   
-              " lines="none">
-                <p slot="start">E-posta</p>
-                <ion-toggle slot="end"   color="primary"></ion-toggle> 
-              </ion-item> 
-              <ion-item style="  font-size: 12px;   
-              " lines="none">
-                <p slot="start">Whatsapp</p>
-                <ion-toggle slot="end" checked color="primary"></ion-toggle> 
-              </ion-item> 
+          <ion-item lines="none">
+            <p slot="start">Sms ile</p>
+            <ion-toggle slot="end" checked color="primary"></ion-toggle>  
+          </ion-item> 
+          <ion-item class="bottom-margin" lines="none">
+            <p slot="start">E-posta ile</p>
+            <ion-toggle slot="end" checked color="primary"></ion-toggle>  
+          </ion-item>  
+
+          <ion-item lines="none"> 
+            <ion-note >
+              İLETİŞİM AYARLARI
+            </ion-note>
+          </ion-item>
+          <ion-item lines="none">
+            <p slot="start">Telefon</p>
+            <ion-toggle slot="end" checked color="primary"></ion-toggle>  
+          </ion-item> 
+          <ion-item lines="none">
+            <p slot="start">E-posta</p>
+            <ion-toggle slot="end"   color="primary"></ion-toggle>
+          </ion-item>  
+          <ion-item class="bottom-margin" lines="none">
+            <p slot="start">Whatsapp</p>
+            <ion-toggle slot="end" checked color="primary"></ion-toggle> 
+          </ion-item>  
+        </div>
       </div>
-
-  
+      <div class="form-footer">
+        <ion-button class="secondBtn" routerDirection="forward" [routerLink]="['profile-approve']" size="block" color="medium"
+        fill="outline" style="margin: 0"  >ÇIKIŞ YAP</ion-button>
+        <ion-button size="block" color="primary"     routerDirection="forward"  
+        [routerLink]="['../']" >KAYDET</ion-button>
+      </div>  
+  </div>
 </ion-content>
-
-<ion-footer>
-  <ion-button class="secondBtn" routerDirection="forward" [routerLink]="['../../profile/profile-approve']" size="block" color="medium"
-  fill="outline" style="margin: 0" >ÇIKIŞ YAP</ion-button>
-  <ion-button  size="block" color="primary"
-  style="margin: 0" >DÜZENLE</ion-button>
-</ion-footer>

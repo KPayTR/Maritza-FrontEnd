@@ -75,3 +75,24 @@ ion-toolbar {
     }
   }
 }
+
+
+.tabbar {
+
+  ion-segment {
+      ion-segment-button {
+          --color-checked: var(--ion-text-color);
+          --indicator-color: var(--ion-color-primary);
+          --indicator-height: 4px;
+          min-height: 34px;
+          padding: 0px 10px;
+
+          ion-label {
+              font-weight: 400;
+              letter-spacing: normal;
+              margin-top: 6px;
+              margin-bottom: 6px;
+          }
+      }
+  }
+}

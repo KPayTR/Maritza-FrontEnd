@@ -62,12 +62,36 @@
               <ion-col>
                 <ion-input
                   [(ngModel)]="p4" 
-                  (keyup)="gotoNextField(Field4,Field3,$event)" 
+                  (keyup)="gotoNextField(Field5,Field3,$event)" 
                   maxlength="1"
                   type="tel" 
                   name="password"
                   value=""
                   #Field4
+                >
+                </ion-input>
+              </ion-col>
+              <ion-col>
+                <ion-input
+                  [(ngModel)]="p5" 
+                  (keyup)="gotoNextField(Field6,Field4,$event)" 
+                  maxlength="1"
+                  type="tel" 
+                  name="password"
+                  value=""
+                  #Field5
+                >
+                </ion-input>
+              </ion-col>
+              <ion-col>
+                <ion-input
+                  [(ngModel)]="p6" 
+                  (keyup)="gotoNextField(Field6,Field5,$event)" 
+                  maxlength="1"
+                  type="tel" 
+                  name="password"
+                  value=""
+                  #Field6
                 >
                 </ion-input>
               </ion-col>
