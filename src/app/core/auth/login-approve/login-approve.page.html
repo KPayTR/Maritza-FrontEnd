@@ -10,23 +10,23 @@
   <ion-content>
     <div class="form-container">
       <div class="form-inner">
-        <div class="form-header" *ngIf="isViaSmsCode">
+        <div class="form-header" >
           <h3>Mobil Onay</h3>
           <ion-note>
             Yeni kod gönderilecek
             <a>00:{{counter | number:'2.0'}} </a>
           </ion-note>
         </div>
-        <div class="form-header" *ngIf="!isViaSmsCode">
+        <!-- <div class="form-header" *ngIf="!isViaSmsCode">
           <h3>Google Authenticator Onay</h3>
           <ion-button fill="outlined" color="light" class="ion-no-padding ion-no-margin" (click)="copyAuthKey()">
             <img style="margin-right: 6px" src="../../../../assets/img/icon/copy.svg" />
             <ion-note *ngIf="!isCopied">Anahtarı kopyala</ion-note>
             <ion-note *ngIf="isCopied">Anahtar kopyalandı</ion-note>
           </ion-button>
-        </div>
+        </div> -->
         <div class="form-items">
-          <div class="ion-text-center" *ngIf="isViaSmsCode">
+          <div class="ion-text-center" >
             <p>Onay Kodu Gönderildi</p>
             <ion-note>{{formattedPhone}}</ion-note>
 
@@ -84,7 +84,7 @@
               </ion-col>
             </ion-row>
           </div>
-
+<!-- 
           <div class="ion-text-center" *ngIf="!isViaSmsCode">
             <p>Uygulamadaki kodu girin </p>
 
@@ -120,20 +120,20 @@
                 </ion-input>
               </ion-col>
             </ion-row>
-          </div>
+          </div> -->
 
 
           <ion-button size="block" color="primary" (click)="login()" style="margin: 0">GİRİŞ YAP</ion-button>
-          <ion-button *ngIf="isViaSmsCode" class="btn-height" [disabled]="!isValid" size="block" color="medium"
+          <ion-button  class="btn-height" [disabled]="!isValid" size="block" color="medium"
             fill="outline" (click)="reCode()">YENİ KOD GÖNDER</ion-button>
 
-          <ion-button *ngIf="isViaSmsCode" class="btn-height" size="block" color="medium" fill="outline"
+          <!-- <ion-button *ngIf="isViaSmsCode" class="btn-height" size="block" color="medium" fill="outline"
             (click)="toggleVerifyMethod('google')">
             AUTHENTICATOR İLE GİRİŞ</ion-button>
 
           <ion-button *ngIf="!isViaSmsCode" class="btn-height" size="block" color="medium" fill="outline"
             (click)="toggleVerifyMethod('otp')">
-            OTP İLE GİRİŞ</ion-button>
+            OTP İLE GİRİŞ</ion-button> -->
         </div>
       </div>
     </div>

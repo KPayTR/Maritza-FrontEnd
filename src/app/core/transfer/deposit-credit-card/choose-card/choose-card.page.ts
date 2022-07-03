@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, NgZone, OnInit } from '@angular/core';
+import { MemberApiService, MemberBankAccountDTO } from 'src/app/services/api-hkn-yatirimim.service';
 import { CardApiService } from 'src/app/services/api-yatirimim.service';
 import { AppService } from 'src/app/services/app.service';
 
@@ -11,22 +12,31 @@ export class ChooseCardPage implements OnInit {
 
   constructor(
     public appService: AppService,
-    public cardApiService: CardApiService
+    private zone: NgZone,
+    public cardApiService: CardApiService,
+    private cardService:MemberApiService
   ) { }
 
   ngOnInit() {
-    this.appService.toggleLoader(true).then(()=>{
-      this.cardApiService.getcards()
-        .subscribe(
-          v => {
-            this.appService.toggleLoader(false);
-          },
-          e => {
-            this.appService.toggleLoader(false);
-            console.log(e);
-          }
-        )
-    })
+    // this.appService.toggleLoader(true).then(()=>{
+    //   this.cardService.getMemberBankAccounts()
+    //     .subscribe(
+    //       (v) => this.onLoad(v),
+    //       (e) => this.onError(e)
+    //     )
+    // })
+  }
+  onError(e: any): void {
+    this.zone.run(() => {
+      this.appService.toggleLoader(false);
+      this.appService.showErrorAlert(e);
+    });
+  }
+  onLoad(v: MemberBankAccountDTO[]): void {
+    this.zone.run(() => {
+      this.appService.toggleLoader(false); 
+      console.log(v)
+     });
   }
 
 }

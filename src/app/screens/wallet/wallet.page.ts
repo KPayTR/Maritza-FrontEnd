@@ -124,24 +124,24 @@ export class Wallet implements OnInit {
   }
 
   ngOnInit(): void {
-    this.appService.toggleLoader(true).then(() => {
-      this.assetsApiService.getwallet(this.appService.user.id)
-        .subscribe(
-          v => this.initData(v),
-          e => {
-            this.appService.toggleLoader(false)
-            this.appService.showToast('Veri yüklenemedi.', 'bottom')
-          }
-        )
-    });
-    if (this.marketDataService.symbols == null) {
-      this.marketDataService.symbolsLoad.subscribe(v => {
-        this.loadSegmentData();
-      })
-    }
-    else {
-      this.loadSegmentData();
-    }
+    // this.appService.toggleLoader(true).then(() => {
+    //   this.assetsApiService.getwallet(this.appService.user.id)
+    //     .subscribe(
+    //       v => this.initData(v),
+    //       e => {
+    //         this.appService.toggleLoader(false)
+    //         this.appService.showToast('Veri yüklenemedi.', 'bottom')
+    //       }
+    //     )
+    // });
+    // if (this.marketDataService.symbols == null) {
+    //   this.marketDataService.symbolsLoad.subscribe(v => {
+    //     this.loadSegmentData();
+    //   })
+    // }
+    // else {
+    //   this.loadSegmentData();
+    // }
   }
   loadSegmentData() {
     if (this.marketDataService.symbols == null) return;

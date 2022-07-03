@@ -37,6 +37,7 @@ export class LoginApprovePage  {
     private authService: AuthApiService,
     private authApi : AuthenticationApiService
   ) { 
+    console.log("ss",this.appService.userPhone);
     this.phone=this.appService.userPhone.replace(/\s/g, "");
     this.pass=this.appService.userPass;
     console.log("s",this.phone)
@@ -58,12 +59,12 @@ export class LoginApprovePage  {
     const model = new VerifyModel();
     model.otp = this.p1 + this.p2 + this.p3 + this.p4+ this.p5 + this.p6;
     model.phoneNumber = this.phone;
-    if (this.isViaSmsCode) {
-      model.otp = this.p1 + this.p2 + this.p3 + this.p4;
-    }
-    else {
-      model.authenticatorCode = this.p1 + this.p2 + this.p3 + this.p4 + this.p5 + this.p6;
-    }
+   // if (this.isViaSmsCode) {
+    //  model.otp = this.p1 + this.p2 + this.p3 + this.p4;
+    // }
+    // else {
+    //   model.authenticatorCode = this.p1 + this.p2 + this.p3 + this.p4 + this.p5 + this.p6;
+    // }
 
     this.appService.toggleLoader(true).then((res) => {
       this.authApi.checkOTP(OTPTypeEnum.SMS,model.phoneNumber,model.otp)

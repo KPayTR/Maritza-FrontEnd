@@ -3,6 +3,7 @@ import { NavigationExtras, Router } from '@angular/router';
 import { BarcodeScanner } from '@awesome-cordova-plugins/barcode-scanner/ngx';
 import { UTCTimestamp } from 'lightweight-charts';
 import * as moment from 'moment';
+import { FinanceApiService, GraphTypeEnum, SymbolDTO, SymbolGraphDTO, SymbolRateDTO } from 'src/app/services/api-hkn-yatirimim.service';
 import { AuthApiService, GraphicDataModel, MatriksApiService, SymbolRateModel, SymbolsApiService, SymbolVoteRequestModel, SymbolVoteSummaryModel, TokenModel } from 'src/app/services/api-yatirimim.service';
 import { AppService } from 'src/app/services/app.service';
 import { MarketDataService } from 'src/app/services/market-data.service';
@@ -19,8 +20,9 @@ export class Home {
   selectedSegment = 'gold';
   selectedChartType = 'candle';
   selectedTimeRange = '5';
-  symbol: SymbolRateModel;
-  symbols: SymbolRateModel[];
+  symbol: SymbolRateDTO;
+  symbols: SymbolRateDTO[];
+  allSymbols: SymbolDTO[];
 
   candleData: any[] = []
   lineData: any[] = []
@@ -29,6 +31,7 @@ export class Home {
     private barcodeScanner: BarcodeScanner,
     private marketDataService: MarketDataService,
     private marketSymbolService: MarketSymbolsService,
+    private financeData: FinanceApiService,
     private zone: NgZone,
     private router: Router,
     private authService: AuthApiService,
@@ -36,7 +39,7 @@ export class Home {
     private matriksService: MatriksApiService,
     private symbolApiService: SymbolsApiService
   ) {
-    if (marketSymbolService.symbols == null) {
+    if (marketSymbolService.metalSymbols == null) { 
       marketSymbolService.symbolsLoad.subscribe(v => {
         this.loadSegmentData();
       })
@@ -48,13 +51,41 @@ export class Home {
   }
 
   getChartData() {
+   
     this.appService.toggleLoader(true).then((res) => {
-      this.matriksService.getgraphdata(parseInt(this.selectedTimeRange), this.symbol.matriksCode).subscribe(
+      this.financeData.getSymbolGraph(this.symbol.symbolRID,GraphTypeEnum.Daily).subscribe(
+      //this.matriksService.getgraphdata(parseInt(this.selectedTimeRange), this.symbol.matriksCode)
         // this.matriksService.getgraphdata(parseInt(this.selectedTimeRange), "SUSD").subscribe(
-        (v) => this.onChartData(v),
+        (v) => this.onChartDatads(v),
         (e) => this.onError(e)
       );
     });
+  }
+  onChartDatads(v: SymbolGraphDTO[]): void {
+    console.log(v)
+      this.zone.run(() => {
+      this.appService.toggleLoader(false);
+      const candleData = v.map(x => ({
+        time: (moment(x.dateTimeStamp, 'DD.MM.YYYY HH:mm:ss').toDate().getTime() / 1000),
+        open: x.opening,
+        high: x.high,
+        low: x.low,
+        close: x.closing
+      })).sort((a, b) => (a.time > b.time ? 1 : -1));
+
+      if (candleData != undefined) {
+        this.candleData = candleData;
+      }
+
+      const lineData = v.map(x => ({
+        time: (moment(x.dateTimeStamp, 'DD.MM.YYYY HH:mm:ss').toDate().getTime() / 1000),
+        value: x.closing
+      })).sort((a, b) => (a.time > b.time ? 1 : -1));
+      if (lineData != undefined) {
+        this.lineData = lineData;
+      }
+
+     });
   }
 
   onChartData(v: GraphicDataModel): void {
@@ -96,24 +127,24 @@ export class Home {
   }
 
   loadSegmentData() {
-    console.log()
-    if (this.marketSymbolService.symbols == null) return;
+    console.log("loadSegmentData", this.marketSymbolService.metalSymbols)
+    if (this.marketSymbolService.metalSymbols == null) return;
 
     switch (this.selectedSegment) {
       case 'gold':
-        this.symbol = this.marketSymbolService.symbols.filter(q => q.symbolRID == 1)[0]
+        this.symbol = this.marketSymbolService.metalSymbols.filter(q => q.symbolRID == 1)[0] 
         break;
       case 'silver':
-        this.symbol = this.marketSymbolService.symbols.filter(q => q.symbolRID == 2)[0];
+        this.symbol = this.marketSymbolService.metalSymbols.filter(q => q.symbolRID == 2)[0];
         break;
       case 'palladium':
-        this.symbol = this.marketSymbolService.symbols.filter(q => q.symbolRID == 3)[0];
+        this.symbol = this.marketSymbolService.metalSymbols.filter(q => q.symbolRID == 3)[0];
         break;
       case 'platin':
-        this.symbol = this.marketSymbolService.symbols.filter(q => q.symbolRID == 4)[0];
+        this.symbol = this.marketSymbolService.metalSymbols.filter(q => q.symbolRID == 4)[0];
         break;
       case 'all':
-        this.symbols = this.marketSymbolService.symbols;
+        this.symbols = this.marketSymbolService.allSymbol;
         this.updateData();
         break;
       default:
@@ -165,16 +196,21 @@ export class Home {
   }
 
   updateData() {
-    if (this.marketDataService.symbols == null) return;
+    if (this.marketSymbolService.metalSymbols == null) return;
     switch (this.selectedValue) {
       case 'maden':
-        this.symbols = this.marketDataService.symbols.filter(q => q.symbolType.code == "METALS")
+        this.allSymbols = this.marketSymbolService.allSymbol.filter(q => q.symbolType.toString() == "Metal"); 
+        this.symbols = this.marketSymbolService.metalSymbols;  
+       // console.log("maden2 ", this.marketSymbolService.allSymbol.filter(q => q.rID == this.symbols[0].symbolRID)); 
         break;
       case 'doviz':
-        this.symbols = this.marketDataService.symbols.filter(q => q.symbolType.code == "FOREX");
+        this.symbols = this.marketSymbolService.forexSymbols;
+        this.allSymbols = this.marketSymbolService.allSymbol.filter(q => q.symbolType.toString() == "Forex");  
         break;
       case 'sarrafi':
-        this.symbols = this.marketDataService.symbols.filter(q => q.matriksCode == "SARRAFI");
+        this.symbols = this.marketSymbolService.sarrafiyeSymbols;
+        this.allSymbols = this.marketSymbolService.allSymbol.filter(q => q.symbolType.toString() == "Sarrafiye");  
+
         break;
 
       default:
@@ -203,7 +239,7 @@ export class Home {
   getVoteData() {
     const body = new SymbolVoteRequestModel();
     body.customerId = this.appService.user?.id ?? 1;
-    body.symbolId = this.symbol.symbolId;
+    body.symbolId = this.symbol.symbolRID;
 
     this.symbolApiService.getsymbolvotesummary(body)
       .subscribe(

@@ -28,7 +28,7 @@ export class LoginPage  {
   login() {
     if (this.phone != null && this.password != null) {
       this.phone = this.phone.replace(/[\s.*+\-?^${}()|[\]\\]/g, '');
-
+      console.log(this.phone,this.password)
       this.tempUser = new LocalUser();
       this.tempUser.phoneNumber = '90' + this.phone;
       this.tempUser.password = this.password; 
@@ -68,7 +68,8 @@ export class LoginPage  {
   onLogin(v: AuthenticationResponseDTO): void {
     this.zone.run(() => {
       this.appService.toggleLoader(false);
-      //this.appService.user = this.tempUser; 
+      this.appService.userPhone = this.tempUser.phoneNumber; 
+      this.appService.userPass = this.tempUser.password; 
       this.appService.accessToken = v.jWT;  
     this.router.navigate(['/auth/login-approve'])
     });

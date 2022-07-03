@@ -14,13 +14,13 @@
       </div>
       <div class="form-items">
         <ion-item class="username-input" lines="none">
-          <ion-input placeholder="Hesap Adı "></ion-input>
+          <ion-input [(ngModel)]="bank" placeholder="Hesap Adı "></ion-input>
         </ion-item>
         <ion-item class="username-input" lines="none">
-          <ion-input placeholder="İsim"></ion-input>
+          <ion-input [(ngModel)]="name" placeholder="İsim"></ion-input>
         </ion-item>
         <ion-item class="username-input" lines="none">
-          <ion-input maxlength="26" placeholder="IBAN"></ion-input>
+          <ion-input [(ngModel)]="iban" maxlength="26" placeholder="IBAN"></ion-input>
         </ion-item>
         <ion-item    lines="none" class="item-checkbox box ion-padding d-flex">
           <div (click)="isAgreementAccepted= !isAgreementAccepted"
@@ -40,8 +40,7 @@
     </div>
     <div class="form-footer">
       <ion-button
-        routerDirection="forward"
-        [routerLink]="['../account-approve']"
+      (click)="addAccount()"
         size="block"
         color="primary"
         >HESAP EKLE
@@ -49,3 +48,5 @@
     </div>
   </div>
 </ion-content> 
+<!-- routerDirection="forward"
+[routerLink]="['../account-approve']" -->

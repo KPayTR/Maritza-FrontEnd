@@ -209,28 +209,28 @@
               </ion-segment-button>
             </ion-segment>
           </div>
-          <div *ngFor="let symbol of symbols" class="assets-list">
+          <div *ngFor="let symbol of symbols; let i = index" class="assets-list">
             <ion-row class="ion-no-padding">
               <ion-col size="2">
-                <img src="../../../assets/img/symbol/{{symbol?.isoCode}}.svg" (error)="checkImage($event)" alt="" />
+                <img src="../../../assets/img/symbol/{{allSymbols[i].iSOCode}}.svg" (error)="checkImage($event)" alt="" />
                 <div class="currency-symbol d-none">
-                  <div
+                  <!-- <div
                     [ngClass]="(symbol.currencySymbol!=null && symbol.currencySymbol.length>1) ? 'font-big': 'font-small'">
-                    {{symbol?.currencySymbol}}</div>
+                    {{symbol?.currencySymbol}}</div> -->
                 </div>
               </ion-col>
               <ion-col size="5">
                 <ion-label>
-                  <h4 class="bold">{{symbol?.name}}</h4>
-                  <p>{{symbol?.buy}} | {{symbol?.sell}}</p>
+                  <h4 class="bold">{{allSymbols[i].name}}</h4>
+                  <p>{{symbol?.buyTRY}} | {{symbol?.sellTRY}}</p>
                 </ion-label>
               </ion-col>
               <ion-col size="3">
                 <ion-label>
-                  <div>
-                    <app-mini-line-chart [data]="lineDatas[symbol.matriksCode]"
-                      [isIncreasing]="checkTradeDifference(symbol.isoCode) > 0"></app-mini-line-chart>
-                  </div>
+                  <!-- <div>
+                    <app-mini-line-chart [data]="lineData[symbol.matriksCode]"
+                      [isIncreasing]="checkTradeDifference(allSymbols[i].iSOCode) > 0"></app-mini-line-chart>
+                  </div> -->
                   <p class="ion-text-center">%{{symbol.difference}}</p>
                 </ion-label>
               </ion-col>

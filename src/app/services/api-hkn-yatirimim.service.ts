@@ -25,7 +25,7 @@ export class ServiceApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-      this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://api.yatirimim.com/AppBackend/V1";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://api.yatirimim.com/AppBackend/V1";
     }
 
     /**
@@ -162,7 +162,7 @@ export class AuthenticationApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-      this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://api.yatirimim.com/AppBackend/V1";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://api.yatirimim.com/AppBackend/V1";
     }
 
     /**
@@ -467,7 +467,7 @@ export class MemberApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-      this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://api.yatirimim.com/AppBackend/V1";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://api.yatirimim.com/AppBackend/V1";
     }
 
     /**
@@ -2062,7 +2062,7 @@ export class FinanceApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-      this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://api.yatirimim.com/AppBackend/V1";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://api.yatirimim.com/AppBackend/V1";
     }
 
     /**
@@ -2267,6 +2267,112 @@ export class FinanceApiService {
     }
 
     /**
+     * Gets a symbol's graph info
+     * @param rID Unique integer ID for the entity
+     * @return Symbol graph info
+     */
+    getSymbolGraph(rID: number, graphTypeEnum: GraphTypeEnum): Observable<SymbolGraphDTO[]> {
+        let url_ = this.baseUrl + "/Symbol/{RID}/Graph?";
+        if (rID === undefined || rID === null)
+            throw new Error("The parameter 'rID' must be defined.");
+        url_ = url_.replace("{RID}", encodeURIComponent("" + rID));
+        if (graphTypeEnum === undefined || graphTypeEnum === null)
+            throw new Error("The parameter 'graphTypeEnum' must be defined and cannot be null.");
+        else
+            url_ += "GraphTypeEnum=" + encodeURIComponent("" + graphTypeEnum) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetSymbolGraph(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetSymbolGraph(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<SymbolGraphDTO[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<SymbolGraphDTO[]>;
+        }));
+    }
+
+    protected processGetSymbolGraph(response: HttpResponseBase): Observable<SymbolGraphDTO[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(SymbolGraphDTO.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status === 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("No Content (Requested resource not found)", status, _responseText, _headers);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = APIResultDTO.fromJS(resultData400);
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+            }));
+        } else if (status === 401) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result401: any = null;
+            let resultData401 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result401 = APIResultDTO.fromJS(resultData401);
+            return throwException("Unauthorized", status, _responseText, _headers, result401);
+            }));
+        } else if (status === 403) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result403: any = null;
+            let resultData403 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result403 = APIResultDTO.fromJS(resultData403);
+            return throwException("Forbidden", status, _responseText, _headers, result403);
+            }));
+        } else if (status === 422) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result422: any = null;
+            let resultData422 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result422 = APIResultDTO.fromJS(resultData422);
+            return throwException("Unprocessable Entity", status, _responseText, _headers, result422);
+            }));
+        } else if (status === 500) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result500: any = null;
+            let resultData500 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result500 = APIResultDTO.fromJS(resultData500);
+            return throwException("Internal Server Error", status, _responseText, _headers, result500);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<SymbolGraphDTO[]>(null as any);
+    }
+
+    /**
      * Gets symbol vote
      * @param rID Unique integer ID for the entity
      * @return Symbol vote for the day
@@ -2370,7 +2476,7 @@ export class SystemApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-      this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://api.yatirimim.com/AppBackend/V1";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://api.yatirimim.com/AppBackend/V1";
     }
 
     /**
@@ -3625,6 +3731,72 @@ export interface ISymbolRateDTO {
     changeDirection?: ChangeDirectionEnum;
 }
 
+/** Symbol Graph */
+export class SymbolGraphDTO implements ISymbolGraphDTO {
+    dateTimeStamp?: moment.Moment | undefined;
+    opening?: number;
+    closing?: number;
+    high?: number;
+    low?: number;
+    volume?: number;
+    weightedAverage?: number;
+    change?: number;
+
+    constructor(data?: ISymbolGraphDTO) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.dateTimeStamp = _data["DateTimeStamp"] ? moment(_data["DateTimeStamp"].toString()) : <any>undefined;
+            this.opening = _data["Opening"];
+            this.closing = _data["Closing"];
+            this.high = _data["High"];
+            this.low = _data["Low"];
+            this.volume = _data["Volume"];
+            this.weightedAverage = _data["WeightedAverage"];
+            this.change = _data["Change"];
+        }
+    }
+
+    static fromJS(data: any): SymbolGraphDTO {
+        data = typeof data === 'object' ? data : {};
+        let result = new SymbolGraphDTO();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["DateTimeStamp"] = this.dateTimeStamp ? this.dateTimeStamp.toISOString() : <any>undefined;
+        data["Opening"] = this.opening;
+        data["Closing"] = this.closing;
+        data["High"] = this.high;
+        data["Low"] = this.low;
+        data["Volume"] = this.volume;
+        data["WeightedAverage"] = this.weightedAverage;
+        data["Change"] = this.change;
+        return data;
+    }
+}
+
+/** Symbol Graph */
+export interface ISymbolGraphDTO {
+    dateTimeStamp?: moment.Moment | undefined;
+    opening?: number;
+    closing?: number;
+    high?: number;
+    low?: number;
+    volume?: number;
+    weightedAverage?: number;
+    change?: number;
+}
+
 /** Member information for retrieval and update */
 export class PaginationInfo implements IPaginationInfo {
     /** Current page number */
@@ -3878,6 +4050,17 @@ export interface IPingResultDTO {
 export enum OTPTypeEnum {
     SMS = "SMS",
     Email = "Email",
+}
+
+export enum GraphTypeEnum {
+    Min5 = "Min5",
+    Min15 = "Min15",
+    Min30 = "Min30",
+    Min60 = "Min60",
+    Daily = "Daily",
+    Weekly = "Weekly",
+    Monthly = "Monthly",
+    Yearly = "Yearly",
 }
 
 export class ApiException extends Error {
