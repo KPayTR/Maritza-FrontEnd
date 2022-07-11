@@ -18,4 +18,6 @@ export class DepositPyhsicalPage implements OnInit {
 
   }
   phoneChange() { }
+
+  valueChange(e) {}
 }

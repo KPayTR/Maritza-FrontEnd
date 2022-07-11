@@ -18,24 +18,24 @@
         <ion-item button detail="false" class="item-large-select" lines="none">
           <img slot="start" src="../../../../../assets/img/bank/fiba.svg" alt="" />
           <ion-label>
-            <p>Ev <span>- Fibabanka</span></p>
-            <ion-note>TR99 9999 9999 9999 9999 99</ion-note>
+            <p>{{request?.userBankAccount?.name}} <span>- {{request?.userBankAccount?.bank?.name}}</span></p>
+            <ion-note>{{request?.userBankAccount?.accountNo}}</ion-note>
           </ion-label> 
         </ion-item>
        
         <div class="summary">
           <ion-item lines="none">
             <ion-label slot="start">Çekilecek Tutar</ion-label>
-            <p slot="end">1.200 TRY</p>
+            <p slot="end">{{request?.price | number: '1.2-2'}} TRY</p>
           </ion-item>
           <ion-item lines="none">
             <ion-label slot="start">İşlem Ücreti</ion-label>
-            <p slot="end"> 1,45 TRY</p>
+            <p slot="end"> {{request?.commission | number: '1.2-2'}} TRY</p>
           </ion-item>
           <hr>
           <ion-item lines="none">
             <ion-label slot="start">Toplam Miktar</ion-label>
-            <p slot="end"> 1.214 TRY</p>
+            <p slot="end"> {{request?.transactionAmount | number: '1.2-2'}} TRY</p>
           </ion-item>
         </div>
       </div>

@@ -89,7 +89,7 @@ export class AppService {
 
       if (token != undefined && token.length > 0) {
         const decoded = jwt_decode(token);
-
+        
         var user = new LocalUser();
         user.id = parseInt(decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier']);
         user.userName = decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'];

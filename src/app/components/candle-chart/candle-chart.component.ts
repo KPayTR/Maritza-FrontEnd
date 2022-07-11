@@ -140,12 +140,12 @@ export class CandleChartComponent implements OnInit {
     });
 
     this.candleStickSeries = this.chart.addCandlestickSeries({
-      upColor: 'rgba(255, 144, 0, 1)',
+      upColor: 'rgba(241, 188, 2, 1)',
       downColor: '#000',
-      borderDownColor: 'rgba(255, 144, 0, 1)',
-      borderUpColor: 'rgba(255, 144, 0, 1)',
-      wickDownColor: 'rgba(255, 144, 0, 1)',
-      wickUpColor: 'rgba(255, 144, 0, 1)',
+      borderDownColor: 'rgba(241, 188, 2, 1)',
+      borderUpColor: 'rgba(241, 188, 2, 1)',
+      wickDownColor: 'rgba(241, 188, 2, 1)',
+      wickUpColor: 'rgba(241, 188, 2, 1)',
     });
 
     if (this.chartData) {

@@ -1,6 +1,5 @@
 import { Component, NgZone, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuthenticationApiService, AuthenticationRequestDTO, AuthenticationResponseDTO, DeviceTypeEnum, OTPTypeEnum } from 'src/app/services/api-hkn-yatirimim.service';
 import {
   AuthApiService,
   ForgotModel,
@@ -15,32 +14,32 @@ import { Clipboard } from '@capacitor/clipboard';
   templateUrl: './login-approve.page.html',
   styleUrls: ['./login-approve.page.scss'],
 })
-export class LoginApprovePage  {
+export class LoginApprovePage {
   p1: string;
   p2: string;
   p3: string;
   p4: string;
   p5: string;
-  p6: string; 
-  counter=60;
+  p6: string;
+  counter = 60;
   isValid: boolean = false;
   phone;
   pass;
   isCopied: boolean;
-  isViaSmsCode: boolean;
+  isViaSmsCode: boolean = true;
   authKey: string;
+  formattedPhone: string;
+
   constructor(
     private route: ActivatedRoute,
     private zone: NgZone,
     private router: Router,
     private appService: AppService,
-    private authService: AuthApiService,
-    private authApi : AuthenticationApiService
-  ) { 
-    console.log("ss",this.appService.userPhone);
-    this.phone=this.appService.userPhone.replace(/\s/g, "");
-    this.pass=this.appService.userPass;
-    console.log("s",this.phone)
+    private authApiService: AuthApiService
+  ) {
+    this.formattedPhone = this.appService.userPhone;
+    this.phone = this.appService.userPhone.replace(/\s/g, "");
+    this.pass = this.appService.userPass;
     this.startTimer()
   }
 
@@ -57,47 +56,27 @@ export class LoginApprovePage  {
 
   login() {
     const model = new VerifyModel();
-    model.otp = this.p1 + this.p2 + this.p3 + this.p4+ this.p5 + this.p6;
     model.phoneNumber = this.phone;
-   // if (this.isViaSmsCode) {
-    //  model.otp = this.p1 + this.p2 + this.p3 + this.p4;
-    // }
-    // else {
-    //   model.authenticatorCode = this.p1 + this.p2 + this.p3 + this.p4 + this.p5 + this.p6;
-    // }
+    if (this.isViaSmsCode) {
+      model.otp = this.p1 + this.p2 + this.p3 + this.p4 + this.p5 + this.p6;
+    }
+    else {
+      //model.authenticatorCode = this.p1 + this.p2 + this.p3 + this.p4 + this.p5 + this.p6;
+    }
 
     this.appService.toggleLoader(true).then((res) => {
-      this.authApi.checkOTP(OTPTypeEnum.SMS,model.phoneNumber,model.otp)
-      .subscribe(
-        (v) => this.onLogin(v),
-        (e) => this.onError(e)
-      );
+      this.authApiService.verify(model)
+        .subscribe(
+          (v) => this.onAuth(v),
+          (e) => this.onError(e)
+        );
     });
   }
-  onLogin(v): void {
-    this.zone.run(() => {
-      console.log("sd")
-      const model = new AuthenticationRequestDTO();
-      model.deviceID= "123";
-      model.deviceType=DeviceTypeEnum.AndroidPhone;
-      model.fCMToken="123123"
-      model.gSMNo=this.phone;
-      model.isNewDevice=false;
-      model.password=this.pass;
 
-      this.authApi.authenticateMember(model)
-      .subscribe(
-        (v) => this.onAuth(v),
-        (e) => this.onError(e)
-      );
-     
-    });
-  }
-  onAuth(v: AuthenticationResponseDTO): void {
-      this.appService.toggleLoader(false);
-      console.log(v)
-      this.appService.accessToken = v.jWT; 
-      this.router.navigate(['/app/home']);
+  onAuth(v: TokenModel): void {
+    this.appService.toggleLoader(false);
+    this.appService.accessToken = v.token;
+    this.router.navigate(['/app/home']);
   }
 
   reCode() {
@@ -105,7 +84,7 @@ export class LoginApprovePage  {
     model.email = '';
     model.phoneNumber = this.phone;
     this.appService.toggleLoader(true).then((res) => {
-      this.authService.sendotp(model).subscribe(
+      this.authApiService.sendotp(model).subscribe(
         (v) => this.onReCode(v),
         (e) => this.onError(e)
       );

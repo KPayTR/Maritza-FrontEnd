@@ -1,9 +1,8 @@
 import { Component, NgZone, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute, ActivatedRouteSnapshot, Router } from "@angular/router";
-import { ModalController } from "@ionic/angular"; 
+import { ModalController } from "@ionic/angular";
 import { PrivacyPolicyComponent } from "src/app/components/privacy-policy/privacy-policy.component";
-import { LanguageEnum, MemberApiService, MemberCreateDTO, MemberDTO, MemberTypeEnum } from "src/app/services/api-hkn-yatirimim.service";
 import { AuthApiService, RegisterModel, TokenModel } from "src/app/services/api-yatirimim.service";
 import { AppService } from "src/app/services/app.service";
 
@@ -30,11 +29,10 @@ export class RegisterPage implements OnInit {
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private zone: NgZone,
-    private router:Router,
-    private appService:AppService,
-    private authService:AuthApiService,
-    private modalController: ModalController,
-    private apiHknService : MemberApiService
+    private router: Router,
+    private appService: AppService,
+    private authService: AuthApiService,
+    private modalController: ModalController
   ) {
     console.log('the id', this.route.snapshot.paramMap.get('id'));
     this.id = this.route.snapshot.paramMap.get('id');
@@ -73,106 +71,66 @@ export class RegisterPage implements OnInit {
   step2() {
     this.step++;
   }
-  registerRetail(){
-     
-    const mo = new MemberCreateDTO();
-    mo.memberType=MemberTypeEnum.Personal;
-    mo.firstName=this.retailRegisterForm.get('firstName').value.trim();
-    mo.lastName = this.retailRegisterForm.get('lastName').value.trim();
-    mo.gSMNo = "90"+this.retailRegisterForm.get('phone').value.replace(/[\])}[{(]/g, '').replace(/\s/g, "");
-    mo.email = this.retailRegisterForm.get('email').value.trim();
-    mo.password= this.retailRegisterForm.get('password').value.trim();
-    mo.selectedLanguage=LanguageEnum.TR;
-    mo.hasAcceptedEUA=this.isUserAgreementAccepted;
-    mo.hasAcceptedSUPDA =this.isPrivacyAgreementAccepted;
-    mo.hasAcceptedNotifications= this.isContactAgreementAccepted;
-    mo.tCKN=this.retailRegisterForm.get('identityNo').value.trim();
-    // mo.officialName=""
-    // mo.taxOffice=""
-    // mo.taxNumber=""
-    // mo.mERSISNo=""
+  registerRetail() {
 
-    // const model = new RegisterModel();
-    // model.firstName = this.retailRegisterForm.get('firstName').value.trim();
-    // model.lastName = this.retailRegisterForm.get('lastName').value.trim();
-    // model.identityNo=this.retailRegisterForm.get('identityNo').value.trim();
-    // model.email = this.retailRegisterForm.get('email').value.trim();
-    // model.phoneNumber = this.retailRegisterForm.get('phone').value.trim();
-    // model.password= this.retailRegisterForm.get('password').value.trim();
-    // model.isAcceptContact=this.isUserAgreementAccepted;
-    // model.isAcceptKvk= this.isPrivacyAgreementAccepted;
-    // model.isAcceptTerms= this.isContactAgreementAccepted;
-    // model.isCorporate=false;
-    console.log("mo ",mo)
+    const model = new RegisterModel();
+    model.firstName = this.retailRegisterForm.get('firstName').value.trim();
+    model.lastName = this.retailRegisterForm.get('lastName').value.trim();
+    model.identityNo = this.retailRegisterForm.get('identityNo').value.trim();
+    model.email = this.retailRegisterForm.get('email').value.trim();
+    model.phoneNumber = this.retailRegisterForm.get('phone').value.trim();
+    model.password = this.retailRegisterForm.get('password').value.trim();
+    model.isAcceptContact = this.isUserAgreementAccepted;
+    model.isAcceptKvk = this.isPrivacyAgreementAccepted;
+    model.isAcceptTerms = this.isContactAgreementAccepted;
+    model.isCorporate = false;
     this.appService.toggleLoader(true).then((res) => {
-      this.apiHknService.createMember(mo)
-      .subscribe(
-        v => this.onRegister(v, mo.gSMNo,mo.password),
-        e => this.onError(e)
-      )
-     
-      // this.authService.register(model)
-      // .subscribe(
-      //     v => this.onRegister(v, model.phoneNumber),
-      //     e => this.onError(e)
-      // )
-       
-        });
-  } 
-  onRegister(v: MemberDTO, phone,pass): void {
+      this.authService.register(model)
+        .subscribe(
+          v => this.onRegister(v, model.phoneNumber, model.password),
+          e => this.onError(e)
+        )
+
+    });
+  }
+  onRegister(v: TokenModel, phone, pass): void {
     this.zone.run(() => {
       this.appService.toggleLoader(false);
-     // this.appService.accessToken = v.rID.toString(); 
-      this.appService.userPhone=  phone;
-      this.appService.userPass=  pass;
+      this.appService.accessToken = v.token;
+      this.appService.userPhone = phone;
+      this.appService.userPass = pass;
       console.log(v);
       this.router.navigate(['/auth/login-approve'])
     });
   }
 
   onError(e: any): void {
-    console.log("erro ",e)
+    console.log("erro ", e)
 
     this.zone.run(() => {
       this.appService.toggleLoader(false);
       this.appService.showErrorAlert(e);
     });
   }
-  registerCorporate(){
-    const mo = new MemberCreateDTO();
-    mo.memberType=MemberTypeEnum.Corporate;
-    mo.firstName=this.corporateRegisterForm.get('firstName').value.trim();
-    mo.gSMNo = "90"+this.corporateRegisterForm.get('phone').value.replace(/[\])}[{(]/g, '').replace(/\s/g, "");
-    mo.email = this.corporateRegisterForm.get('email').value.trim();
-    mo.password= this.corporateRegisterForm.get('password').value.trim();
-    mo.selectedLanguage=LanguageEnum.TR;
-    mo.hasAcceptedEUA=this.isUserAgreementAccepted;
-    mo.hasAcceptedSUPDA =this.isPrivacyAgreementAccepted;
-    mo.hasAcceptedNotifications= this.isContactAgreementAccepted;
-    mo.officialName=this.corporateRegisterForm.get('firmName').value.trim();
-    mo.taxOffice= this.corporateRegisterForm.get('taxOffice').value.trim();
-    mo.taxNumber= this.corporateRegisterForm.get('taxNo').value.trim(); 
-    mo.lastName=this.corporateRegisterForm.get('lastName').value.trim();
-    mo.mERSISNo="8309017269714575"
-   
-    // const model = new RegisterModel();
-    // model.corporateName= this.corporateRegisterForm.get('firmName').value.trim();
-    // model.taxOffice= this.corporateRegisterForm.get('taxOffice').value.trim();
-    // model.taxNumber= this.corporateRegisterForm.get('taxNo').value.trim();
-    // model.firstName = this.corporateRegisterForm.get('firstName').value.trim();
-    // model.lastName = this.corporateRegisterForm.get('lastName').value.trim(); 
-    // model.email = this.corporateRegisterForm.get('email').value.trim();
-    // model.phoneNumber = this.corporateRegisterForm.get('phone').value.trim();
-    // model.password= this.corporateRegisterForm.get('password').value.trim();
-    // model.isAcceptContact=this.isUserAgreementAccepted;
-    // model.isAcceptKvk= this.isPrivacyAgreementAccepted;
-    // model.isAcceptTerms= this.isContactAgreementAccepted;
-    // model.isCorporate=true;
+  registerCorporate() {
+    const model = new RegisterModel();
+    model.corporateName= this.corporateRegisterForm.get('firmName').value.trim();
+    model.taxOffice= this.corporateRegisterForm.get('taxOffice').value.trim();
+    model.taxNumber= this.corporateRegisterForm.get('taxNo').value.trim();
+    model.firstName = this.corporateRegisterForm.get('firstName').value.trim();
+    model.lastName = this.corporateRegisterForm.get('lastName').value.trim(); 
+    model.email = this.corporateRegisterForm.get('email').value.trim();
+    model.phoneNumber = this.corporateRegisterForm.get('phone').value.trim();
+    model.password= this.corporateRegisterForm.get('password').value.trim();
+    model.isAcceptContact=this.isUserAgreementAccepted;
+    model.isAcceptKvk= this.isPrivacyAgreementAccepted;
+    model.isAcceptTerms= this.isContactAgreementAccepted;
+    model.isCorporate=true;
 
     this.appService.toggleLoader(true).then((res) => {
-      this.apiHknService.createMember(mo)
-      .subscribe(
-          v => this.onRegister(v,mo.gSMNo,mo.password),
+      this.authService.register(model)
+        .subscribe(
+          v => this.onRegister(v, model.phoneNumber, model.password),
           e => this.onError(e)
         )
 
@@ -187,7 +145,8 @@ export class RegisterPage implements OnInit {
 
     return await modal.present();
   }
-  onBlurPhone(){  
+  
+  onBlurPhone() {
     // let phone=""
     // if (this.retail) {
     // phone = this.retailRegisterForm.get('phone').value.replace(/\s/g, ""); 
@@ -199,14 +158,14 @@ export class RegisterPage implements OnInit {
     //   v => this.isValidPhone=true,
     //   e => this.isValidPhone=false
     // )
-  } 
-  onClearPhone(){ 
-   // this.isValidPhone=null
-  } 
-  onCheckId(event){
+  }
+  onClearPhone() {
+    // this.isValidPhone=null
+  }
+  onCheckId(event) {
     // let id= event.detail.value; 
     // this.isValidId=null;
-    
+
     // if (String(id).length==11) {
     //   this.authService.checkidentityno(id).subscribe(
     //     v => {this.isValidId=true},
@@ -214,12 +173,12 @@ export class RegisterPage implements OnInit {
     //   ) 
     // } else {
     //   this.isValidMail=null
-      
+
     // }
-    
-     
+
+
   }
-  onCheckEmail(event){
+  onCheckEmail(event) {
     // this.isValidMail=null;
     // let mail= event.detail.value;
     // const regexp = new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
@@ -232,6 +191,6 @@ export class RegisterPage implements OnInit {
     // else{
     //   this.isValidMail=null
     // }
-   
+
   }
 }

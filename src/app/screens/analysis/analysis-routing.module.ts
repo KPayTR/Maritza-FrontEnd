@@ -54,6 +54,14 @@ const routes: Routes = [
       {
         path: 'risk-map',
         loadChildren: () => import('./risk-map/risk-map.module').then( m => m.RiskMapPageModule)
+      },
+      {
+        path: 'technical-analysis',
+        loadChildren: () => import('./technical-analysis/technical-analysis.module').then( m => m.TechnicalAnalysisPageModule)
+      },
+      {
+        path: 'advanced-chart',
+        loadChildren: () => import('./advanced-chart/advanced-chart.module').then( m => m.AdvancedChartPageModule)
       }
     ]
   },

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { SymbolRateModel } from 'src/app/services/api-yatirimim.service';
+import { SymbolRateModel, SymbolType } from 'src/app/services/api-yatirimim.service';
 import { MarketDataService } from 'src/app/services/market-data.service';
 
 @Component({
@@ -9,12 +9,11 @@ import { MarketDataService } from 'src/app/services/market-data.service';
 })
 export class MarketsPage implements OnInit {
   selectedSegment = 'maden';
-  boolImg: boolean= false;
+  boolImg: boolean = false;
   symbols: SymbolRateModel[];
 
   constructor(
     private marketDataService: MarketDataService
-
   ) { }
 
   ngOnInit() {
@@ -30,25 +29,22 @@ export class MarketsPage implements OnInit {
     if (this.marketDataService.symbols == null) return;
     switch (this.selectedSegment) {
       case 'maden':
-        this.symbols = this.marketDataService.symbols.filter(q => q.symbolType.code == "METALS")
-    console.log("maden"+this.symbols[0])
-
+        this.symbols = this.marketDataService.symbols.filter(q => q.symbolType == SymbolType.Metal)
         break;
       case 'doviz':
-        this.symbols = this.marketDataService.symbols.filter(q => q.symbolType.code == "FOREX");
-    console.log("doviz"+this.symbols)
-    break;
-      case 'sarrafi':
-        this.symbols = this.marketDataService.symbols.filter(q => q.matriksCode == "METALS");
-    console.log("sarrafi"+this.symbols)
-    break;
+        this.symbols = this.marketDataService.symbols.filter(q => q.symbolType == SymbolType.Forex);
+        console.log("doviz" + this.symbols)
+        break;
+      case 'sarrafiye':
+        this.symbols = this.marketDataService.symbols.filter(q => q.symbolType == SymbolType.Sarrafiye);
+        break;
 
       default:
         break;
     }
   }
-  
-  checkImage(e){
+
+  checkImage(e) {
     const target = e.target;
     target.classList.add('d-none');
     target.parentElement.getElementsByClassName('currency-symbol')[0].classList.remove('d-none')

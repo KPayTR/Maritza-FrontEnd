@@ -12,7 +12,7 @@ import {
   ApexLegend,
   ApexTooltip
 } from "ng-apexcharts";
-import { AssetModel, AssetsApiService, GraphicDataModel, MatriksApiService, } from 'src/app/services/api-yatirimim.service';
+import { AssetModel, AssetsApiService, GraphicDataModel, MatriksApiService, MatriksGraphType, } from 'src/app/services/api-yatirimim.service';
 import { AppService } from 'src/app/services/app.service';
 import { MarketDataService } from 'src/app/services/market-data.service';
 
@@ -53,9 +53,9 @@ export class Wallet implements OnInit {
   totalPrice: number = 0;
 
   constructor(
-    private marketDataService: MarketDataService,
     private zone: NgZone,
     private appService: AppService,
+    private marketDataService: MarketDataService,
     private matriksService: MatriksApiService,
     private assetsApiService: AssetsApiService,
     private router: Router
@@ -124,24 +124,24 @@ export class Wallet implements OnInit {
   }
 
   ngOnInit(): void {
-    // this.appService.toggleLoader(true).then(() => {
-    //   this.assetsApiService.getwallet(this.appService.user.id)
-    //     .subscribe(
-    //       v => this.initData(v),
-    //       e => {
-    //         this.appService.toggleLoader(false)
-    //         this.appService.showToast('Veri yüklenemedi.', 'bottom')
-    //       }
-    //     )
-    // });
-    // if (this.marketDataService.symbols == null) {
-    //   this.marketDataService.symbolsLoad.subscribe(v => {
-    //     this.loadSegmentData();
-    //   })
-    // }
-    // else {
-    //   this.loadSegmentData();
-    // }
+    this.appService.toggleLoader(true).then(() => {
+      this.assetsApiService.getwallet(this.appService.user.id)
+        .subscribe(
+          v => this.initData(v),
+          e => {
+            this.appService.toggleLoader(false)
+            this.appService.showToast('Veri yüklenemedi.', 'bottom')
+          }
+        )
+    });
+    if (this.marketDataService.symbols == null) {
+      this.marketDataService.symbolsLoad.subscribe(v => {
+        this.loadSegmentData();
+      })
+    }
+    else {
+      this.loadSegmentData();
+    }
   }
   loadSegmentData() {
     if (this.marketDataService.symbols == null) return;
@@ -172,7 +172,7 @@ export class Wallet implements OnInit {
 
   getAssetChartsData() {
     for (const asset of this.assets) {
-      this.matriksService.getgraphdata(5, asset.symbol.matriksCode).subscribe(
+      this.matriksService.getgraphdata(MatriksGraphType.Min5, asset.symbol.matriksCode).subscribe(
         (v) => {
           this.zone.run(() => {
             const lineData = v?.data?.map(x => ({
@@ -189,9 +189,9 @@ export class Wallet implements OnInit {
   }
 
   getChartData() {
-    this.matriksService.getgraphdata(parseInt(this.selectedTimeRange), "SUSD").subscribe(
+    this.matriksService.getgraphdata(MatriksGraphType[this.selectedTimeRange], "SUSD").subscribe(
       (v) => this.onChartData(v),
-      (e) => this.onError(e)
+      (e) => console.log(e)
     );
   }
 
@@ -240,14 +240,16 @@ export class Wallet implements OnInit {
   }
   checkTradeValue(value, trade) {
     // Buy: True -- Sell : False
+    const symbol = this.marketDataService.symbols.find(q => q.isoCode == value);
     if (trade == true) {
-      return (this.marketDataService.symbols.filter(q => q.isoCode == value)[0].buy);
+      return (this.marketDataService.symbolRates.find(q => q.symbolId == symbol.id)?.buy);
     } else {
-      return (this.marketDataService.symbols.filter(q => q.isoCode == value)[0].sell);
+      return (this.marketDataService.symbolRates.find(q => q.symbolId == symbol.id)?.sell);
     }
   }
 
   checkTradeDifference(isoCode: string): number {
-    return this.marketDataService.symbols.find(q => q.isoCode == isoCode)?.difference;
+    const symbol = this.marketDataService.symbols.find(q => q.isoCode == isoCode);
+    return this.marketDataService.symbolRates.find(q => q.symbolId == symbol.id)?.difference;
   }
 }

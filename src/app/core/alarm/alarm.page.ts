@@ -1,8 +1,8 @@
 import { Component, NgZone, OnInit } from '@angular/core';
-import { GraphicDataModel, MatriksApiService, SymbolRateModel } from 'src/app/services/api-yatirimim.service';
+import { GraphicDataModel, MatriksApiService, MatriksGraphType, SymbolRateModel } from 'src/app/services/api-yatirimim.service';
 import { AppService } from 'src/app/services/app.service';
 import { MarketDataService } from 'src/app/services/market-data.service';
-import * as moment from 'moment';  
+import * as moment from 'moment';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
@@ -13,15 +13,15 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class AlarmPage implements OnInit {
   lineData: any[] = []
   selectedTimeRange = '1';
-  symbolData:SymbolRateModel;
+  symbolData: SymbolRateModel;
   constructor(
     private route: ActivatedRoute,
-     private router: Router,
+    private router: Router,
     private appService: AppService,
-    private marketDataService: MarketDataService, 
     private zone: NgZone,
+    private marketDataService: MarketDataService,
     private matriksService: MatriksApiService,
-  ) { 
+  ) {
     this.route.queryParams.subscribe(params => {
       if (this.router.getCurrentNavigation().extras.state) {
         this.symbolData = this.router.getCurrentNavigation().extras.state.symbol;
@@ -46,7 +46,7 @@ export class AlarmPage implements OnInit {
   }
   getChartData() {
     this.appService.toggleLoader(true).then((res) => {
-      this.matriksService.getgraphdata(parseInt(this.selectedTimeRange), "SUSD").subscribe(
+      this.matriksService.getgraphdata(MatriksGraphType[this.selectedTimeRange], "SUSD").subscribe(
         (v) => this.onChartData(v),
         (e) => this.onError(e)
       );

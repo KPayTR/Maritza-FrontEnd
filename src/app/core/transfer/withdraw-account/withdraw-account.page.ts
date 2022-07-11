@@ -1,5 +1,6 @@
-import { Component, NgZone, OnInit } from '@angular/core'; 
-import { MemberApiService, MemberBankAccountDTO } from 'src/app/services/api-hkn-yatirimim.service';
+import { Component, NgZone, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { BankaccountApiService, UserBankAccountModel } from 'src/app/services/api-yatirimim.service';
 import { AppService } from 'src/app/services/app.service';
 
 @Component({
@@ -10,35 +11,52 @@ import { AppService } from 'src/app/services/app.service';
 export class WithdrawAccountPage implements OnInit {
 
   amount: number;
+  accounts: UserBankAccountModel[];
+  selectedAccountId: number;
 
-  constructor(  
+  constructor(
     public appService: AppService,
     private zone: NgZone,
-    private cardService:MemberApiService
-    ) { }
+    private router: Router,
+    private bankAccountApiService: BankaccountApiService
+  ) { }
 
   ngOnInit() {
-    // this.appService.toggleLoader(true).then(()=>{
-    //   this.cardService.getMemberBankAccounts()
-    //     .subscribe(
-    //       (v) => this.onLoad(v),
-    //       (e) => this.onError(e)
-    //     )
-    // })
+    this.appService.toggleLoader(true).then(() => {
+      this.bankAccountApiService.getaccounts()
+        .subscribe(
+          (v) => this.onLoad(v),
+          (e) => this.onError(e)
+        )
+    })
   }
+
   onError(e: any): void {
     this.zone.run(() => {
       this.appService.toggleLoader(false);
       this.appService.showErrorAlert(e);
     });
   }
-  onLoad(v: MemberBankAccountDTO[]): void {
+
+  onLoad(v: UserBankAccountModel[]): void {
     this.zone.run(() => {
-      this.appService.toggleLoader(false); 
-      console.log(v)
-     });
+      this.accounts = v;
+      this.appService.toggleLoader(false);
+    });
   }
+
   valueChange(event: any) {
     this.amount = event.value;
   }
+
+  goApprove() {
+    this.router.navigate(['transfer', 'withdraw-account', 'approve-account'],
+      {
+        queryParams: {
+          account: this.selectedAccountId,
+          amount: this.amount
+        }
+      })
+  }
+
 }

@@ -5,7 +5,7 @@
         <ion-item class="user-info">
           <ion-label *ngIf="appService.user">
             <h2>{{appService.user.retailName}}</h2>
-            <h2 style="font-size: 100%; font-weight: 500;">{{appService.user.corporateName}}</h2>
+            <h2 style="font-size: 100%; font-weight: 500;">{{appService.user.userName}}</h2>
             <div class="user-id">
               <p class="text-muted">ID: {{appService.user.id}}</p>
               <ion-button fill="outlined" color="light" (click)="copyUserId()">

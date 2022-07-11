@@ -256,8 +256,13 @@ ion-content {
     }
   }
   .all-asset {
-    .segment-container ion-segment::before {
-      background-color: transparent !important;
+    .segment-container {
+      ion-segment {
+        width: 100%;
+        &::before {
+          background-color: transparent !important;
+        }
+      }
     }
     .assets-list {
       margin-bottom: 16px;
@@ -327,19 +332,10 @@ ion-content {
         font-size: 12px !important;
       }
     }
-    ion-segment {
-      margin-left: -40px;
-      .segment-container {
-        ::before {
-          background-color: transparent;
-        }
-      }
-    }
     ion-segment-button {
       --color-checked: #080a1e;
-    //  --color: #080a1e;
+      //  --color: #080a1e;
       margin-top: 20px;
-      max-width: 68px;
       height: 32px;
       letter-spacing: normal;
       font-size: 14px;

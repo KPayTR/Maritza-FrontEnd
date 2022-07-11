@@ -1,30 +1,30 @@
-<ion-header  >
+<ion-header>
   <div class="shrinkable">
 
 
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-menu-toggle class="ion-menu-button">
-        <img class="invertable" src="../../../assets/img/icon/menu.svg">
-      </ion-menu-toggle>
-    </ion-buttons>
-    <ion-title>
-      <img src="../../../assets/img/branding/logo-sm.svg">
-    </ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="goNotification()">
-        <div >
-          <img class="invertable" src="../../../assets/img/icon/notification-filled.svg" alt="Icon" />
-          <!-- *ngIf="appService.unreadNotificationsCount > 0"  /// {{appService.unreadNotificationsCount}} -->
-          <ion-badge class="badge-notification">1</ion-badge>
-        </div> 
-      </ion-button>
-      <ion-button (click)="start()" class="ion-menu-button">
-        <img class="invertable" src="../../../assets/img/icon/qrCode.svg">
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</div>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-menu-toggle class="ion-menu-button">
+          <img class="invertable" src="../../../assets/img/icon/menu.svg">
+        </ion-menu-toggle>
+      </ion-buttons>
+      <ion-title>
+        <img src="../../../assets/img/branding/logo-sm.svg">
+      </ion-title>
+      <ion-buttons slot="end">
+        <ion-button (click)="goNotification()">
+          <div>
+            <img class="invertable" src="../../../assets/img/icon/notification-filled.svg" alt="Icon" />
+            <!-- *ngIf="appService.unreadNotificationsCount > 0"  /// {{appService.unreadNotificationsCount}} -->
+            <ion-badge class="badge-notification">1</ion-badge>
+          </div>
+        </ion-button>
+        <ion-button (click)="start()" class="ion-menu-button">
+          <img class="invertable" src="../../../assets/img/icon/qrCode.svg">
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </div>
 </ion-header>
 
 <ion-content>
@@ -59,17 +59,18 @@
     <div class="price-container">
       <div>
         <div class="price">
-          <h3>{{symbol?.buyTRY}} TL</h3>
-          <div [ngClass]="(symbol?.dailyChangePercent > 0)? 'text-success': 'text-danger'"   class="price-change ">
-            <ion-icon [name]="(symbol?.dailyChangePercent > 0)? 'caret-up': 'caret-down'"  ></ion-icon>
-            <p>(%{{symbol?.dailyChangePercent}})</p>
+          <h3>{{currentSymbolRate?.buy | number : '1.2-2'}} TL</h3>
+          <div [ngClass]="(currentSymbolRate?.dailyChangePercent > 0)? 'text-success': 'text-danger'"
+            class="price-change ">
+            <ion-icon [name]="(currentSymbolRate?.dailyChangePercent > 0)? 'caret-up': 'caret-down'"></ion-icon>
+            <p>(%{{currentSymbolRate?.dailyChangePercent | number : '1.2-2'}})</p>
           </div>
         </div>
-        <div [ngClass]="(symbol?.dailyChangePercent > 0)? 'text-success': 'text-danger'" class="price-info">
-          <p>{{symbol?.difference | number : '1.2-2'}} </p>
+        <div [ngClass]="(currentSymbolRate?.dailyChangePercent > 0)? 'text-success': 'text-danger'" class="price-info">
+          <p>{{currentSymbolRate?.difference | number : '1.2-2'}} </p>
         </div>
       </div>
-      <ion-button (click)="goAlarm(symbol)" slot="end" fill="clear" size="normal">
+      <ion-button (click)="goAlarm(currentSymbolRate.symbolId)" slot="end" fill="clear" size="normal">
         <img src="../../../assets/img/icon/alarm.svg" />
       </ion-button>
     </div>
@@ -78,14 +79,14 @@
         <img class="invertable" src="../../../assets/img/icon/clock.svg" />
         <ion-select (ionChange)="timeRangeChange($event)" [value]="selectedTimeRange" interface="action-sheet"
           cancelText="İptal">
-          <ion-select-option value="1">5 Dakika</ion-select-option>
-          <ion-select-option value="2">15 Dakika</ion-select-option>
-          <ion-select-option value="3">30 Dakika</ion-select-option>
-          <ion-select-option value="4">1 Saat</ion-select-option>
-          <ion-select-option value="5">Günlük</ion-select-option>
-          <ion-select-option value="6">Haftalık</ion-select-option>
-          <ion-select-option value="7">Aylık</ion-select-option>
-          <ion-select-option value="8">Yıllık</ion-select-option>
+          <ion-select-option value="Min5">5 Dakika</ion-select-option>
+          <ion-select-option value="Min15">15 Dakika</ion-select-option>
+          <ion-select-option value="Min30">30 Dakika</ion-select-option>
+          <ion-select-option value="Min60">1 Saat</ion-select-option>
+          <ion-select-option value="Daily">Günlük</ion-select-option>
+          <ion-select-option value="Weekly">Haftalık</ion-select-option>
+          <ion-select-option value="Monthly">Aylık</ion-select-option>
+          <ion-select-option value="Yearly">Yıllık</ion-select-option>
         </ion-select>
       </ion-item>
       <ion-item lines="none">
@@ -109,53 +110,53 @@
             <ion-col>
               <div class="market-value">
                 <p class="label" slot="start">Alış</p>
-                <p class="value " slot="end">{{symbol?.buyTRY}}</p>
+                <p class="value " slot="end">{{currentSymbolRate?.buy | number : '1.2-2'}}</p>
               </div>
               <div class="market-value">
                 <p class="label" slot="start">Açılış</p>
-                <p class="value " slot="end">{{symbol?.opening | number : '1.2-2'}}</p>
+                <p class="value " slot="end">{{currentSymbolRate?.opening | number : '1.2-2'}}</p>
               </div>
               <div class="market-value">
                 <p class="label" slot="start">Düşük</p>
-                <p class="value" slot="end">{{symbol?.minimum}}</p>
+                <p class="value" slot="end">{{currentSymbolRate?.min| number : '1.2-2'}}</p>
               </div>
               <div class="market-value">
                 <p class="label" slot="start">Yıllık Düşük</p>
-                <p class="value" slot="end">{{symbol?.minYear | number : '1.2-2'}}</p>
+                <p class="value" slot="end">{{currentSymbolRate?.minYear | number : '1.2-2'}}</p>
               </div>
               <div class="market-value">
                 <p class="label" slot="start">Hacim Adet</p>
-                <p class="value" slot="end">{{symbol?.volumeLot | number : '1.0-2'}}</p>
+                <p class="value" slot="end">{{currentSymbolRate?.volumeLot | number : '1.0-2'}}</p>
               </div>
               <div class="market-value">
                 <p class="label" slot="start">Net Değişim %</p>
-                <p class="value" slot="end">{{symbol?.dailyChangePercent | number : '1.2-2'}}</p>
+                <p class="value" slot="end">{{currentSymbolRate?.dailyChangePercent | number : '1.2-2'}}</p>
               </div>
             </ion-col>
             <ion-col>
               <div class="market-value">
                 <p class="label" slot="start">Satış</p>
-                <p class="value" slot="end">{{symbol?.sellTRY}}</p>
+                <p class="value" slot="end">{{currentSymbolRate?.sell | number : '1.2-2'}}</p>
               </div>
               <div class="market-value">
                 <p class="label" slot="start">Ö. Gün Kapanış</p>
-                <p class="value" slot="end">{{symbol?.latestClosing | number : '1.2-2'}}</p>
+                <p class="value" slot="end">{{currentSymbolRate?.latestClosing | number : '1.2-2'}}</p>
               </div>
               <div class="market-value">
                 <p class="label" slot="start">Yüksek</p>
-                <p class="value" slot="end">{{symbol?.maximum}}</p>
+                <p class="value" slot="end">{{currentSymbolRate?.max| number : '1.2-2'}}</p>
               </div>
               <div class="market-value">
                 <p class="label" slot="start">Yıllık Yüksek</p>
-                <p class="value" slot="end">{{symbol?.maxYear | number : '1.2-2'}}</p>
+                <p class="value" slot="end">{{currentSymbolRate?.maxYear | number : '1.2-2'}}</p>
               </div>
               <div class="market-value">
                 <p class="label" slot="start">Hacim TL</p>
-                <p class="value" slot="end">{{symbol?.volumeTry | number : '1.2-2'}}</p>
+                <p class="value" slot="end">{{currentSymbolRate?.volumeTry | number : '1.2-2'}}</p>
               </div>
               <div class="market-value">
                 <p class="label" slot="start">Net Değişim</p>
-                <p class="value" slot="end">{{symbol?.difference | number : '1.2-2'}}</p>
+                <p class="value" slot="end">{{currentSymbolRate?.difference | number : '1.2-2'}}</p>
               </div>
             </ion-col>
           </ion-row>
@@ -165,7 +166,7 @@
     <div class="survey-container">
       <h3>BEKLENTİ</h3>
       <div class="ion-text-center" [style.paddingBottom]="((appService.user?.id > 0) ? 6 : 16) + 'px'">
-        <h5>{{symbol?.name}} Beklenti Anketi</h5>
+        <h5>{{currentSymbolRate?.name}} Beklenti Anketi</h5>
         <div class="survey-inner">
           <div class="survey-chart">
             <div class="survey-chart-side increasing" [style.width]="getVotePercent('increasing') + '%'">
@@ -197,49 +198,52 @@
         <div class="form-items">
           <div class="segment-container">
             <ion-segment (ionChange)="allSegmentChanged($event)" class="asset-segment" mode="md"
-              [value]="selectedValue">
-              <ion-segment-button value="maden">
+              [value]="selectedSymbolType">
+              <ion-segment-button value="Metal">
                 <ion-label>MADEN</ion-label>
               </ion-segment-button>
-              <ion-segment-button value="doviz">
+              <ion-segment-button value="Forex">
                 <ion-label>DÖVİZ</ion-label>
               </ion-segment-button>
-              <ion-segment-button value="sarrafi">
-                <ion-label>SARRAFİ</ion-label>
+              <ion-segment-button value="Sarrafiye">
+                <ion-label>SARRAFİYE</ion-label>
               </ion-segment-button>
             </ion-segment>
           </div>
-          <div *ngFor="let symbol of symbols; let i = index" class="assets-list">
-            <ion-row class="ion-no-padding">
-              <ion-col size="2">
-                <img src="../../../assets/img/symbol/{{allSymbols[i].iSOCode}}.svg" (error)="checkImage($event)" alt="" />
-                <div class="currency-symbol d-none">
-                  <!-- <div
-                    [ngClass]="(symbol.currencySymbol!=null && symbol.currencySymbol.length>1) ? 'font-big': 'font-small'">
-                    {{symbol?.currencySymbol}}</div> -->
-                </div>
-              </ion-col>
-              <ion-col size="5">
-                <ion-label>
-                  <h4 class="bold">{{allSymbols[i].name}}</h4>
-                  <p>{{symbol?.buyTRY}} | {{symbol?.sellTRY}}</p>
-                </ion-label>
-              </ion-col>
-              <ion-col size="3">
-                <ion-label>
-                  <!-- <div>
-                    <app-mini-line-chart [data]="lineData[symbol.matriksCode]"
-                      [isIncreasing]="checkTradeDifference(allSymbols[i].iSOCode) > 0"></app-mini-line-chart>
-                  </div> -->
-                  <p class="ion-text-center">%{{symbol.difference}}</p>
-                </ion-label>
-              </ion-col>
-              <ion-col size="2">
-                <div>
-                  <img src="../../../assets/img/icon/alarm.svg" width="30"/>
-                </div>
-              </ion-col>
-            </ion-row>
+          <div *ngFor="let symbol of allSymbols;">
+            <div *ngIf="getSymbolRate(symbol) != null" class="assets-list">
+              <ion-row class="ion-no-padding">
+                <ion-col size="2">
+                  <img src="../../../assets/img/symbol/{{symbol.isoCode}}.svg" (error)="checkImage($event)" alt="" />
+                  <div class="currency-symbol d-none">
+                    <div
+                      [ngClass]="(symbol.currencySymbol!=null && symbol.currencySymbol.length>1) ? 'font-big': 'font-small'">
+                      {{symbol?.currencySymbol }}</div>
+                  </div>
+                </ion-col>
+                <ion-col size="5">
+                  <ion-label>
+                    <h4 class="bold">{{symbol.name}}</h4>
+                    <p>{{getSymbolRate(symbol)?.buy | number : '1.2-2'}} | {{getSymbolRate(symbol)?.sell | number :
+                      '1.2-2'}}</p>
+                  </ion-label>
+                </ion-col>
+                <ion-col size="3">
+                  <ion-label>
+                    <div>
+                      <app-mini-line-chart [data]="linesData[symbol.matriksCode]"
+                        [isIncreasing]="getSymbolRate(symbol)?.dailyChangePercent > 0"></app-mini-line-chart>
+                    </div>
+                    <p class="ion-text-center">%{{getSymbolRate(symbol)?.difference}}</p>
+                  </ion-label>
+                </ion-col>
+                <ion-col size="2">
+                  <div>
+                    <img src="../../../assets/img/icon/alarm.svg" width="30" />
+                  </div>
+                </ion-col>
+              </ion-row>
+            </div>
           </div>
         </div>
       </div>

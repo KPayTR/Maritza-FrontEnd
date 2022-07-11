@@ -1,16 +1,10 @@
 <ion-content>
   <ion-item lines="none">
-    <ion-segment
-      style="max-width: 120px; font-weight: none"
-      slot="end"
-      class="ios-segment"
-      mode="ios"
-      value="cevirici"
-    >
-      <ion-segment-button value="tumu">
+    <ion-segment (ionChange)="calc()" [(ngModel)]="convertType" style="max-width: 120px; font-weight: none" slot="end" class="ios-segment" mode="ios" >
+      <ion-segment-button value="buy">
         <ion-label>Alış</ion-label>
       </ion-segment-button>
-      <ion-segment-button value="cevirici">
+      <ion-segment-button value="sell">
         <ion-label>Satış</ion-label>
       </ion-segment-button>
     </ion-segment>
@@ -22,19 +16,14 @@
   <div class="input">
     <ion-row>
       <ion-col class="first" size="9">
-        <ion-input placeholder="0" (ionChange)="calc()"  [(ngModel)]="num"></ion-input>  
+        <ion-input type="number" placeholder="0" (ionFocus)="onInputFocus()" (ionBlur)="onInputBlur()"
+          (ionChange)="calc()" [(ngModel)]="sourceValue"></ion-input>
       </ion-col>
       <ion-col class="last" size="3">
-        <ion-select
-          class="custom-options"
-          interface="popover"
-          value="USD"
-          placeholder="Seçiniz"
-          (ionChange)="selectChangeMain($event)"
-        >
-          <ion-select-option value="TRY">TRY</ion-select-option>
-          <ion-select-option value="USD">USD</ion-select-option>
-          <ion-select-option value="GBP">GBP</ion-select-option>
+        <ion-select class="custom-options" interface="popover" [(ngModel)]="sourceSymbolCode" placeholder="Seçiniz"
+          (ionChange)="calc()">
+          <ion-select-option *ngFor="let symbol of symbols" [value]="symbol.isoCode">{{symbol.isoCode}}
+          </ion-select-option>
         </ion-select>
       </ion-col>
     </ion-row>
@@ -46,19 +35,13 @@
   <div class="input">
     <ion-row>
       <ion-col class="first" size="9">
-        <ion-input placeholder="0" (ionChange)="calc()"  [(ngModel)]="res"></ion-input> 
+        <ion-input placeholder="0" readonly [(ngModel)]="targetValue"></ion-input>
       </ion-col>
       <ion-col class="last" size="3">
-        <ion-select
-          class="custom-options"
-          interface="popover"
-          value="TRY"
-          placeholder="Seçiniz"
-          (ionChange)="selectChangeMain($event)"
-        >
-          <ion-select-option value="TRY">TRY</ion-select-option>
-          <ion-select-option value="USD">USD</ion-select-option>
-          <ion-select-option value="GBP">GBP</ion-select-option>
+        <ion-select class="custom-options" interface="popover" [(ngModel)]="targetSymbolCode" placeholder="Seçiniz"
+          (ionChange)="calc()">
+          <ion-select-option *ngFor="let symbol of symbols" [value]="symbol.isoCode">{{symbol.isoCode}}
+          </ion-select-option>
         </ion-select>
       </ion-col>
     </ion-row>

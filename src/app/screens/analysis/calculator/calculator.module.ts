@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
@@ -15,6 +15,7 @@ import { CalculatorPage } from './calculator.page';
     IonicModule,
     CalculatorPageRoutingModule
   ],
-  declarations: [CalculatorPage]
+  declarations: [CalculatorPage],
+  providers: []
 })
 export class CalculatorPageModule {}

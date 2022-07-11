@@ -11,6 +11,7 @@ import { LineChartComponent } from './line-chart/line-chart.component';
 import { PieChartComponent } from './pie-chart/pie-chart.component';
 import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
 import { MiniLineChartComponent } from './mini-line-chart/mini-line-chart.component';
+import { NgApexchartsModule } from 'ng-apexcharts';
 
 @NgModule({
     declarations: [
@@ -27,7 +28,8 @@ import { MiniLineChartComponent } from './mini-line-chart/mini-line-chart.compon
         FormsModule,
         CommonModule,
         IonicModule,
-        RouterModule
+        RouterModule,
+        NgApexchartsModule
     ],
     exports: [
         TradingChartComponent,

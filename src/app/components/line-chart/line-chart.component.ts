@@ -34,9 +34,9 @@ export class LineChartComponent implements AfterViewInit {
       },
     },
     series: {
-      topColor: 'rgba(32, 226, 47, 0.56)',
-      bottomColor: 'rgba(32, 226, 47, 0.04)',
-      lineColor: 'rgba(32, 226, 47, 1)',
+      topColor: 'rgba(241, 188, 2, 0.56)',
+      bottomColor: 'rgba(241, 188, 2, 0.04)',
+      lineColor: 'rgba(241, 188, 2, 1)',
     },
   };
 

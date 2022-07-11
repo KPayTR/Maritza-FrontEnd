@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Yatırımım Trader</string>
+    <string name="title_activity_main">Yatırımım Trader</string>
+    <string name="package_name">com.yatirimim.trader</string>
+    <string name="custom_url_scheme">com.yatirimim.trader</string>
+</resources>

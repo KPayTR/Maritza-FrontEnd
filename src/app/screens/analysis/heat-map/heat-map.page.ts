@@ -13,16 +13,22 @@ export class HeatMapPage implements OnInit {
   selectedSegment: string = 'all';
 
   constructor(private marketService: MarketDataService) {
-    this.data = marketService.symbols.map(x => (
-      {
+    
+    this.data = marketService.symbols.map(x => {
+      const itemRate = marketService.symbolRates.find(y => x.id == y.symbolId)
+      if(itemRate == undefined) return null;
+
+      const item = {
         id: x.isoCode,
         symbol: x.name,
-        price: x.sell,
-        diffValue: x.difference,
-        diffPercent: x.dailyChangePercent,
+        price: itemRate.sell,
+        diffValue: itemRate.difference,
+        diffPercent: itemRate.dailyChangePercent,
         class: ''
-      }
-    ));
+      };
+
+      return item;
+    }).filter(x => x != null);
 
     /*
     const symbols = ['ITTFH', 'BERA', 'ADESE', 'GARAN', 'SRVGY', 'RGHEAG', 'XAGTRY', 'XAGGR', 'KLNMA', 'FORMT', 'VKGYO', 'CEMAS']

@@ -14,39 +14,34 @@
       </div>
       <div class="form-items">
         <ion-item class="username-input" lines="none">
-          <ion-input [(ngModel)]="bank" placeholder="Hesap Adı "></ion-input>
+          <ion-select [(ngModel)]="bank" placeholder="Banka Seçiniz" interface="action-sheet" okText="Tamam" cancelText="İptal">
+            <ion-select-option *ngFor="let bank of banks" [value]="bank.id">{{bank.name}}</ion-select-option>
+          </ion-select>
         </ion-item>
         <ion-item class="username-input" lines="none">
-          <ion-input [(ngModel)]="name" placeholder="İsim"></ion-input>
+          <ion-input [(ngModel)]="name" placeholder="Hesap Adı"></ion-input>
         </ion-item>
         <ion-item class="username-input" lines="none">
           <ion-input [(ngModel)]="iban" maxlength="26" placeholder="IBAN"></ion-input>
         </ion-item>
-        <ion-item    lines="none" class="item-checkbox box ion-padding d-flex">
-          <div (click)="isAgreementAccepted= !isAgreementAccepted"
-            [ngClass]="{active: isAgreementAccepted}" class="checkbox mr-2"></div>
+        <ion-item lines="none" class="item-checkbox box ion-padding d-flex">
+          <div (click)="isAgreementAccepted= !isAgreementAccepted" [ngClass]="{active: isAgreementAccepted}"
+            class="checkbox mr-2"></div>
           <div class="label">
-            <span class="text"    (click)="isAgreementAccepted= !isAgreementAccepted"></span>
-            <span
-              class="text" 
-              (click)="isAgreementAccepted= !isAgreementAccepted"
-              >Bu bilgiler TC kimlik numaramla açılmış vadesiz Türk Lirası banka
+            <span class="text" (click)="isAgreementAccepted= !isAgreementAccepted"></span>
+            <span class="text" (click)="isAgreementAccepted= !isAgreementAccepted">Bu bilgiler TC kimlik numaramla
+              açılmış vadesiz Türk Lirası banka
               hesabına aittir. Bilgilerin uyuşmaması durumunda para transferin
-              gerçekleşmeyeceğini kabul ediyorum.</span
-            >
+              gerçekleşmeyeceğini kabul ediyorum.</span>
           </div>
-        </ion-item> 
+        </ion-item>
       </div>
     </div>
     <div class="form-footer">
-      <ion-button
-      (click)="addAccount()"
-        size="block"
-        color="primary"
-        >HESAP EKLE
+      <ion-button (click)="addAccount()" size="block" color="primary">HESAP EKLE
       </ion-button>
     </div>
   </div>
-</ion-content> 
+</ion-content>
 <!-- routerDirection="forward"
 [routerLink]="['../account-approve']" -->

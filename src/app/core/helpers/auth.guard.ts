@@ -22,15 +22,16 @@ export class AuthGuard implements CanActivate {
     state: RouterStateSnapshot
   ): Observable<boolean> | Promise<boolean> | boolean {
     return new Promise((resolve, reject) => {
-    
-      const currentToken =   this.appService.accessToken;
-      if (currentToken != null && currentToken.length > 0) {
-        resolve(true);
 
-        /*
-        if (this.appService.user == undefined) {
+      const currentToken = this.appService.accessToken;
+
+      if (currentToken != null && currentToken.length > 0) {
+        const expiry = (JSON.parse(atob(currentToken.split('.')[1]))).exp;
+        const isExpired = (Math.floor((new Date).getTime() / 1000)) >= expiry;
+
+        if (this.appService.user == undefined || isExpired) {
           this.appService.toggleLoader(true).then(() => {
-            this.authApiService.refreshtoken().subscribe(
+            this.authApiService.refreshtoken(this.appService.accessToken, this.appService.user.id.toString()).subscribe(
               (v) => {
                 this.appService.accessToken = v.token;
                 this.appService.toggleLoader(false);
@@ -47,7 +48,6 @@ export class AuthGuard implements CanActivate {
         else {
           resolve(true);
         }
-        */
       }
       else {
         this.router.navigate(["/auth/login"], { queryParams: { returnUrl: state.url } });

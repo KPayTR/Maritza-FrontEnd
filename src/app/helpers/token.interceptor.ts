@@ -6,7 +6,8 @@ import {
   HttpInterceptor
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { AppService } from '../services/app.service'; 
+import { AppService } from '../services/app.service';
+import { MARITZA_API_URL } from '../services/api-yatirimim.service';
 
 
 @Injectable()
@@ -19,10 +20,11 @@ export class TokenInterceptor {
    * @memberof TokenInterceptor
    */
   constructor(
-    public appService: AppService, 
-    ) { 
-      this.yatırımımApiBaseUrl = "https://api.yatirimim.com/AppBackend/V1"; 
-    }
+    public appService: AppService,
+    @Optional() @Inject(MARITZA_API_URL) baseUrl?: string
+  ) {
+    this.yatırımımApiBaseUrl = baseUrl;
+  }
 
   /**
    * Intercept all HTTP request to add JWT token to Headers
@@ -32,13 +34,12 @@ export class TokenInterceptor {
    * @memberof TokenInterceptor
    */
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-      console.log(this.appService.accessToken)
     if (request.url.indexOf(this.yatırımımApiBaseUrl) > -1) {
       request = request.clone({
         setHeaders: {
           Authorization: `Bearer ${this.appService.accessToken}`
         }
-      }); 
+      });
     }
 
 

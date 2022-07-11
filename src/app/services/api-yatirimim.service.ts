@@ -25,7 +25,7 @@ export class AnalysisApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
     }
 
     /**
@@ -103,7 +103,7 @@ export class AssetsApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
     }
 
     /**
@@ -171,15 +171,15 @@ export class AssetsApiService {
     }
 
     /**
-     * @param customerId (optional) 
+     * @param userId (optional) 
      * @return Success
      */
-    getassetlist(customerId: number | undefined): Observable<AssetModel[]> {
+    getassetlist(userId: number | undefined): Observable<AssetModel[]> {
         let url_ = this.baseUrl + "/api/finance/assets/getassetlist?";
-        if (customerId === null)
-            throw new Error("The parameter 'customerId' cannot be null.");
-        else if (customerId !== undefined)
-            url_ += "customerId=" + encodeURIComponent("" + customerId) + "&";
+        if (userId === null)
+            throw new Error("The parameter 'userId' cannot be null.");
+        else if (userId !== undefined)
+            url_ += "userId=" + encodeURIComponent("" + userId) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -242,15 +242,15 @@ export class AssetsApiService {
     }
 
     /**
-     * @param customerId (optional) 
+     * @param userId (optional) 
      * @return Success
      */
-    getwallet(customerId: number | undefined): Observable<AssetModel[]> {
+    getwallet(userId: number | undefined): Observable<AssetModel[]> {
         let url_ = this.baseUrl + "/api/finance/assets/getwallet?";
-        if (customerId === null)
-            throw new Error("The parameter 'customerId' cannot be null.");
-        else if (customerId !== undefined)
-            url_ += "customerId=" + encodeURIComponent("" + customerId) + "&";
+        if (userId === null)
+            throw new Error("The parameter 'userId' cannot be null.");
+        else if (userId !== undefined)
+            url_ += "userId=" + encodeURIComponent("" + userId) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -321,14 +321,14 @@ export class AuthApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
     }
 
     /**
      * @param body (optional) 
      * @return Success
      */
-    login(body: LoginModel | undefined): Observable<LoginResponseModel> {
+    login(body: LoginModel | undefined): Observable<void> {
         let url_ = this.baseUrl + "/api/auth/auth/login";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -340,7 +340,6 @@ export class AuthApiService {
             responseType: "blob",
             headers: new HttpHeaders({
                 "Content-Type": "application/json",
-                "Accept": "text/plain"
             })
         };
 
@@ -351,14 +350,14 @@ export class AuthApiService {
                 try {
                     return this.processLogin(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<LoginResponseModel>;
+                    return _observableThrow(e) as any as Observable<void>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<LoginResponseModel>;
+                return _observableThrow(response_) as any as Observable<void>;
         }));
     }
 
-    protected processLogin(response: HttpResponseBase): Observable<LoginResponseModel> {
+    protected processLogin(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -367,10 +366,7 @@ export class AuthApiService {
         let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
         if (status === 200) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = LoginResponseModel.fromJS(resultData200);
-            return _observableOf(result200);
+            return _observableOf<void>(null as any);
             }));
         } else if (status === 400) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
@@ -391,7 +387,7 @@ export class AuthApiService {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<LoginResponseModel>(null as any);
+        return _observableOf<void>(null as any);
     }
 
     /**
@@ -465,10 +461,20 @@ export class AuthApiService {
     }
 
     /**
+     * @param token (optional) 
+     * @param key (optional) 
      * @return Success
      */
-    refreshtoken(): Observable<TokenModel> {
-        let url_ = this.baseUrl + "/api/auth/auth/refreshtoken";
+    refreshtoken(token: string | undefined, key: string | undefined): Observable<TokenModel> {
+        let url_ = this.baseUrl + "/api/auth/auth/refreshtoken?";
+        if (token === null)
+            throw new Error("The parameter 'token' cannot be null.");
+        else if (token !== undefined)
+            url_ += "token=" + encodeURIComponent("" + token) + "&";
+        if (key === null)
+            throw new Error("The parameter 'key' cannot be null.");
+        else if (key !== undefined)
+            url_ += "key=" + encodeURIComponent("" + key) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -938,7 +944,7 @@ export class BankApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
     }
 
     /**
@@ -1008,19 +1014,19 @@ export class BankaccountApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
     }
 
     /**
-     * @param customerId (optional) 
+     * @param id (optional) 
      * @return Success
      */
-    getcustomeraccountdetail(customerId: number | undefined): Observable<CustomerBankAccountModel[]> {
-        let url_ = this.baseUrl + "/api/auth/bankaccount/getcustomeraccountdetail?";
-        if (customerId === null)
-            throw new Error("The parameter 'customerId' cannot be null.");
-        else if (customerId !== undefined)
-            url_ += "customerId=" + encodeURIComponent("" + customerId) + "&";
+    getaccount(id: number | undefined): Observable<UserBankAccountModel> {
+        let url_ = this.baseUrl + "/api/auth/bankaccount/getaccount?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "id=" + encodeURIComponent("" + id) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -1032,20 +1038,79 @@ export class BankaccountApiService {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetcustomeraccountdetail(response_);
+            return this.processGetaccount(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGetcustomeraccountdetail(response_ as any);
+                    return this.processGetaccount(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<CustomerBankAccountModel[]>;
+                    return _observableThrow(e) as any as Observable<UserBankAccountModel>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<CustomerBankAccountModel[]>;
+                return _observableThrow(response_) as any as Observable<UserBankAccountModel>;
         }));
     }
 
-    protected processGetcustomeraccountdetail(response: HttpResponseBase): Observable<CustomerBankAccountModel[]> {
+    protected processGetaccount(response: HttpResponseBase): Observable<UserBankAccountModel> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = UserBankAccountModel.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result400 = resultData400 !== undefined ? resultData400 : <any>null;
+    
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<UserBankAccountModel>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    getaccounts(): Observable<UserBankAccountModel[]> {
+        let url_ = this.baseUrl + "/api/auth/bankaccount/getaccounts";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetaccounts(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetaccounts(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<UserBankAccountModel[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<UserBankAccountModel[]>;
+        }));
+    }
+
+    protected processGetaccounts(response: HttpResponseBase): Observable<UserBankAccountModel[]> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -1059,7 +1124,7 @@ export class BankaccountApiService {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(CustomerBankAccountModel.fromJS(item));
+                    result200!.push(UserBankAccountModel.fromJS(item));
             }
             else {
                 result200 = <any>null;
@@ -1079,134 +1144,44 @@ export class BankaccountApiService {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<CustomerBankAccountModel[]>(null as any);
-    }
-}
-
-@Injectable()
-export class BloodtypeApiService {
-    private http: HttpClient;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
-        this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
+        return _observableOf<UserBankAccountModel[]>(null as any);
     }
 
     /**
+     * @param body (optional) 
      * @return Success
      */
-    getlist(): Observable<BloodTypeModel[]> {
-        let url_ = this.baseUrl + "/api/settings/code/bloodtype/getlist";
+    saveaccount(body: UserBankAccountModel | undefined): Observable<UserBankAccountModel> {
+        let url_ = this.baseUrl + "/api/auth/bankaccount/saveaccount";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(body);
+
         let options_ : any = {
+            body: content_,
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetlist(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processGetlist(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<BloodTypeModel[]>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<BloodTypeModel[]>;
-        }));
-    }
-
-    protected processGetlist(response: HttpResponseBase): Observable<BloodTypeModel[]> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(BloodTypeModel.fromJS(item));
-            }
-            else {
-                result200 = <any>null;
-            }
-            return _observableOf(result200);
-            }));
-        } else if (status === 400) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result400: any = null;
-            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result400 = resultData400 !== undefined ? resultData400 : <any>null;
-    
-            return throwException("Bad Request", status, _responseText, _headers, result400);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<BloodTypeModel[]>(null as any);
-    }
-}
-
-@Injectable()
-export class CardApiService {
-    private http: HttpClient;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
-        this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
-    }
-
-    /**
-     * @param cardId (optional) 
-     * @return Success
-     */
-    getcard(cardId: string | undefined): Observable<CardDTO> {
-        let url_ = this.baseUrl + "/api/auth/card/getcard?";
-        if (cardId === null)
-            throw new Error("The parameter 'cardId' cannot be null.");
-        else if (cardId !== undefined)
-            url_ += "cardId=" + encodeURIComponent("" + cardId) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json",
                 "Accept": "text/plain"
             })
         };
 
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetcard(response_);
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processSaveaccount(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGetcard(response_ as any);
+                    return this.processSaveaccount(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<CardDTO>;
+                    return _observableThrow(e) as any as Observable<UserBankAccountModel>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<CardDTO>;
+                return _observableThrow(response_) as any as Observable<UserBankAccountModel>;
         }));
     }
 
-    protected processGetcard(response: HttpResponseBase): Observable<CardDTO> {
+    protected processSaveaccount(response: HttpResponseBase): Observable<UserBankAccountModel> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -1217,7 +1192,7 @@ export class CardApiService {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = CardDTO.fromJS(resultData200);
+            result200 = UserBankAccountModel.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status === 403) {
@@ -1246,13 +1221,248 @@ export class CardApiService {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<CardDTO>(null as any);
+        return _observableOf<UserBankAccountModel>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    updateaccount(body: UserBankAccountModel | undefined): Observable<UserBankAccountModel> {
+        let url_ = this.baseUrl + "/api/auth/bankaccount/updateaccount";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdateaccount(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdateaccount(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<UserBankAccountModel>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<UserBankAccountModel>;
+        }));
+    }
+
+    protected processUpdateaccount(response: HttpResponseBase): Observable<UserBankAccountModel> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = UserBankAccountModel.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 403) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result403: any = null;
+            let resultData403 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result403 = ProblemDetails.fromJS(resultData403);
+            return throwException("Forbidden", status, _responseText, _headers, result403);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData400)) {
+                result400 = [] as any;
+                for (let item of resultData400)
+                    result400!.push(ErrorDto.fromJS(item));
+            }
+            else {
+                result400 = <any>null;
+            }
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<UserBankAccountModel>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    deleteaccount(body: UserBankAccountModel | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/auth/bankaccount/deleteaccount";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json",
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDeleteaccount(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDeleteaccount(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processDeleteaccount(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status === 403) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result403: any = null;
+            let resultData403 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result403 = ProblemDetails.fromJS(resultData403);
+            return throwException("Forbidden", status, _responseText, _headers, result403);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData400)) {
+                result400 = [] as any;
+                for (let item of resultData400)
+                    result400!.push(ErrorDto.fromJS(item));
+            }
+            else {
+                result400 = <any>null;
+            }
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+}
+
+@Injectable()
+export class CardApiService {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
+    }
+
+    /**
+     * @param cardId (optional) 
+     * @return Success
+     */
+    getcard(cardId: string | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/auth/card/getcard?";
+        if (cardId === null)
+            throw new Error("The parameter 'cardId' cannot be null.");
+        else if (cardId !== undefined)
+            url_ += "cardId=" + encodeURIComponent("" + cardId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetcard(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetcard(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processGetcard(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status === 403) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result403: any = null;
+            let resultData403 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result403 = ProblemDetails.fromJS(resultData403);
+            return throwException("Forbidden", status, _responseText, _headers, result403);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData400)) {
+                result400 = [] as any;
+                for (let item of resultData400)
+                    result400!.push(ErrorDto.fromJS(item));
+            }
+            else {
+                result400 = <any>null;
+            }
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
     }
 
     /**
      * @return Success
      */
-    getcards(): Observable<CardDTO[]> {
+    getcards(): Observable<any[]> {
         let url_ = this.baseUrl + "/api/auth/card/getcards";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1271,14 +1481,14 @@ export class CardApiService {
                 try {
                     return this.processGetcards(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<CardDTO[]>;
+                    return _observableThrow(e) as any as Observable<any[]>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<CardDTO[]>;
+                return _observableThrow(response_) as any as Observable<any[]>;
         }));
     }
 
-    protected processGetcards(response: HttpResponseBase): Observable<CardDTO[]> {
+    protected processGetcards(response: HttpResponseBase): Observable<any[]> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -1292,7 +1502,7 @@ export class CardApiService {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(CardDTO.fromJS(item));
+                    result200!.push(item);
             }
             else {
                 result200 = <any>null;
@@ -1325,14 +1535,14 @@ export class CardApiService {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<CardDTO[]>(null as any);
+        return _observableOf<any[]>(null as any);
     }
 
     /**
      * @param body (optional) 
      * @return Success
      */
-    savecard(body: CardCreateDTO | undefined): Observable<CardDTO> {
+    savecard(body: any | undefined): Observable<void> {
         let url_ = this.baseUrl + "/api/auth/card/savecard";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1344,7 +1554,6 @@ export class CardApiService {
             responseType: "blob",
             headers: new HttpHeaders({
                 "Content-Type": "application/json-patch+json",
-                "Accept": "text/plain"
             })
         };
 
@@ -1355,14 +1564,14 @@ export class CardApiService {
                 try {
                     return this.processSavecard(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<CardDTO>;
+                    return _observableThrow(e) as any as Observable<void>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<CardDTO>;
+                return _observableThrow(response_) as any as Observable<void>;
         }));
     }
 
-    protected processSavecard(response: HttpResponseBase): Observable<CardDTO> {
+    protected processSavecard(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -1371,10 +1580,7 @@ export class CardApiService {
         let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
         if (status === 200) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = CardDTO.fromJS(resultData200);
-            return _observableOf(result200);
+            return _observableOf<void>(null as any);
             }));
         } else if (status === 403) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
@@ -1402,7 +1608,7 @@ export class CardApiService {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<CardDTO>(null as any);
+        return _observableOf<void>(null as any);
     }
 
     /**
@@ -1480,84 +1686,6 @@ export class CardApiService {
 }
 
 @Injectable()
-export class ChanneltypeApiService {
-    private http: HttpClient;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
-        this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
-    }
-
-    /**
-     * @return Success
-     */
-    getlist(): Observable<ChannelTypeModel[]> {
-        let url_ = this.baseUrl + "/api/settings/code/channeltype/getlist";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetlist(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processGetlist(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<ChannelTypeModel[]>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<ChannelTypeModel[]>;
-        }));
-    }
-
-    protected processGetlist(response: HttpResponseBase): Observable<ChannelTypeModel[]> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(ChannelTypeModel.fromJS(item));
-            }
-            else {
-                result200 = <any>null;
-            }
-            return _observableOf(result200);
-            }));
-        } else if (status === 400) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result400: any = null;
-            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result400 = resultData400 !== undefined ? resultData400 : <any>null;
-    
-            return throwException("Bad Request", status, _responseText, _headers, result400);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<ChannelTypeModel[]>(null as any);
-    }
-}
-
-@Injectable()
 export class CommissionApiService {
     private http: HttpClient;
     private baseUrl: string;
@@ -1565,7 +1693,7 @@ export class CommissionApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
     }
 
     /**
@@ -1628,84 +1756,6 @@ export class CommissionApiService {
 }
 
 @Injectable()
-export class ContacstypeApiService {
-    private http: HttpClient;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
-        this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
-    }
-
-    /**
-     * @return Success
-     */
-    getlist(): Observable<ContactTypeModel[]> {
-        let url_ = this.baseUrl + "/api/settings/code/contacstype/getlist";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetlist(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processGetlist(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<ContactTypeModel[]>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<ContactTypeModel[]>;
-        }));
-    }
-
-    protected processGetlist(response: HttpResponseBase): Observable<ContactTypeModel[]> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(ContactTypeModel.fromJS(item));
-            }
-            else {
-                result200 = <any>null;
-            }
-            return _observableOf(result200);
-            }));
-        } else if (status === 400) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result400: any = null;
-            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result400 = resultData400 !== undefined ? resultData400 : <any>null;
-    
-            return throwException("Bad Request", status, _responseText, _headers, result400);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<ContactTypeModel[]>(null as any);
-    }
-}
-
-@Injectable()
 export class CorporateApiService {
     private http: HttpClient;
     private baseUrl: string;
@@ -1713,7 +1763,7 @@ export class CorporateApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
     }
 
     /**
@@ -1917,7 +1967,7 @@ export class ReadApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
     }
 
     /**
@@ -1988,84 +2038,6 @@ export class ReadApiService {
 }
 
 @Injectable()
-export class CorporatecategoriesApiService {
-    private http: HttpClient;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
-        this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
-    }
-
-    /**
-     * @return Success
-     */
-    getlist(): Observable<CorporateCategoryModel[]> {
-        let url_ = this.baseUrl + "/api/settings/code/corporatecategories/getlist";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetlist(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processGetlist(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<CorporateCategoryModel[]>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<CorporateCategoryModel[]>;
-        }));
-    }
-
-    protected processGetlist(response: HttpResponseBase): Observable<CorporateCategoryModel[]> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(CorporateCategoryModel.fromJS(item));
-            }
-            else {
-                result200 = <any>null;
-            }
-            return _observableOf(result200);
-            }));
-        } else if (status === 400) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result400: any = null;
-            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result400 = resultData400 !== undefined ? resultData400 : <any>null;
-    
-            return throwException("Bad Request", status, _responseText, _headers, result400);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<CorporateCategoryModel[]>(null as any);
-    }
-}
-
-@Injectable()
 export class CountryApiService {
     private http: HttpClient;
     private baseUrl: string;
@@ -2073,7 +2045,7 @@ export class CountryApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
     }
 
     /**
@@ -2143,7 +2115,7 @@ export class CreditcardpaymentApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
     }
 
     /**
@@ -2276,7 +2248,7 @@ export class CreditcardpaymentApiService {
      * @param transactionId (optional) 
      * @return Success
      */
-    getpaymentstatus(transactionId: string | undefined): Observable<PaymentStatusEnum> {
+    getpaymentstatus(transactionId: string | undefined): Observable<string> {
         let url_ = this.baseUrl + "/api/finance/creditcardpayment/getpaymentstatus?";
         if (transactionId === null)
             throw new Error("The parameter 'transactionId' cannot be null.");
@@ -2299,14 +2271,14 @@ export class CreditcardpaymentApiService {
                 try {
                     return this.processGetpaymentstatus(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<PaymentStatusEnum>;
+                    return _observableThrow(e) as any as Observable<string>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<PaymentStatusEnum>;
+                return _observableThrow(response_) as any as Observable<string>;
         }));
     }
 
-    protected processGetpaymentstatus(response: HttpResponseBase): Observable<PaymentStatusEnum> {
+    protected processGetpaymentstatus(response: HttpResponseBase): Observable<string> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -2333,349 +2305,7 @@ export class CreditcardpaymentApiService {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<PaymentStatusEnum>(null as any);
-    }
-}
-
-@Injectable()
-export class CustomerdocumentApiService {
-    private http: HttpClient;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
-        this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
-    }
-
-    /**
-     * @param body (optional) 
-     * @return Success
-     */
-    add(body: CustomerDocument | undefined): Observable<CustomerDocumentModel> {
-        let url_ = this.baseUrl + "/api/auth/customerdocument/add";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_ : any = {
-            body: content_,
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Content-Type": "application/json-patch+json",
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processAdd(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processAdd(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<CustomerDocumentModel>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<CustomerDocumentModel>;
-        }));
-    }
-
-    protected processAdd(response: HttpResponseBase): Observable<CustomerDocumentModel> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = CustomerDocumentModel.fromJS(resultData200);
-            return _observableOf(result200);
-            }));
-        } else if (status === 400) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result400: any = null;
-            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result400 = resultData400 !== undefined ? resultData400 : <any>null;
-    
-            return throwException("Bad Request", status, _responseText, _headers, result400);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<CustomerDocumentModel>(null as any);
-    }
-
-    /**
-     * @return Success
-     */
-    list(): Observable<CustomerDocumentModel[]> {
-        let url_ = this.baseUrl + "/api/auth/customerdocument/list";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processList(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processList(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<CustomerDocumentModel[]>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<CustomerDocumentModel[]>;
-        }));
-    }
-
-    protected processList(response: HttpResponseBase): Observable<CustomerDocumentModel[]> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(CustomerDocumentModel.fromJS(item));
-            }
-            else {
-                result200 = <any>null;
-            }
-            return _observableOf(result200);
-            }));
-        } else if (status === 400) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result400: any = null;
-            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result400 = resultData400 !== undefined ? resultData400 : <any>null;
-    
-            return throwException("Bad Request", status, _responseText, _headers, result400);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<CustomerDocumentModel[]>(null as any);
-    }
-
-    /**
-     * @param body (optional) 
-     * @return Success
-     */
-    update(body: CustomerDocument | undefined): Observable<CustomerDocumentModel> {
-        let url_ = this.baseUrl + "/api/auth/customerdocument/update";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_ : any = {
-            body: content_,
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Content-Type": "application/json-patch+json",
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processUpdate(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processUpdate(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<CustomerDocumentModel>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<CustomerDocumentModel>;
-        }));
-    }
-
-    protected processUpdate(response: HttpResponseBase): Observable<CustomerDocumentModel> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = CustomerDocumentModel.fromJS(resultData200);
-            return _observableOf(result200);
-            }));
-        } else if (status === 400) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result400: any = null;
-            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result400 = resultData400 !== undefined ? resultData400 : <any>null;
-    
-            return throwException("Bad Request", status, _responseText, _headers, result400);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<CustomerDocumentModel>(null as any);
-    }
-
-    /**
-     * @param file (optional) 
-     * @return Success
-     */
-    uploaddocument(file: FileParameter | undefined): Observable<Media> {
-        let url_ = this.baseUrl + "/api/auth/customerdocument/uploaddocument";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = new FormData();
-        if (file === null || file === undefined)
-            throw new Error("The parameter 'file' cannot be null.");
-        else
-            content_.append("file", file.data, file.fileName ? file.fileName : "file");
-
-        let options_ : any = {
-            body: content_,
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processUploaddocument(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processUploaddocument(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<Media>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<Media>;
-        }));
-    }
-
-    protected processUploaddocument(response: HttpResponseBase): Observable<Media> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Media.fromJS(resultData200);
-            return _observableOf(result200);
-            }));
-        } else if (status === 400) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result400: any = null;
-            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result400 = ErrorDto.fromJS(resultData400);
-            return throwException("Bad Request", status, _responseText, _headers, result400);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<Media>(null as any);
-    }
-}
-
-@Injectable()
-export class DemandtypesApiService {
-    private http: HttpClient;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
-        this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
-    }
-
-    /**
-     * @return Success
-     */
-    getlist(): Observable<DemandTypeModel[]> {
-        let url_ = this.baseUrl + "/api/settings/code/demandtypes/getlist";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetlist(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processGetlist(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<DemandTypeModel[]>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<DemandTypeModel[]>;
-        }));
-    }
-
-    protected processGetlist(response: HttpResponseBase): Observable<DemandTypeModel[]> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(DemandTypeModel.fromJS(item));
-            }
-            else {
-                result200 = <any>null;
-            }
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<DemandTypeModel[]>(null as any);
+        return _observableOf<string>(null as any);
     }
 }
 
@@ -2687,7 +2317,7 @@ export class DepositsApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
     }
 
     /**
@@ -2935,15 +2565,15 @@ export class DepositsApiService {
     }
 
     /**
-     * @param customerId (optional) 
+     * @param userId (optional) 
      * @return Success
      */
-    getdigitalrequestlist(customerId: number | undefined): Observable<Request[]> {
+    getdigitalrequestlist(userId: number | undefined): Observable<Request[]> {
         let url_ = this.baseUrl + "/api/finance/deposits/getdigitalrequestlist?";
-        if (customerId === null)
-            throw new Error("The parameter 'customerId' cannot be null.");
-        else if (customerId !== undefined)
-            url_ += "customerId=" + encodeURIComponent("" + customerId) + "&";
+        if (userId === null)
+            throw new Error("The parameter 'userId' cannot be null.");
+        else if (userId !== undefined)
+            url_ += "userId=" + encodeURIComponent("" + userId) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -3006,15 +2636,15 @@ export class DepositsApiService {
     }
 
     /**
-     * @param customerId (optional) 
+     * @param userId (optional) 
      * @return Success
      */
-    getphysicalrequestlist(customerId: number | undefined): Observable<Request[]> {
+    getphysicalrequestlist(userId: number | undefined): Observable<Request[]> {
         let url_ = this.baseUrl + "/api/finance/deposits/getphysicalrequestlist?";
-        if (customerId === null)
-            throw new Error("The parameter 'customerId' cannot be null.");
-        else if (customerId !== undefined)
-            url_ += "customerId=" + encodeURIComponent("" + customerId) + "&";
+        if (userId === null)
+            throw new Error("The parameter 'userId' cannot be null.");
+        else if (userId !== undefined)
+            url_ += "userId=" + encodeURIComponent("" + userId) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -3142,216 +2772,6 @@ export class DepositsApiService {
 }
 
 @Injectable()
-export class DocumenttypesApiService {
-    private http: HttpClient;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
-        this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
-    }
-
-    /**
-     * @return Success
-     */
-    getlist(): Observable<DocumentTypeModel[]> {
-        let url_ = this.baseUrl + "/api/settings/code/documenttypes/getlist";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetlist(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processGetlist(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<DocumentTypeModel[]>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<DocumentTypeModel[]>;
-        }));
-    }
-
-    protected processGetlist(response: HttpResponseBase): Observable<DocumentTypeModel[]> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(DocumentTypeModel.fromJS(item));
-            }
-            else {
-                result200 = <any>null;
-            }
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<DocumentTypeModel[]>(null as any);
-    }
-}
-
-@Injectable()
-export class GenderApiService {
-    private http: HttpClient;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
-        this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
-    }
-
-    /**
-     * @return Success
-     */
-    getlist(): Observable<GenderModel[]> {
-        let url_ = this.baseUrl + "/api/settings/code/gender/getlist";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetlist(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processGetlist(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<GenderModel[]>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<GenderModel[]>;
-        }));
-    }
-
-    protected processGetlist(response: HttpResponseBase): Observable<GenderModel[]> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(GenderModel.fromJS(item));
-            }
-            else {
-                result200 = <any>null;
-            }
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<GenderModel[]>(null as any);
-    }
-}
-
-@Injectable()
-export class InvoicestatusApiService {
-    private http: HttpClient;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
-        this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
-    }
-
-    /**
-     * @return Success
-     */
-    getlist(): Observable<InvoiceStatusModel[]> {
-        let url_ = this.baseUrl + "/api/settings/code/invoicestatus/getlist";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetlist(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processGetlist(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<InvoiceStatusModel[]>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<InvoiceStatusModel[]>;
-        }));
-    }
-
-    protected processGetlist(response: HttpResponseBase): Observable<InvoiceStatusModel[]> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(InvoiceStatusModel.fromJS(item));
-            }
-            else {
-                result200 = <any>null;
-            }
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<InvoiceStatusModel[]>(null as any);
-    }
-}
-
-@Injectable()
 export class KnowledgebaseApiService {
     private http: HttpClient;
     private baseUrl: string;
@@ -3359,7 +2779,7 @@ export class KnowledgebaseApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
     }
 
     /**
@@ -3429,7 +2849,7 @@ export class MatriksApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
     }
 
     /**
@@ -3818,76 +3238,6 @@ export class MatriksApiService {
 }
 
 @Injectable()
-export class MediatypeApiService {
-    private http: HttpClient;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
-        this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
-    }
-
-    /**
-     * @return Success
-     */
-    getlist(): Observable<MediaTypeModel[]> {
-        let url_ = this.baseUrl + "/api/settings/code/mediatype/getlist";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetlist(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processGetlist(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<MediaTypeModel[]>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<MediaTypeModel[]>;
-        }));
-    }
-
-    protected processGetlist(response: HttpResponseBase): Observable<MediaTypeModel[]> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(MediaTypeModel.fromJS(item));
-            }
-            else {
-                result200 = <any>null;
-            }
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<MediaTypeModel[]>(null as any);
-    }
-}
-
-@Injectable()
 export class NotificationApiService {
     private http: HttpClient;
     private baseUrl: string;
@@ -3895,7 +3245,7 @@ export class NotificationApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
     }
 
     /**
@@ -4035,76 +3385,6 @@ export class NotificationApiService {
 }
 
 @Injectable()
-export class NotificationtypeApiService {
-    private http: HttpClient;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
-        this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
-    }
-
-    /**
-     * @return Success
-     */
-    getlist(): Observable<NotificationTypeModel[]> {
-        let url_ = this.baseUrl + "/api/settings/code/notificationtype/getlist";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetlist(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processGetlist(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<NotificationTypeModel[]>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<NotificationTypeModel[]>;
-        }));
-    }
-
-    protected processGetlist(response: HttpResponseBase): Observable<NotificationTypeModel[]> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(NotificationTypeModel.fromJS(item));
-            }
-            else {
-                result200 = <any>null;
-            }
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<NotificationTypeModel[]>(null as any);
-    }
-}
-
-@Injectable()
 export class OrderApiService {
     private http: HttpClient;
     private baseUrl: string;
@@ -4112,7 +3392,7 @@ export class OrderApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
     }
 
     /**
@@ -4757,146 +4037,6 @@ export class OrderApiService {
 }
 
 @Injectable()
-export class OrderstatusApiService {
-    private http: HttpClient;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
-        this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
-    }
-
-    /**
-     * @return Success
-     */
-    getlist(): Observable<OrderStatusModel[]> {
-        let url_ = this.baseUrl + "/api/settings/code/orderstatus/getlist";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetlist(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processGetlist(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<OrderStatusModel[]>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<OrderStatusModel[]>;
-        }));
-    }
-
-    protected processGetlist(response: HttpResponseBase): Observable<OrderStatusModel[]> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(OrderStatusModel.fromJS(item));
-            }
-            else {
-                result200 = <any>null;
-            }
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<OrderStatusModel[]>(null as any);
-    }
-}
-
-@Injectable()
-export class PaymenttypeApiService {
-    private http: HttpClient;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
-        this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
-    }
-
-    /**
-     * @return Success
-     */
-    getlist(): Observable<PaymentTypeModel[]> {
-        let url_ = this.baseUrl + "/api/settings/code/paymenttype/getlist";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetlist(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processGetlist(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<PaymentTypeModel[]>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<PaymentTypeModel[]>;
-        }));
-    }
-
-    protected processGetlist(response: HttpResponseBase): Observable<PaymentTypeModel[]> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(PaymentTypeModel.fromJS(item));
-            }
-            else {
-                result200 = <any>null;
-            }
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<PaymentTypeModel[]>(null as any);
-    }
-}
-
-@Injectable()
 export class PostApiService {
     private http: HttpClient;
     private baseUrl: string;
@@ -4904,7 +4044,7 @@ export class PostApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
     }
 
     /**
@@ -4967,146 +4107,6 @@ export class PostApiService {
 }
 
 @Injectable()
-export class ProducttypeApiService {
-    private http: HttpClient;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
-        this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
-    }
-
-    /**
-     * @return Success
-     */
-    getlist(): Observable<ProductTypeModel[]> {
-        let url_ = this.baseUrl + "/api/settings/code/producttype/getlist";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetlist(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processGetlist(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<ProductTypeModel[]>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<ProductTypeModel[]>;
-        }));
-    }
-
-    protected processGetlist(response: HttpResponseBase): Observable<ProductTypeModel[]> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(ProductTypeModel.fromJS(item));
-            }
-            else {
-                result200 = <any>null;
-            }
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<ProductTypeModel[]>(null as any);
-    }
-}
-
-@Injectable()
-export class ProductunitApiService {
-    private http: HttpClient;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
-        this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
-    }
-
-    /**
-     * @return Success
-     */
-    getlist(): Observable<ProductUnitModel[]> {
-        let url_ = this.baseUrl + "/api/settings/code/productunit/getlist";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetlist(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processGetlist(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<ProductUnitModel[]>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<ProductUnitModel[]>;
-        }));
-    }
-
-    protected processGetlist(response: HttpResponseBase): Observable<ProductUnitModel[]> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(ProductUnitModel.fromJS(item));
-            }
-            else {
-                result200 = <any>null;
-            }
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<ProductUnitModel[]>(null as any);
-    }
-}
-
-@Injectable()
 export class ProvinceApiService {
     private http: HttpClient;
     private baseUrl: string;
@@ -5114,7 +4114,7 @@ export class ProvinceApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
     }
 
     /**
@@ -5177,146 +4177,6 @@ export class ProvinceApiService {
 }
 
 @Injectable()
-export class RequeststatusApiService {
-    private http: HttpClient;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
-        this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
-    }
-
-    /**
-     * @return Success
-     */
-    getlist(): Observable<RequestStatusModel[]> {
-        let url_ = this.baseUrl + "/api/settings/code/requeststatus/getlist";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetlist(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processGetlist(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<RequestStatusModel[]>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<RequestStatusModel[]>;
-        }));
-    }
-
-    protected processGetlist(response: HttpResponseBase): Observable<RequestStatusModel[]> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(RequestStatusModel.fromJS(item));
-            }
-            else {
-                result200 = <any>null;
-            }
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<RequestStatusModel[]>(null as any);
-    }
-}
-
-@Injectable()
-export class RequesttypeApiService {
-    private http: HttpClient;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
-        this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
-    }
-
-    /**
-     * @return Success
-     */
-    getlist(): Observable<RequestTypeModel[]> {
-        let url_ = this.baseUrl + "/api/settings/code/requesttype/getlist";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetlist(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processGetlist(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<RequestTypeModel[]>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<RequestTypeModel[]>;
-        }));
-    }
-
-    protected processGetlist(response: HttpResponseBase): Observable<RequestTypeModel[]> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(RequestTypeModel.fromJS(item));
-            }
-            else {
-                result200 = <any>null;
-            }
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<RequestTypeModel[]>(null as any);
-    }
-}
-
-@Injectable()
 export class RetailApiService {
     private http: HttpClient;
     private baseUrl: string;
@@ -5324,7 +4184,7 @@ export class RetailApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
     }
 
     /**
@@ -5594,7 +4454,7 @@ export class RssfeedApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
     }
 
     /**
@@ -5657,76 +4517,6 @@ export class RssfeedApiService {
 }
 
 @Injectable()
-export class ScantypeApiService {
-    private http: HttpClient;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
-        this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
-    }
-
-    /**
-     * @return Success
-     */
-    getlist(): Observable<ScanTypeModel[]> {
-        let url_ = this.baseUrl + "/api/settings/code/scantype/getlist";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetlist(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processGetlist(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<ScanTypeModel[]>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<ScanTypeModel[]>;
-        }));
-    }
-
-    protected processGetlist(response: HttpResponseBase): Observable<ScanTypeModel[]> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(ScanTypeModel.fromJS(item));
-            }
-            else {
-                result200 = <any>null;
-            }
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<ScanTypeModel[]>(null as any);
-    }
-}
-
-@Injectable()
 export class SettingApiService {
     private http: HttpClient;
     private baseUrl: string;
@@ -5734,7 +4524,7 @@ export class SettingApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
     }
 
     /**
@@ -5804,7 +4594,7 @@ export class SlideApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
     }
 
     /**
@@ -5879,7 +4669,7 @@ export class StaticpageApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
     }
 
     /**
@@ -5949,7 +4739,7 @@ export class SymbolsApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
     }
 
     /**
@@ -6342,46 +5132,45 @@ export class SymbolsApiService {
 }
 
 @Injectable()
-export class SymboltypeApiService {
+export class TradingviewApiService {
     private http: HttpClient;
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
     }
 
     /**
      * @return Success
      */
-    getlist(): Observable<SymbolTypeModel[]> {
-        let url_ = this.baseUrl + "/api/settings/code/symboltype/getlist";
+    advancedchart(): Observable<void> {
+        let url_ = this.baseUrl + "/api/proxy/tradingview/advancedchart";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
-                "Accept": "application/json"
             })
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetlist(response_);
+            return this.processAdvancedchart(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGetlist(response_ as any);
+                    return this.processAdvancedchart(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<SymbolTypeModel[]>;
+                    return _observableThrow(e) as any as Observable<void>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<SymbolTypeModel[]>;
+                return _observableThrow(response_) as any as Observable<void>;
         }));
     }
 
-    protected processGetlist(response: HttpResponseBase): Observable<SymbolTypeModel[]> {
+    protected processAdvancedchart(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -6390,24 +5179,61 @@ export class SymboltypeApiService {
         let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
         if (status === 200) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(SymbolTypeModel.fromJS(item));
-            }
-            else {
-                result200 = <any>null;
-            }
-            return _observableOf(result200);
+            return _observableOf<void>(null as any);
             }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<SymbolTypeModel[]>(null as any);
+        return _observableOf<void>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    technicalanalysis(): Observable<void> {
+        let url_ = this.baseUrl + "/api/proxy/tradingview/technicalanalysis";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processTechnicalanalysis(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processTechnicalanalysis(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processTechnicalanalysis(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
     }
 }
 
@@ -6419,7 +5245,7 @@ export class TransactionsApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
     }
 
     /**
@@ -6495,21 +5321,85 @@ export class TransactionsApiService {
 }
 
 @Injectable()
-export class TransactiontypeApiService {
+export class UserdocumentApiService {
     private http: HttpClient;
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    add(body: UserDocument | undefined): Observable<UserDocumentModel> {
+        let url_ = this.baseUrl + "/api/auth/userdocument/add";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processAdd(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processAdd(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<UserDocumentModel>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<UserDocumentModel>;
+        }));
+    }
+
+    protected processAdd(response: HttpResponseBase): Observable<UserDocumentModel> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = UserDocumentModel.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result400 = resultData400 !== undefined ? resultData400 : <any>null;
+    
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<UserDocumentModel>(null as any);
     }
 
     /**
      * @return Success
      */
-    getlist(): Observable<TransactionTypeModel[]> {
-        let url_ = this.baseUrl + "/api/settings/code/transactiontype/getlist";
+    list(): Observable<UserDocumentModel[]> {
+        let url_ = this.baseUrl + "/api/auth/userdocument/list";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -6521,20 +5411,20 @@ export class TransactiontypeApiService {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetlist(response_);
+            return this.processList(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGetlist(response_ as any);
+                    return this.processList(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<TransactionTypeModel[]>;
+                    return _observableThrow(e) as any as Observable<UserDocumentModel[]>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<TransactionTypeModel[]>;
+                return _observableThrow(response_) as any as Observable<UserDocumentModel[]>;
         }));
     }
 
-    protected processGetlist(response: HttpResponseBase): Observable<TransactionTypeModel[]> {
+    protected processList(response: HttpResponseBase): Observable<UserDocumentModel[]> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -6548,19 +5438,157 @@ export class TransactiontypeApiService {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(TransactionTypeModel.fromJS(item));
+                    result200!.push(UserDocumentModel.fromJS(item));
             }
             else {
                 result200 = <any>null;
             }
             return _observableOf(result200);
             }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result400 = resultData400 !== undefined ? resultData400 : <any>null;
+    
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+            }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<TransactionTypeModel[]>(null as any);
+        return _observableOf<UserDocumentModel[]>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    update(body: UserDocument | undefined): Observable<UserDocumentModel> {
+        let url_ = this.baseUrl + "/api/auth/userdocument/update";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdate(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<UserDocumentModel>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<UserDocumentModel>;
+        }));
+    }
+
+    protected processUpdate(response: HttpResponseBase): Observable<UserDocumentModel> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = UserDocumentModel.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result400 = resultData400 !== undefined ? resultData400 : <any>null;
+    
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<UserDocumentModel>(null as any);
+    }
+
+    /**
+     * @param file (optional) 
+     * @return Success
+     */
+    uploaddocument(file: FileParameter | undefined): Observable<Media> {
+        let url_ = this.baseUrl + "/api/auth/userdocument/uploaddocument";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = new FormData();
+        if (file === null || file === undefined)
+            throw new Error("The parameter 'file' cannot be null.");
+        else
+            content_.append("file", file.data, file.fileName ? file.fileName : "file");
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUploaddocument(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUploaddocument(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<Media>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<Media>;
+        }));
+    }
+
+    protected processUploaddocument(response: HttpResponseBase): Observable<Media> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Media.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ErrorDto.fromJS(resultData400);
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<Media>(null as any);
     }
 }
 
@@ -6572,7 +5600,71 @@ export class WithdrawalsApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    preparedigital(body: RequestModel | undefined): Observable<RequestModel> {
+        let url_ = this.baseUrl + "/api/finance/withdrawals/preparedigital";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processPreparedigital(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processPreparedigital(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<RequestModel>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<RequestModel>;
+        }));
+    }
+
+    protected processPreparedigital(response: HttpResponseBase): Observable<RequestModel> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = RequestModel.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result400 = resultData400 !== undefined ? resultData400 : <any>null;
+    
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<RequestModel>(null as any);
     }
 
     /**
@@ -6820,15 +5912,15 @@ export class WithdrawalsApiService {
     }
 
     /**
-     * @param customerId (optional) 
+     * @param userId (optional) 
      * @return Success
      */
-    getdigitalrequestlist(customerId: number | undefined): Observable<RequestModel[]> {
+    getdigitalrequestlist(userId: number | undefined): Observable<RequestModel[]> {
         let url_ = this.baseUrl + "/api/finance/withdrawals/getdigitalrequestlist?";
-        if (customerId === null)
-            throw new Error("The parameter 'customerId' cannot be null.");
-        else if (customerId !== undefined)
-            url_ += "customerId=" + encodeURIComponent("" + customerId) + "&";
+        if (userId === null)
+            throw new Error("The parameter 'userId' cannot be null.");
+        else if (userId !== undefined)
+            url_ += "userId=" + encodeURIComponent("" + userId) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -6891,15 +5983,15 @@ export class WithdrawalsApiService {
     }
 
     /**
-     * @param customerId (optional) 
+     * @param userId (optional) 
      * @return Success
      */
-    getphysicalrequestlist(customerId: number | undefined): Observable<RequestModel[]> {
+    getphysicalrequestlist(userId: number | undefined): Observable<RequestModel[]> {
         let url_ = this.baseUrl + "/api/finance/withdrawals/getphysicalrequestlist?";
-        if (customerId === null)
-            throw new Error("The parameter 'customerId' cannot be null.");
-        else if (customerId !== undefined)
-            url_ += "customerId=" + encodeURIComponent("" + customerId) + "&";
+        if (userId === null)
+            throw new Error("The parameter 'userId' cannot be null.");
+        else if (userId !== undefined)
+            url_ += "userId=" + encodeURIComponent("" + userId) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -7122,1094 +6214,6 @@ export interface IAddress {
     country?: Country;
 }
 
-export class Altin implements IAltin {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-
-    constructor(data?: IAltin) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alis = _data["Alis"];
-            this.satis = _data["Satis"];
-            this.tarih = _data["Tarih"];
-            this.sonkapanis = _data["Sonkapanis"];
-            this.son = _data["Son"];
-            this.endusuk = _data["Endusuk"];
-            this.enyuksek = _data["Enyuksek"];
-            this.gunlukyuzde = _data["Gunlukyuzde"];
-        }
-    }
-
-    static fromJS(data: any): Altin {
-        data = typeof data === 'object' ? data : {};
-        let result = new Altin();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alis"] = this.alis;
-        data["Satis"] = this.satis;
-        data["Tarih"] = this.tarih;
-        data["Sonkapanis"] = this.sonkapanis;
-        data["Son"] = this.son;
-        data["Endusuk"] = this.endusuk;
-        data["Enyuksek"] = this.enyuksek;
-        data["Gunlukyuzde"] = this.gunlukyuzde;
-        return data;
-    }
-}
-
-export interface IAltin {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-}
-
-export class Altincum implements IAltincum {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-
-    constructor(data?: IAltincum) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alis = _data["Alis"];
-            this.satis = _data["Satis"];
-            this.tarih = _data["Tarih"];
-            this.sonkapanis = _data["Sonkapanis"];
-            this.son = _data["Son"];
-            this.endusuk = _data["Endusuk"];
-            this.enyuksek = _data["Enyuksek"];
-            this.gunlukyuzde = _data["Gunlukyuzde"];
-        }
-    }
-
-    static fromJS(data: any): Altincum {
-        data = typeof data === 'object' ? data : {};
-        let result = new Altincum();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alis"] = this.alis;
-        data["Satis"] = this.satis;
-        data["Tarih"] = this.tarih;
-        data["Sonkapanis"] = this.sonkapanis;
-        data["Son"] = this.son;
-        data["Endusuk"] = this.endusuk;
-        data["Enyuksek"] = this.enyuksek;
-        data["Gunlukyuzde"] = this.gunlukyuzde;
-        return data;
-    }
-}
-
-export interface IAltincum {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-}
-
-export class AltinfixEurAm implements IAltinfixEurAm {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-
-    constructor(data?: IAltinfixEurAm) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alis = _data["Alis"];
-            this.satis = _data["Satis"];
-            this.tarih = _data["Tarih"];
-            this.sonkapanis = _data["Sonkapanis"];
-            this.son = _data["Son"];
-            this.endusuk = _data["Endusuk"];
-            this.enyuksek = _data["Enyuksek"];
-            this.gunlukyuzde = _data["Gunlukyuzde"];
-        }
-    }
-
-    static fromJS(data: any): AltinfixEurAm {
-        data = typeof data === 'object' ? data : {};
-        let result = new AltinfixEurAm();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alis"] = this.alis;
-        data["Satis"] = this.satis;
-        data["Tarih"] = this.tarih;
-        data["Sonkapanis"] = this.sonkapanis;
-        data["Son"] = this.son;
-        data["Endusuk"] = this.endusuk;
-        data["Enyuksek"] = this.enyuksek;
-        data["Gunlukyuzde"] = this.gunlukyuzde;
-        return data;
-    }
-}
-
-export interface IAltinfixEurAm {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-}
-
-export class AltinfixEurPm implements IAltinfixEurPm {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-
-    constructor(data?: IAltinfixEurPm) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alis = _data["Alis"];
-            this.satis = _data["Satis"];
-            this.tarih = _data["Tarih"];
-            this.sonkapanis = _data["Sonkapanis"];
-            this.son = _data["Son"];
-            this.endusuk = _data["Endusuk"];
-            this.enyuksek = _data["Enyuksek"];
-            this.gunlukyuzde = _data["Gunlukyuzde"];
-        }
-    }
-
-    static fromJS(data: any): AltinfixEurPm {
-        data = typeof data === 'object' ? data : {};
-        let result = new AltinfixEurPm();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alis"] = this.alis;
-        data["Satis"] = this.satis;
-        data["Tarih"] = this.tarih;
-        data["Sonkapanis"] = this.sonkapanis;
-        data["Son"] = this.son;
-        data["Endusuk"] = this.endusuk;
-        data["Enyuksek"] = this.enyuksek;
-        data["Gunlukyuzde"] = this.gunlukyuzde;
-        return data;
-    }
-}
-
-export interface IAltinfixEurPm {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-}
-
-export class AltinfixGbpAm implements IAltinfixGbpAm {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-
-    constructor(data?: IAltinfixGbpAm) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alis = _data["Alis"];
-            this.satis = _data["Satis"];
-            this.tarih = _data["Tarih"];
-            this.sonkapanis = _data["Sonkapanis"];
-            this.son = _data["Son"];
-            this.endusuk = _data["Endusuk"];
-            this.enyuksek = _data["Enyuksek"];
-            this.gunlukyuzde = _data["Gunlukyuzde"];
-        }
-    }
-
-    static fromJS(data: any): AltinfixGbpAm {
-        data = typeof data === 'object' ? data : {};
-        let result = new AltinfixGbpAm();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alis"] = this.alis;
-        data["Satis"] = this.satis;
-        data["Tarih"] = this.tarih;
-        data["Sonkapanis"] = this.sonkapanis;
-        data["Son"] = this.son;
-        data["Endusuk"] = this.endusuk;
-        data["Enyuksek"] = this.enyuksek;
-        data["Gunlukyuzde"] = this.gunlukyuzde;
-        return data;
-    }
-}
-
-export interface IAltinfixGbpAm {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-}
-
-export class AltinfixGbpPm implements IAltinfixGbpPm {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-
-    constructor(data?: IAltinfixGbpPm) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alis = _data["Alis"];
-            this.satis = _data["Satis"];
-            this.tarih = _data["Tarih"];
-            this.sonkapanis = _data["Sonkapanis"];
-            this.son = _data["Son"];
-            this.endusuk = _data["Endusuk"];
-            this.enyuksek = _data["Enyuksek"];
-            this.gunlukyuzde = _data["Gunlukyuzde"];
-        }
-    }
-
-    static fromJS(data: any): AltinfixGbpPm {
-        data = typeof data === 'object' ? data : {};
-        let result = new AltinfixGbpPm();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alis"] = this.alis;
-        data["Satis"] = this.satis;
-        data["Tarih"] = this.tarih;
-        data["Sonkapanis"] = this.sonkapanis;
-        data["Son"] = this.son;
-        data["Endusuk"] = this.endusuk;
-        data["Enyuksek"] = this.enyuksek;
-        data["Gunlukyuzde"] = this.gunlukyuzde;
-        return data;
-    }
-}
-
-export interface IAltinfixGbpPm {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-}
-
-export class AltinfixUsdAm implements IAltinfixUsdAm {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-
-    constructor(data?: IAltinfixUsdAm) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alis = _data["Alis"];
-            this.satis = _data["Satis"];
-            this.tarih = _data["Tarih"];
-            this.sonkapanis = _data["Sonkapanis"];
-            this.son = _data["Son"];
-            this.endusuk = _data["Endusuk"];
-            this.enyuksek = _data["Enyuksek"];
-            this.gunlukyuzde = _data["Gunlukyuzde"];
-        }
-    }
-
-    static fromJS(data: any): AltinfixUsdAm {
-        data = typeof data === 'object' ? data : {};
-        let result = new AltinfixUsdAm();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alis"] = this.alis;
-        data["Satis"] = this.satis;
-        data["Tarih"] = this.tarih;
-        data["Sonkapanis"] = this.sonkapanis;
-        data["Son"] = this.son;
-        data["Endusuk"] = this.endusuk;
-        data["Enyuksek"] = this.enyuksek;
-        data["Gunlukyuzde"] = this.gunlukyuzde;
-        return data;
-    }
-}
-
-export interface IAltinfixUsdAm {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-}
-
-export class AltinfixUsdPm implements IAltinfixUsdPm {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-
-    constructor(data?: IAltinfixUsdPm) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alis = _data["Alis"];
-            this.satis = _data["Satis"];
-            this.tarih = _data["Tarih"];
-            this.sonkapanis = _data["Sonkapanis"];
-            this.son = _data["Son"];
-            this.endusuk = _data["Endusuk"];
-            this.enyuksek = _data["Enyuksek"];
-            this.gunlukyuzde = _data["Gunlukyuzde"];
-        }
-    }
-
-    static fromJS(data: any): AltinfixUsdPm {
-        data = typeof data === 'object' ? data : {};
-        let result = new AltinfixUsdPm();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alis"] = this.alis;
-        data["Satis"] = this.satis;
-        data["Tarih"] = this.tarih;
-        data["Sonkapanis"] = this.sonkapanis;
-        data["Son"] = this.son;
-        data["Endusuk"] = this.endusuk;
-        data["Enyuksek"] = this.enyuksek;
-        data["Gunlukyuzde"] = this.gunlukyuzde;
-        return data;
-    }
-}
-
-export interface IAltinfixUsdPm {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-}
-
-export class Altingldc implements IAltingldc {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-
-    constructor(data?: IAltingldc) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alis = _data["Alis"];
-            this.satis = _data["Satis"];
-            this.tarih = _data["Tarih"];
-            this.sonkapanis = _data["Sonkapanis"];
-            this.son = _data["Son"];
-            this.endusuk = _data["Endusuk"];
-            this.enyuksek = _data["Enyuksek"];
-            this.gunlukyuzde = _data["Gunlukyuzde"];
-        }
-    }
-
-    static fromJS(data: any): Altingldc {
-        data = typeof data === 'object' ? data : {};
-        let result = new Altingldc();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alis"] = this.alis;
-        data["Satis"] = this.satis;
-        data["Tarih"] = this.tarih;
-        data["Sonkapanis"] = this.sonkapanis;
-        data["Son"] = this.son;
-        data["Endusuk"] = this.endusuk;
-        data["Enyuksek"] = this.enyuksek;
-        data["Gunlukyuzde"] = this.gunlukyuzde;
-        return data;
-    }
-}
-
-export interface IAltingldc {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-}
-
-export class Altingldt implements IAltingldt {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-
-    constructor(data?: IAltingldt) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alis = _data["Alis"];
-            this.satis = _data["Satis"];
-            this.tarih = _data["Tarih"];
-            this.sonkapanis = _data["Sonkapanis"];
-            this.son = _data["Son"];
-            this.endusuk = _data["Endusuk"];
-            this.enyuksek = _data["Enyuksek"];
-            this.gunlukyuzde = _data["Gunlukyuzde"];
-        }
-    }
-
-    static fromJS(data: any): Altingldt {
-        data = typeof data === 'object' ? data : {};
-        let result = new Altingldt();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alis"] = this.alis;
-        data["Satis"] = this.satis;
-        data["Tarih"] = this.tarih;
-        data["Sonkapanis"] = this.sonkapanis;
-        data["Son"] = this.son;
-        data["Endusuk"] = this.endusuk;
-        data["Enyuksek"] = this.enyuksek;
-        data["Gunlukyuzde"] = this.gunlukyuzde;
-        return data;
-    }
-}
-
-export interface IAltingldt {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-}
-
-export class Altingldy implements IAltingldy {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-
-    constructor(data?: IAltingldy) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alis = _data["Alis"];
-            this.satis = _data["Satis"];
-            this.tarih = _data["Tarih"];
-            this.sonkapanis = _data["Sonkapanis"];
-            this.son = _data["Son"];
-            this.endusuk = _data["Endusuk"];
-            this.enyuksek = _data["Enyuksek"];
-            this.gunlukyuzde = _data["Gunlukyuzde"];
-        }
-    }
-
-    static fromJS(data: any): Altingldy {
-        data = typeof data === 'object' ? data : {};
-        let result = new Altingldy();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alis"] = this.alis;
-        data["Satis"] = this.satis;
-        data["Tarih"] = this.tarih;
-        data["Sonkapanis"] = this.sonkapanis;
-        data["Son"] = this.son;
-        data["Endusuk"] = this.endusuk;
-        data["Enyuksek"] = this.enyuksek;
-        data["Gunlukyuzde"] = this.gunlukyuzde;
-        return data;
-    }
-}
-
-export interface IAltingldy {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-}
-
-export class Altingr implements IAltingr {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-
-    constructor(data?: IAltingr) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alis = _data["Alis"];
-            this.satis = _data["Satis"];
-            this.tarih = _data["Tarih"];
-            this.sonkapanis = _data["Sonkapanis"];
-            this.son = _data["Son"];
-            this.endusuk = _data["Endusuk"];
-            this.enyuksek = _data["Enyuksek"];
-            this.gunlukyuzde = _data["Gunlukyuzde"];
-        }
-    }
-
-    static fromJS(data: any): Altingr {
-        data = typeof data === 'object' ? data : {};
-        let result = new Altingr();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alis"] = this.alis;
-        data["Satis"] = this.satis;
-        data["Tarih"] = this.tarih;
-        data["Sonkapanis"] = this.sonkapanis;
-        data["Son"] = this.son;
-        data["Endusuk"] = this.endusuk;
-        data["Enyuksek"] = this.enyuksek;
-        data["Gunlukyuzde"] = this.gunlukyuzde;
-        return data;
-    }
-}
-
-export interface IAltingr {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-}
-
-export class Altinkgtl implements IAltinkgtl {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-
-    constructor(data?: IAltinkgtl) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alis = _data["Alis"];
-            this.satis = _data["Satis"];
-            this.tarih = _data["Tarih"];
-            this.sonkapanis = _data["Sonkapanis"];
-            this.son = _data["Son"];
-            this.endusuk = _data["Endusuk"];
-            this.enyuksek = _data["Enyuksek"];
-            this.gunlukyuzde = _data["Gunlukyuzde"];
-        }
-    }
-
-    static fromJS(data: any): Altinkgtl {
-        data = typeof data === 'object' ? data : {};
-        let result = new Altinkgtl();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alis"] = this.alis;
-        data["Satis"] = this.satis;
-        data["Tarih"] = this.tarih;
-        data["Sonkapanis"] = this.sonkapanis;
-        data["Son"] = this.son;
-        data["Endusuk"] = this.endusuk;
-        data["Enyuksek"] = this.enyuksek;
-        data["Gunlukyuzde"] = this.gunlukyuzde;
-        return data;
-    }
-}
-
-export interface IAltinkgtl {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-}
-
-export class Altinkgusd implements IAltinkgusd {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-
-    constructor(data?: IAltinkgusd) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alis = _data["Alis"];
-            this.satis = _data["Satis"];
-            this.tarih = _data["Tarih"];
-            this.sonkapanis = _data["Sonkapanis"];
-            this.son = _data["Son"];
-            this.endusuk = _data["Endusuk"];
-            this.enyuksek = _data["Enyuksek"];
-            this.gunlukyuzde = _data["Gunlukyuzde"];
-        }
-    }
-
-    static fromJS(data: any): Altinkgusd {
-        data = typeof data === 'object' ? data : {};
-        let result = new Altinkgusd();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alis"] = this.alis;
-        data["Satis"] = this.satis;
-        data["Tarih"] = this.tarih;
-        data["Sonkapanis"] = this.sonkapanis;
-        data["Son"] = this.son;
-        data["Endusuk"] = this.endusuk;
-        data["Enyuksek"] = this.enyuksek;
-        data["Gunlukyuzde"] = this.gunlukyuzde;
-        return data;
-    }
-}
-
-export interface IAltinkgusd {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-}
-
-export class Altinres implements IAltinres {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-
-    constructor(data?: IAltinres) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alis = _data["Alis"];
-            this.satis = _data["Satis"];
-            this.tarih = _data["Tarih"];
-            this.sonkapanis = _data["Sonkapanis"];
-            this.son = _data["Son"];
-            this.endusuk = _data["Endusuk"];
-            this.enyuksek = _data["Enyuksek"];
-            this.gunlukyuzde = _data["Gunlukyuzde"];
-        }
-    }
-
-    static fromJS(data: any): Altinres {
-        data = typeof data === 'object' ? data : {};
-        let result = new Altinres();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alis"] = this.alis;
-        data["Satis"] = this.satis;
-        data["Tarih"] = this.tarih;
-        data["Sonkapanis"] = this.sonkapanis;
-        data["Son"] = this.son;
-        data["Endusuk"] = this.endusuk;
-        data["Enyuksek"] = this.enyuksek;
-        data["Gunlukyuzde"] = this.gunlukyuzde;
-        return data;
-    }
-}
-
-export interface IAltinres {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-}
-
-export class Altinresk implements IAltinresk {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-
-    constructor(data?: IAltinresk) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alis = _data["Alis"];
-            this.satis = _data["Satis"];
-            this.tarih = _data["Tarih"];
-            this.sonkapanis = _data["Sonkapanis"];
-            this.son = _data["Son"];
-            this.endusuk = _data["Endusuk"];
-            this.enyuksek = _data["Enyuksek"];
-            this.gunlukyuzde = _data["Gunlukyuzde"];
-        }
-    }
-
-    static fromJS(data: any): Altinresk {
-        data = typeof data === 'object' ? data : {};
-        let result = new Altinresk();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alis"] = this.alis;
-        data["Satis"] = this.satis;
-        data["Tarih"] = this.tarih;
-        data["Sonkapanis"] = this.sonkapanis;
-        data["Son"] = this.son;
-        data["Endusuk"] = this.endusuk;
-        data["Enyuksek"] = this.enyuksek;
-        data["Gunlukyuzde"] = this.gunlukyuzde;
-        return data;
-    }
-}
-
-export interface IAltinresk {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-}
-
-export class Altinusd implements IAltinusd {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-
-    constructor(data?: IAltinusd) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alis = _data["Alis"];
-            this.satis = _data["Satis"];
-            this.tarih = _data["Tarih"];
-            this.sonkapanis = _data["Sonkapanis"];
-            this.son = _data["Son"];
-            this.endusuk = _data["Endusuk"];
-            this.enyuksek = _data["Enyuksek"];
-            this.gunlukyuzde = _data["Gunlukyuzde"];
-        }
-    }
-
-    static fromJS(data: any): Altinusd {
-        data = typeof data === 'object' ? data : {};
-        let result = new Altinusd();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alis"] = this.alis;
-        data["Satis"] = this.satis;
-        data["Tarih"] = this.tarih;
-        data["Sonkapanis"] = this.sonkapanis;
-        data["Son"] = this.son;
-        data["Endusuk"] = this.endusuk;
-        data["Enyuksek"] = this.enyuksek;
-        data["Gunlukyuzde"] = this.gunlukyuzde;
-        return data;
-    }
-}
-
-export interface IAltinusd {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-}
-
 export class AnalysisModel implements IAnalysisModel {
     title!: string;
     subTitle?: string | undefined;
@@ -8298,16 +6302,13 @@ export class Asset implements IAsset {
     id?: number;
     createdOn?: moment.Moment | undefined;
     createdById?: number | undefined;
-    createdBy?: User;
     updatedOn?: moment.Moment | undefined;
     updatedById?: number | undefined;
-    updatedBy?: User;
     deletedOn?: moment.Moment | undefined;
     deletedById?: number | undefined;
-    deletedBy?: User;
     isDeleted?: boolean;
-    customerId?: number;
-    customer?: Customer;
+    userId?: number;
+    user?: User;
     symbolId?: number;
     symbol?: Symbol;
     quantity?: number;
@@ -8327,16 +6328,13 @@ export class Asset implements IAsset {
             this.id = _data["Id"];
             this.createdOn = _data["CreatedOn"] ? moment(_data["CreatedOn"].toString()) : <any>undefined;
             this.createdById = _data["CreatedById"];
-            this.createdBy = _data["CreatedBy"] ? User.fromJS(_data["CreatedBy"]) : <any>undefined;
             this.updatedOn = _data["UpdatedOn"] ? moment(_data["UpdatedOn"].toString()) : <any>undefined;
             this.updatedById = _data["UpdatedById"];
-            this.updatedBy = _data["UpdatedBy"] ? User.fromJS(_data["UpdatedBy"]) : <any>undefined;
             this.deletedOn = _data["DeletedOn"] ? moment(_data["DeletedOn"].toString()) : <any>undefined;
             this.deletedById = _data["DeletedById"];
-            this.deletedBy = _data["DeletedBy"] ? User.fromJS(_data["DeletedBy"]) : <any>undefined;
             this.isDeleted = _data["IsDeleted"];
-            this.customerId = _data["CustomerId"];
-            this.customer = _data["Customer"] ? Customer.fromJS(_data["Customer"]) : <any>undefined;
+            this.userId = _data["UserId"];
+            this.user = _data["User"] ? User.fromJS(_data["User"]) : <any>undefined;
             this.symbolId = _data["SymbolId"];
             this.symbol = _data["Symbol"] ? Symbol.fromJS(_data["Symbol"]) : <any>undefined;
             this.quantity = _data["Quantity"];
@@ -8356,16 +6354,13 @@ export class Asset implements IAsset {
         data["Id"] = this.id;
         data["CreatedOn"] = this.createdOn ? this.createdOn.toISOString() : <any>undefined;
         data["CreatedById"] = this.createdById;
-        data["CreatedBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
         data["UpdatedOn"] = this.updatedOn ? this.updatedOn.toISOString() : <any>undefined;
         data["UpdatedById"] = this.updatedById;
-        data["UpdatedBy"] = this.updatedBy ? this.updatedBy.toJSON() : <any>undefined;
         data["DeletedOn"] = this.deletedOn ? this.deletedOn.toISOString() : <any>undefined;
         data["DeletedById"] = this.deletedById;
-        data["DeletedBy"] = this.deletedBy ? this.deletedBy.toJSON() : <any>undefined;
         data["IsDeleted"] = this.isDeleted;
-        data["CustomerId"] = this.customerId;
-        data["Customer"] = this.customer ? this.customer.toJSON() : <any>undefined;
+        data["UserId"] = this.userId;
+        data["User"] = this.user ? this.user.toJSON() : <any>undefined;
         data["SymbolId"] = this.symbolId;
         data["Symbol"] = this.symbol ? this.symbol.toJSON() : <any>undefined;
         data["Quantity"] = this.quantity;
@@ -8378,16 +6373,13 @@ export interface IAsset {
     id?: number;
     createdOn?: moment.Moment | undefined;
     createdById?: number | undefined;
-    createdBy?: User;
     updatedOn?: moment.Moment | undefined;
     updatedById?: number | undefined;
-    updatedBy?: User;
     deletedOn?: moment.Moment | undefined;
     deletedById?: number | undefined;
-    deletedBy?: User;
     isDeleted?: boolean;
-    customerId?: number;
-    customer?: Customer;
+    userId?: number;
+    user?: User;
     symbolId?: number;
     symbol?: Symbol;
     quantity?: number;
@@ -8396,8 +6388,8 @@ export interface IAsset {
 
 export class AssetModel implements IAssetModel {
     id?: number;
-    customerId?: number;
-    customer?: CustomerModel;
+    userId?: number;
+    user?: UserModel;
     symbolId?: number;
     symbol?: SymbolModel;
     quantity?: number;
@@ -8415,8 +6407,8 @@ export class AssetModel implements IAssetModel {
     init(_data?: any) {
         if (_data) {
             this.id = _data["Id"];
-            this.customerId = _data["CustomerId"];
-            this.customer = _data["Customer"] ? CustomerModel.fromJS(_data["Customer"]) : <any>undefined;
+            this.userId = _data["UserId"];
+            this.user = _data["User"] ? UserModel.fromJS(_data["User"]) : <any>undefined;
             this.symbolId = _data["SymbolId"];
             this.symbol = _data["Symbol"] ? SymbolModel.fromJS(_data["Symbol"]) : <any>undefined;
             this.quantity = _data["Quantity"];
@@ -8434,8 +6426,8 @@ export class AssetModel implements IAssetModel {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["Id"] = this.id;
-        data["CustomerId"] = this.customerId;
-        data["Customer"] = this.customer ? this.customer.toJSON() : <any>undefined;
+        data["UserId"] = this.userId;
+        data["User"] = this.user ? this.user.toJSON() : <any>undefined;
         data["SymbolId"] = this.symbolId;
         data["Symbol"] = this.symbol ? this.symbol.toJSON() : <any>undefined;
         data["Quantity"] = this.quantity;
@@ -8446,89 +6438,22 @@ export class AssetModel implements IAssetModel {
 
 export interface IAssetModel {
     id?: number;
-    customerId?: number;
-    customer?: CustomerModel;
+    userId?: number;
+    user?: UserModel;
     symbolId?: number;
     symbol?: SymbolModel;
     quantity?: number;
     price?: number;
 }
 
-export class Aud implements IAud {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-
-    constructor(data?: IAud) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alis = _data["Alis"];
-            this.satis = _data["Satis"];
-            this.tarih = _data["Tarih"];
-            this.sonkapanis = _data["Sonkapanis"];
-            this.son = _data["Son"];
-            this.endusuk = _data["Endusuk"];
-            this.enyuksek = _data["Enyuksek"];
-            this.gunlukyuzde = _data["Gunlukyuzde"];
-        }
-    }
-
-    static fromJS(data: any): Aud {
-        data = typeof data === 'object' ? data : {};
-        let result = new Aud();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alis"] = this.alis;
-        data["Satis"] = this.satis;
-        data["Tarih"] = this.tarih;
-        data["Sonkapanis"] = this.sonkapanis;
-        data["Son"] = this.son;
-        data["Endusuk"] = this.endusuk;
-        data["Enyuksek"] = this.enyuksek;
-        data["Gunlukyuzde"] = this.gunlukyuzde;
-        return data;
-    }
-}
-
-export interface IAud {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-}
-
 export class Bank implements IBank {
     id?: number;
     createdOn?: moment.Moment | undefined;
     createdById?: number | undefined;
-    createdBy?: User;
     updatedOn?: moment.Moment | undefined;
     updatedById?: number | undefined;
-    updatedBy?: User;
     deletedOn?: moment.Moment | undefined;
     deletedById?: number | undefined;
-    deletedBy?: User;
     isDeleted?: boolean;
     name!: string;
     logoId?: number | undefined;
@@ -8550,13 +6475,10 @@ export class Bank implements IBank {
             this.id = _data["Id"];
             this.createdOn = _data["CreatedOn"] ? moment(_data["CreatedOn"].toString()) : <any>undefined;
             this.createdById = _data["CreatedById"];
-            this.createdBy = _data["CreatedBy"] ? User.fromJS(_data["CreatedBy"]) : <any>undefined;
             this.updatedOn = _data["UpdatedOn"] ? moment(_data["UpdatedOn"].toString()) : <any>undefined;
             this.updatedById = _data["UpdatedById"];
-            this.updatedBy = _data["UpdatedBy"] ? User.fromJS(_data["UpdatedBy"]) : <any>undefined;
             this.deletedOn = _data["DeletedOn"] ? moment(_data["DeletedOn"].toString()) : <any>undefined;
             this.deletedById = _data["DeletedById"];
-            this.deletedBy = _data["DeletedBy"] ? User.fromJS(_data["DeletedBy"]) : <any>undefined;
             this.isDeleted = _data["IsDeleted"];
             this.name = _data["Name"];
             this.logoId = _data["LogoId"];
@@ -8578,13 +6500,10 @@ export class Bank implements IBank {
         data["Id"] = this.id;
         data["CreatedOn"] = this.createdOn ? this.createdOn.toISOString() : <any>undefined;
         data["CreatedById"] = this.createdById;
-        data["CreatedBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
         data["UpdatedOn"] = this.updatedOn ? this.updatedOn.toISOString() : <any>undefined;
         data["UpdatedById"] = this.updatedById;
-        data["UpdatedBy"] = this.updatedBy ? this.updatedBy.toJSON() : <any>undefined;
         data["DeletedOn"] = this.deletedOn ? this.deletedOn.toISOString() : <any>undefined;
         data["DeletedById"] = this.deletedById;
-        data["DeletedBy"] = this.deletedBy ? this.deletedBy.toJSON() : <any>undefined;
         data["IsDeleted"] = this.isDeleted;
         data["Name"] = this.name;
         data["LogoId"] = this.logoId;
@@ -8599,13 +6518,10 @@ export interface IBank {
     id?: number;
     createdOn?: moment.Moment | undefined;
     createdById?: number | undefined;
-    createdBy?: User;
     updatedOn?: moment.Moment | undefined;
     updatedById?: number | undefined;
-    updatedBy?: User;
     deletedOn?: moment.Moment | undefined;
     deletedById?: number | undefined;
-    deletedBy?: User;
     isDeleted?: boolean;
     name: string;
     logoId?: number | undefined;
@@ -8662,172 +6578,28 @@ export interface IBankModel {
     isActive?: boolean;
 }
 
-export class BloodType implements IBloodType {
-    id?: number;
-    createdOn?: moment.Moment | undefined;
-    createdById?: number | undefined;
-    createdBy?: User;
-    updatedOn?: moment.Moment | undefined;
-    updatedById?: number | undefined;
-    updatedBy?: User;
-    deletedOn?: moment.Moment | undefined;
-    deletedById?: number | undefined;
-    deletedBy?: User;
-    isDeleted?: boolean;
-    code?: string | undefined;
-    group?: string | undefined;
-    rhPositive?: boolean;
-    displayOrder?: number;
-    readonly name?: string | undefined;
-
-    constructor(data?: IBloodType) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["Id"];
-            this.createdOn = _data["CreatedOn"] ? moment(_data["CreatedOn"].toString()) : <any>undefined;
-            this.createdById = _data["CreatedById"];
-            this.createdBy = _data["CreatedBy"] ? User.fromJS(_data["CreatedBy"]) : <any>undefined;
-            this.updatedOn = _data["UpdatedOn"] ? moment(_data["UpdatedOn"].toString()) : <any>undefined;
-            this.updatedById = _data["UpdatedById"];
-            this.updatedBy = _data["UpdatedBy"] ? User.fromJS(_data["UpdatedBy"]) : <any>undefined;
-            this.deletedOn = _data["DeletedOn"] ? moment(_data["DeletedOn"].toString()) : <any>undefined;
-            this.deletedById = _data["DeletedById"];
-            this.deletedBy = _data["DeletedBy"] ? User.fromJS(_data["DeletedBy"]) : <any>undefined;
-            this.isDeleted = _data["IsDeleted"];
-            this.code = _data["Code"];
-            this.group = _data["Group"];
-            this.rhPositive = _data["RhPositive"];
-            this.displayOrder = _data["DisplayOrder"];
-            (<any>this).name = _data["Name"];
-        }
-    }
-
-    static fromJS(data: any): BloodType {
-        data = typeof data === 'object' ? data : {};
-        let result = new BloodType();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Id"] = this.id;
-        data["CreatedOn"] = this.createdOn ? this.createdOn.toISOString() : <any>undefined;
-        data["CreatedById"] = this.createdById;
-        data["CreatedBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
-        data["UpdatedOn"] = this.updatedOn ? this.updatedOn.toISOString() : <any>undefined;
-        data["UpdatedById"] = this.updatedById;
-        data["UpdatedBy"] = this.updatedBy ? this.updatedBy.toJSON() : <any>undefined;
-        data["DeletedOn"] = this.deletedOn ? this.deletedOn.toISOString() : <any>undefined;
-        data["DeletedById"] = this.deletedById;
-        data["DeletedBy"] = this.deletedBy ? this.deletedBy.toJSON() : <any>undefined;
-        data["IsDeleted"] = this.isDeleted;
-        data["Code"] = this.code;
-        data["Group"] = this.group;
-        data["RhPositive"] = this.rhPositive;
-        data["DisplayOrder"] = this.displayOrder;
-        data["Name"] = this.name;
-        return data;
-    }
-}
-
-export interface IBloodType {
-    id?: number;
-    createdOn?: moment.Moment | undefined;
-    createdById?: number | undefined;
-    createdBy?: User;
-    updatedOn?: moment.Moment | undefined;
-    updatedById?: number | undefined;
-    updatedBy?: User;
-    deletedOn?: moment.Moment | undefined;
-    deletedById?: number | undefined;
-    deletedBy?: User;
-    isDeleted?: boolean;
-    code?: string | undefined;
-    group?: string | undefined;
-    rhPositive?: boolean;
-    displayOrder?: number;
-    name?: string | undefined;
-}
-
-export class BloodTypeModel implements IBloodTypeModel {
-    id?: number;
-    code?: string | undefined;
-    group?: string | undefined;
-    rhPositive?: boolean;
-    displayOrder?: number;
-    name?: string | undefined;
-
-    constructor(data?: IBloodTypeModel) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["Id"];
-            this.code = _data["Code"];
-            this.group = _data["Group"];
-            this.rhPositive = _data["RhPositive"];
-            this.displayOrder = _data["DisplayOrder"];
-            this.name = _data["Name"];
-        }
-    }
-
-    static fromJS(data: any): BloodTypeModel {
-        data = typeof data === 'object' ? data : {};
-        let result = new BloodTypeModel();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Id"] = this.id;
-        data["Code"] = this.code;
-        data["Group"] = this.group;
-        data["RhPositive"] = this.rhPositive;
-        data["DisplayOrder"] = this.displayOrder;
-        data["Name"] = this.name;
-        return data;
-    }
-}
-
-export interface IBloodTypeModel {
-    id?: number;
-    code?: string | undefined;
-    group?: string | undefined;
-    rhPositive?: boolean;
-    displayOrder?: number;
-    name?: string | undefined;
+export enum BloodType {
+    OPositive = "OPositive",
+    APositive = "APositive",
+    BPositive = "BPositive",
+    ABPositive = "ABPositive",
+    ABNegative = "ABNegative",
+    ANegative = "ANegative",
+    BNegative = "BNegative",
+    ONegative = "ONegative",
 }
 
 export class Bonus implements IBonus {
     id?: number;
     createdOn?: moment.Moment | undefined;
     createdById?: number | undefined;
-    createdBy?: User;
     updatedOn?: moment.Moment | undefined;
     updatedById?: number | undefined;
-    updatedBy?: User;
     deletedOn?: moment.Moment | undefined;
     deletedById?: number | undefined;
-    deletedBy?: User;
     isDeleted?: boolean;
-    customerId?: number;
-    customer?: Customer;
+    userId?: number;
+    user?: User;
     symbolId?: number;
     symbol?: Symbol;
     quantity?: number;
@@ -8849,16 +6621,13 @@ export class Bonus implements IBonus {
             this.id = _data["Id"];
             this.createdOn = _data["CreatedOn"] ? moment(_data["CreatedOn"].toString()) : <any>undefined;
             this.createdById = _data["CreatedById"];
-            this.createdBy = _data["CreatedBy"] ? User.fromJS(_data["CreatedBy"]) : <any>undefined;
             this.updatedOn = _data["UpdatedOn"] ? moment(_data["UpdatedOn"].toString()) : <any>undefined;
             this.updatedById = _data["UpdatedById"];
-            this.updatedBy = _data["UpdatedBy"] ? User.fromJS(_data["UpdatedBy"]) : <any>undefined;
             this.deletedOn = _data["DeletedOn"] ? moment(_data["DeletedOn"].toString()) : <any>undefined;
             this.deletedById = _data["DeletedById"];
-            this.deletedBy = _data["DeletedBy"] ? User.fromJS(_data["DeletedBy"]) : <any>undefined;
             this.isDeleted = _data["IsDeleted"];
-            this.customerId = _data["CustomerId"];
-            this.customer = _data["Customer"] ? Customer.fromJS(_data["Customer"]) : <any>undefined;
+            this.userId = _data["UserId"];
+            this.user = _data["User"] ? User.fromJS(_data["User"]) : <any>undefined;
             this.symbolId = _data["SymbolId"];
             this.symbol = _data["Symbol"] ? Symbol.fromJS(_data["Symbol"]) : <any>undefined;
             this.quantity = _data["Quantity"];
@@ -8880,16 +6649,13 @@ export class Bonus implements IBonus {
         data["Id"] = this.id;
         data["CreatedOn"] = this.createdOn ? this.createdOn.toISOString() : <any>undefined;
         data["CreatedById"] = this.createdById;
-        data["CreatedBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
         data["UpdatedOn"] = this.updatedOn ? this.updatedOn.toISOString() : <any>undefined;
         data["UpdatedById"] = this.updatedById;
-        data["UpdatedBy"] = this.updatedBy ? this.updatedBy.toJSON() : <any>undefined;
         data["DeletedOn"] = this.deletedOn ? this.deletedOn.toISOString() : <any>undefined;
         data["DeletedById"] = this.deletedById;
-        data["DeletedBy"] = this.deletedBy ? this.deletedBy.toJSON() : <any>undefined;
         data["IsDeleted"] = this.isDeleted;
-        data["CustomerId"] = this.customerId;
-        data["Customer"] = this.customer ? this.customer.toJSON() : <any>undefined;
+        data["UserId"] = this.userId;
+        data["User"] = this.user ? this.user.toJSON() : <any>undefined;
         data["SymbolId"] = this.symbolId;
         data["Symbol"] = this.symbol ? this.symbol.toJSON() : <any>undefined;
         data["Quantity"] = this.quantity;
@@ -8904,16 +6670,13 @@ export interface IBonus {
     id?: number;
     createdOn?: moment.Moment | undefined;
     createdById?: number | undefined;
-    createdBy?: User;
     updatedOn?: moment.Moment | undefined;
     updatedById?: number | undefined;
-    updatedBy?: User;
     deletedOn?: moment.Moment | undefined;
     deletedById?: number | undefined;
-    deletedBy?: User;
     isDeleted?: boolean;
-    customerId?: number;
-    customer?: Customer;
+    userId?: number;
+    user?: User;
     symbolId?: number;
     symbol?: Symbol;
     quantity?: number;
@@ -8922,261 +6685,14 @@ export interface IBonus {
     isActive?: boolean;
 }
 
-export class Cad implements ICad {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-
-    constructor(data?: ICad) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alis = _data["Alis"];
-            this.satis = _data["Satis"];
-            this.tarih = _data["Tarih"];
-            this.sonkapanis = _data["Sonkapanis"];
-            this.son = _data["Son"];
-            this.endusuk = _data["Endusuk"];
-            this.enyuksek = _data["Enyuksek"];
-            this.gunlukyuzde = _data["Gunlukyuzde"];
-        }
-    }
-
-    static fromJS(data: any): Cad {
-        data = typeof data === 'object' ? data : {};
-        let result = new Cad();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alis"] = this.alis;
-        data["Satis"] = this.satis;
-        data["Tarih"] = this.tarih;
-        data["Sonkapanis"] = this.sonkapanis;
-        data["Son"] = this.son;
-        data["Endusuk"] = this.endusuk;
-        data["Enyuksek"] = this.enyuksek;
-        data["Gunlukyuzde"] = this.gunlukyuzde;
-        return data;
-    }
-}
-
-export interface ICad {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-}
-
-export class CardCreateDTO implements ICardCreateDTO {
-    alias!: string;
-    cardHolder!: string;
-    pAN!: string;
-    expiryMonth!: string;
-    expiryYear!: string;
-    cVC!: string;
-    useThreeDS?: boolean | undefined;
-    additionalProperties?: { [key: string]: any; } | undefined;
-
-    constructor(data?: ICardCreateDTO) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alias = _data["Alias"];
-            this.cardHolder = _data["CardHolder"];
-            this.pAN = _data["PAN"];
-            this.expiryMonth = _data["ExpiryMonth"];
-            this.expiryYear = _data["ExpiryYear"];
-            this.cVC = _data["CVC"];
-            this.useThreeDS = _data["UseThreeDS"];
-            if (_data["AdditionalProperties"]) {
-                this.additionalProperties = {} as any;
-                for (let key in _data["AdditionalProperties"]) {
-                    if (_data["AdditionalProperties"].hasOwnProperty(key))
-                        (<any>this.additionalProperties)![key] = _data["AdditionalProperties"][key];
-                }
-            }
-        }
-    }
-
-    static fromJS(data: any): CardCreateDTO {
-        data = typeof data === 'object' ? data : {};
-        let result = new CardCreateDTO();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alias"] = this.alias;
-        data["CardHolder"] = this.cardHolder;
-        data["PAN"] = this.pAN;
-        data["ExpiryMonth"] = this.expiryMonth;
-        data["ExpiryYear"] = this.expiryYear;
-        data["CVC"] = this.cVC;
-        data["UseThreeDS"] = this.useThreeDS;
-        if (this.additionalProperties) {
-            data["AdditionalProperties"] = {};
-            for (let key in this.additionalProperties) {
-                if (this.additionalProperties.hasOwnProperty(key))
-                    (<any>data["AdditionalProperties"])[key] = this.additionalProperties[key];
-            }
-        }
-        return data;
-    }
-}
-
-export interface ICardCreateDTO {
-    alias: string;
-    cardHolder: string;
-    pAN: string;
-    expiryMonth: string;
-    expiryYear: string;
-    cVC: string;
-    useThreeDS?: boolean | undefined;
-    additionalProperties?: { [key: string]: any; } | undefined;
-}
-
-export class CardDTO implements ICardDTO {
-    alias?: string | undefined;
-    cardID?: string | undefined;
-    cardHolder?: string | undefined;
-    pAN?: string | undefined;
-    bankName?: string | undefined;
-    familyName?: string | undefined;
-    isBusinessCard?: boolean | undefined;
-    isCVCRequired?: boolean | undefined;
-    creditCardType?: CreditCardTypeEnum;
-    creationTimeStamp?: moment.Moment | undefined;
-    modificationTimeStamp?: moment.Moment | undefined;
-    isThreeDS?: boolean | undefined;
-    threeDS_HTML?: string | undefined;
-    kPayTxnID?: string | undefined;
-    additionalProperties?: { [key: string]: any; } | undefined;
-
-    constructor(data?: ICardDTO) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alias = _data["Alias"];
-            this.cardID = _data["CardID"];
-            this.cardHolder = _data["CardHolder"];
-            this.pAN = _data["PAN"];
-            this.bankName = _data["BankName"];
-            this.familyName = _data["FamilyName"];
-            this.isBusinessCard = _data["IsBusinessCard"];
-            this.isCVCRequired = _data["IsCVCRequired"];
-            this.creditCardType = _data["CreditCardType"];
-            this.creationTimeStamp = _data["CreationTimeStamp"] ? moment(_data["CreationTimeStamp"].toString()) : <any>undefined;
-            this.modificationTimeStamp = _data["ModificationTimeStamp"] ? moment(_data["ModificationTimeStamp"].toString()) : <any>undefined;
-            this.isThreeDS = _data["IsThreeDS"];
-            this.threeDS_HTML = _data["ThreeDS_HTML"];
-            this.kPayTxnID = _data["KPayTxnID"];
-            if (_data["AdditionalProperties"]) {
-                this.additionalProperties = {} as any;
-                for (let key in _data["AdditionalProperties"]) {
-                    if (_data["AdditionalProperties"].hasOwnProperty(key))
-                        (<any>this.additionalProperties)![key] = _data["AdditionalProperties"][key];
-                }
-            }
-        }
-    }
-
-    static fromJS(data: any): CardDTO {
-        data = typeof data === 'object' ? data : {};
-        let result = new CardDTO();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alias"] = this.alias;
-        data["CardID"] = this.cardID;
-        data["CardHolder"] = this.cardHolder;
-        data["PAN"] = this.pAN;
-        data["BankName"] = this.bankName;
-        data["FamilyName"] = this.familyName;
-        data["IsBusinessCard"] = this.isBusinessCard;
-        data["IsCVCRequired"] = this.isCVCRequired;
-        data["CreditCardType"] = this.creditCardType;
-        data["CreationTimeStamp"] = this.creationTimeStamp ? this.creationTimeStamp.toISOString() : <any>undefined;
-        data["ModificationTimeStamp"] = this.modificationTimeStamp ? this.modificationTimeStamp.toISOString() : <any>undefined;
-        data["IsThreeDS"] = this.isThreeDS;
-        data["ThreeDS_HTML"] = this.threeDS_HTML;
-        data["KPayTxnID"] = this.kPayTxnID;
-        if (this.additionalProperties) {
-            data["AdditionalProperties"] = {};
-            for (let key in this.additionalProperties) {
-                if (this.additionalProperties.hasOwnProperty(key))
-                    (<any>data["AdditionalProperties"])[key] = this.additionalProperties[key];
-            }
-        }
-        return data;
-    }
-}
-
-export interface ICardDTO {
-    alias?: string | undefined;
-    cardID?: string | undefined;
-    cardHolder?: string | undefined;
-    pAN?: string | undefined;
-    bankName?: string | undefined;
-    familyName?: string | undefined;
-    isBusinessCard?: boolean | undefined;
-    isCVCRequired?: boolean | undefined;
-    creditCardType?: CreditCardTypeEnum;
-    creationTimeStamp?: moment.Moment | undefined;
-    modificationTimeStamp?: moment.Moment | undefined;
-    isThreeDS?: boolean | undefined;
-    threeDS_HTML?: string | undefined;
-    kPayTxnID?: string | undefined;
-    additionalProperties?: { [key: string]: any; } | undefined;
-}
-
 export class Category implements ICategory {
     id?: number;
     createdOn?: moment.Moment | undefined;
     createdById?: number | undefined;
-    createdBy?: User;
     updatedOn?: moment.Moment | undefined;
     updatedById?: number | undefined;
-    updatedBy?: User;
     deletedOn?: moment.Moment | undefined;
     deletedById?: number | undefined;
-    deletedBy?: User;
     isDeleted?: boolean;
     name?: string | undefined;
     description?: string | undefined;
@@ -9204,13 +6720,10 @@ export class Category implements ICategory {
             this.id = _data["Id"];
             this.createdOn = _data["CreatedOn"] ? moment(_data["CreatedOn"].toString()) : <any>undefined;
             this.createdById = _data["CreatedById"];
-            this.createdBy = _data["CreatedBy"] ? User.fromJS(_data["CreatedBy"]) : <any>undefined;
             this.updatedOn = _data["UpdatedOn"] ? moment(_data["UpdatedOn"].toString()) : <any>undefined;
             this.updatedById = _data["UpdatedById"];
-            this.updatedBy = _data["UpdatedBy"] ? User.fromJS(_data["UpdatedBy"]) : <any>undefined;
             this.deletedOn = _data["DeletedOn"] ? moment(_data["DeletedOn"].toString()) : <any>undefined;
             this.deletedById = _data["DeletedById"];
-            this.deletedBy = _data["DeletedBy"] ? User.fromJS(_data["DeletedBy"]) : <any>undefined;
             this.isDeleted = _data["IsDeleted"];
             this.name = _data["Name"];
             this.description = _data["Description"];
@@ -9246,13 +6759,10 @@ export class Category implements ICategory {
         data["Id"] = this.id;
         data["CreatedOn"] = this.createdOn ? this.createdOn.toISOString() : <any>undefined;
         data["CreatedById"] = this.createdById;
-        data["CreatedBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
         data["UpdatedOn"] = this.updatedOn ? this.updatedOn.toISOString() : <any>undefined;
         data["UpdatedById"] = this.updatedById;
-        data["UpdatedBy"] = this.updatedBy ? this.updatedBy.toJSON() : <any>undefined;
         data["DeletedOn"] = this.deletedOn ? this.deletedOn.toISOString() : <any>undefined;
         data["DeletedById"] = this.deletedById;
-        data["DeletedBy"] = this.deletedBy ? this.deletedBy.toJSON() : <any>undefined;
         data["IsDeleted"] = this.isDeleted;
         data["Name"] = this.name;
         data["Description"] = this.description;
@@ -9281,13 +6791,10 @@ export interface ICategory {
     id?: number;
     createdOn?: moment.Moment | undefined;
     createdById?: number | undefined;
-    createdBy?: User;
     updatedOn?: moment.Moment | undefined;
     updatedById?: number | undefined;
-    updatedBy?: User;
     deletedOn?: moment.Moment | undefined;
     deletedById?: number | undefined;
-    deletedBy?: User;
     isDeleted?: boolean;
     name?: string | undefined;
     description?: string | undefined;
@@ -9302,221 +6809,12 @@ export interface ICategory {
     productCategories?: ProductCategory[] | undefined;
 }
 
-export class ChannelType implements IChannelType {
-    id?: number;
-    createdOn?: moment.Moment | undefined;
-    createdById?: number | undefined;
-    createdBy?: User;
-    updatedOn?: moment.Moment | undefined;
-    updatedById?: number | undefined;
-    updatedBy?: User;
-    deletedOn?: moment.Moment | undefined;
-    deletedById?: number | undefined;
-    deletedBy?: User;
-    isDeleted?: boolean;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-
-    constructor(data?: IChannelType) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["Id"];
-            this.createdOn = _data["CreatedOn"] ? moment(_data["CreatedOn"].toString()) : <any>undefined;
-            this.createdById = _data["CreatedById"];
-            this.createdBy = _data["CreatedBy"] ? User.fromJS(_data["CreatedBy"]) : <any>undefined;
-            this.updatedOn = _data["UpdatedOn"] ? moment(_data["UpdatedOn"].toString()) : <any>undefined;
-            this.updatedById = _data["UpdatedById"];
-            this.updatedBy = _data["UpdatedBy"] ? User.fromJS(_data["UpdatedBy"]) : <any>undefined;
-            this.deletedOn = _data["DeletedOn"] ? moment(_data["DeletedOn"].toString()) : <any>undefined;
-            this.deletedById = _data["DeletedById"];
-            this.deletedBy = _data["DeletedBy"] ? User.fromJS(_data["DeletedBy"]) : <any>undefined;
-            this.isDeleted = _data["IsDeleted"];
-            this.code = _data["Code"];
-            this.description = _data["Description"];
-            this.displayOrder = _data["DisplayOrder"];
-            this.isActive = _data["IsActive"];
-        }
-    }
-
-    static fromJS(data: any): ChannelType {
-        data = typeof data === 'object' ? data : {};
-        let result = new ChannelType();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Id"] = this.id;
-        data["CreatedOn"] = this.createdOn ? this.createdOn.toISOString() : <any>undefined;
-        data["CreatedById"] = this.createdById;
-        data["CreatedBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
-        data["UpdatedOn"] = this.updatedOn ? this.updatedOn.toISOString() : <any>undefined;
-        data["UpdatedById"] = this.updatedById;
-        data["UpdatedBy"] = this.updatedBy ? this.updatedBy.toJSON() : <any>undefined;
-        data["DeletedOn"] = this.deletedOn ? this.deletedOn.toISOString() : <any>undefined;
-        data["DeletedById"] = this.deletedById;
-        data["DeletedBy"] = this.deletedBy ? this.deletedBy.toJSON() : <any>undefined;
-        data["IsDeleted"] = this.isDeleted;
-        data["Code"] = this.code;
-        data["Description"] = this.description;
-        data["DisplayOrder"] = this.displayOrder;
-        data["IsActive"] = this.isActive;
-        return data;
-    }
-}
-
-export interface IChannelType {
-    id?: number;
-    createdOn?: moment.Moment | undefined;
-    createdById?: number | undefined;
-    createdBy?: User;
-    updatedOn?: moment.Moment | undefined;
-    updatedById?: number | undefined;
-    updatedBy?: User;
-    deletedOn?: moment.Moment | undefined;
-    deletedById?: number | undefined;
-    deletedBy?: User;
-    isDeleted?: boolean;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-}
-
-export class ChannelTypeModel implements IChannelTypeModel {
-    id?: number;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-
-    constructor(data?: IChannelTypeModel) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["Id"];
-            this.code = _data["Code"];
-            this.description = _data["Description"];
-            this.displayOrder = _data["DisplayOrder"];
-            this.isActive = _data["IsActive"];
-        }
-    }
-
-    static fromJS(data: any): ChannelTypeModel {
-        data = typeof data === 'object' ? data : {};
-        let result = new ChannelTypeModel();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Id"] = this.id;
-        data["Code"] = this.code;
-        data["Description"] = this.description;
-        data["DisplayOrder"] = this.displayOrder;
-        data["IsActive"] = this.isActive;
-        return data;
-    }
-}
-
-export interface IChannelTypeModel {
-    id?: number;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-}
-
-export class Chf implements IChf {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-
-    constructor(data?: IChf) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alis = _data["Alis"];
-            this.satis = _data["Satis"];
-            this.tarih = _data["Tarih"];
-            this.sonkapanis = _data["Sonkapanis"];
-            this.son = _data["Son"];
-            this.endusuk = _data["Endusuk"];
-            this.enyuksek = _data["Enyuksek"];
-            this.gunlukyuzde = _data["Gunlukyuzde"];
-        }
-    }
-
-    static fromJS(data: any): Chf {
-        data = typeof data === 'object' ? data : {};
-        let result = new Chf();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alis"] = this.alis;
-        data["Satis"] = this.satis;
-        data["Tarih"] = this.tarih;
-        data["Sonkapanis"] = this.sonkapanis;
-        data["Son"] = this.son;
-        data["Endusuk"] = this.endusuk;
-        data["Enyuksek"] = this.enyuksek;
-        data["Gunlukyuzde"] = this.gunlukyuzde;
-        return data;
-    }
-}
-
-export interface IChf {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-}
-
 export class CommissionModel implements ICommissionModel {
     id?: number;
     name?: string | undefined;
     symbolId?: number;
     symbol?: SymbolModel;
-    commissionTypeId?: number;
-    commissionType?: CommissionTypeModel;
+    commissionType?: CommissionType;
     commissionRate?: number;
     commissionValue?: number;
 
@@ -9535,8 +6833,7 @@ export class CommissionModel implements ICommissionModel {
             this.name = _data["Name"];
             this.symbolId = _data["SymbolId"];
             this.symbol = _data["Symbol"] ? SymbolModel.fromJS(_data["Symbol"]) : <any>undefined;
-            this.commissionTypeId = _data["CommissionTypeId"];
-            this.commissionType = _data["CommissionType"] ? CommissionTypeModel.fromJS(_data["CommissionType"]) : <any>undefined;
+            this.commissionType = _data["CommissionType"];
             this.commissionRate = _data["CommissionRate"];
             this.commissionValue = _data["CommissionValue"];
         }
@@ -9555,8 +6852,7 @@ export class CommissionModel implements ICommissionModel {
         data["Name"] = this.name;
         data["SymbolId"] = this.symbolId;
         data["Symbol"] = this.symbol ? this.symbol.toJSON() : <any>undefined;
-        data["CommissionTypeId"] = this.commissionTypeId;
-        data["CommissionType"] = this.commissionType ? this.commissionType.toJSON() : <any>undefined;
+        data["CommissionType"] = this.commissionType;
         data["CommissionRate"] = this.commissionRate;
         data["CommissionValue"] = this.commissionValue;
         return data;
@@ -9568,67 +6864,19 @@ export interface ICommissionModel {
     name?: string | undefined;
     symbolId?: number;
     symbol?: SymbolModel;
-    commissionTypeId?: number;
-    commissionType?: CommissionTypeModel;
+    commissionType?: CommissionType;
     commissionRate?: number;
     commissionValue?: number;
 }
 
-export class CommissionTypeModel implements ICommissionTypeModel {
-    id?: number;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-
-    constructor(data?: ICommissionTypeModel) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["Id"];
-            this.code = _data["Code"];
-            this.description = _data["Description"];
-            this.displayOrder = _data["DisplayOrder"];
-            this.isActive = _data["IsActive"];
-        }
-    }
-
-    static fromJS(data: any): CommissionTypeModel {
-        data = typeof data === 'object' ? data : {};
-        let result = new CommissionTypeModel();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Id"] = this.id;
-        data["Code"] = this.code;
-        data["Description"] = this.description;
-        data["DisplayOrder"] = this.displayOrder;
-        data["IsActive"] = this.isActive;
-        return data;
-    }
-}
-
-export interface ICommissionTypeModel {
-    id?: number;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
+export enum CommissionType {
+    Buy = "Buy",
+    Sell = "Sell",
 }
 
 export class CompleDigitalOrderModel implements ICompleDigitalOrderModel {
     orderId?: number;
-    paymentTypeId?: number;
+    paymentType?: PaymentType;
     sourceAssetId?: number;
     targetAssetId?: number;
 
@@ -9644,7 +6892,7 @@ export class CompleDigitalOrderModel implements ICompleDigitalOrderModel {
     init(_data?: any) {
         if (_data) {
             this.orderId = _data["OrderId"];
-            this.paymentTypeId = _data["PaymentTypeId"];
+            this.paymentType = _data["PaymentType"];
             this.sourceAssetId = _data["SourceAssetId"];
             this.targetAssetId = _data["TargetAssetId"];
         }
@@ -9660,7 +6908,7 @@ export class CompleDigitalOrderModel implements ICompleDigitalOrderModel {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["OrderId"] = this.orderId;
-        data["PaymentTypeId"] = this.paymentTypeId;
+        data["PaymentType"] = this.paymentType;
         data["SourceAssetId"] = this.sourceAssetId;
         data["TargetAssetId"] = this.targetAssetId;
         return data;
@@ -9669,14 +6917,14 @@ export class CompleDigitalOrderModel implements ICompleDigitalOrderModel {
 
 export interface ICompleDigitalOrderModel {
     orderId?: number;
-    paymentTypeId?: number;
+    paymentType?: PaymentType;
     sourceAssetId?: number;
     targetAssetId?: number;
 }
 
 export class ComplePhysicalOrderModel implements IComplePhysicalOrderModel {
     orderId?: number;
-    paymnetTypeId?: number;
+    paymentType?: PaymentType;
     sourceAssetId?: number;
 
     constructor(data?: IComplePhysicalOrderModel) {
@@ -9691,7 +6939,7 @@ export class ComplePhysicalOrderModel implements IComplePhysicalOrderModel {
     init(_data?: any) {
         if (_data) {
             this.orderId = _data["OrderId"];
-            this.paymnetTypeId = _data["PaymnetTypeId"];
+            this.paymentType = _data["PaymentType"];
             this.sourceAssetId = _data["SourceAssetId"];
         }
     }
@@ -9706,7 +6954,7 @@ export class ComplePhysicalOrderModel implements IComplePhysicalOrderModel {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["OrderId"] = this.orderId;
-        data["PaymnetTypeId"] = this.paymnetTypeId;
+        data["PaymentType"] = this.paymentType;
         data["SourceAssetId"] = this.sourceAssetId;
         return data;
     }
@@ -9714,169 +6962,25 @@ export class ComplePhysicalOrderModel implements IComplePhysicalOrderModel {
 
 export interface IComplePhysicalOrderModel {
     orderId?: number;
-    paymnetTypeId?: number;
+    paymentType?: PaymentType;
     sourceAssetId?: number;
 }
 
-export class ContactType implements IContactType {
-    id?: number;
-    createdOn?: moment.Moment | undefined;
-    createdById?: number | undefined;
-    createdBy?: User;
-    updatedOn?: moment.Moment | undefined;
-    updatedById?: number | undefined;
-    updatedBy?: User;
-    deletedOn?: moment.Moment | undefined;
-    deletedById?: number | undefined;
-    deletedBy?: User;
-    isDeleted?: boolean;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-
-    constructor(data?: IContactType) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["Id"];
-            this.createdOn = _data["CreatedOn"] ? moment(_data["CreatedOn"].toString()) : <any>undefined;
-            this.createdById = _data["CreatedById"];
-            this.createdBy = _data["CreatedBy"] ? User.fromJS(_data["CreatedBy"]) : <any>undefined;
-            this.updatedOn = _data["UpdatedOn"] ? moment(_data["UpdatedOn"].toString()) : <any>undefined;
-            this.updatedById = _data["UpdatedById"];
-            this.updatedBy = _data["UpdatedBy"] ? User.fromJS(_data["UpdatedBy"]) : <any>undefined;
-            this.deletedOn = _data["DeletedOn"] ? moment(_data["DeletedOn"].toString()) : <any>undefined;
-            this.deletedById = _data["DeletedById"];
-            this.deletedBy = _data["DeletedBy"] ? User.fromJS(_data["DeletedBy"]) : <any>undefined;
-            this.isDeleted = _data["IsDeleted"];
-            this.code = _data["Code"];
-            this.description = _data["Description"];
-            this.displayOrder = _data["DisplayOrder"];
-            this.isActive = _data["IsActive"];
-        }
-    }
-
-    static fromJS(data: any): ContactType {
-        data = typeof data === 'object' ? data : {};
-        let result = new ContactType();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Id"] = this.id;
-        data["CreatedOn"] = this.createdOn ? this.createdOn.toISOString() : <any>undefined;
-        data["CreatedById"] = this.createdById;
-        data["CreatedBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
-        data["UpdatedOn"] = this.updatedOn ? this.updatedOn.toISOString() : <any>undefined;
-        data["UpdatedById"] = this.updatedById;
-        data["UpdatedBy"] = this.updatedBy ? this.updatedBy.toJSON() : <any>undefined;
-        data["DeletedOn"] = this.deletedOn ? this.deletedOn.toISOString() : <any>undefined;
-        data["DeletedById"] = this.deletedById;
-        data["DeletedBy"] = this.deletedBy ? this.deletedBy.toJSON() : <any>undefined;
-        data["IsDeleted"] = this.isDeleted;
-        data["Code"] = this.code;
-        data["Description"] = this.description;
-        data["DisplayOrder"] = this.displayOrder;
-        data["IsActive"] = this.isActive;
-        return data;
-    }
-}
-
-export interface IContactType {
-    id?: number;
-    createdOn?: moment.Moment | undefined;
-    createdById?: number | undefined;
-    createdBy?: User;
-    updatedOn?: moment.Moment | undefined;
-    updatedById?: number | undefined;
-    updatedBy?: User;
-    deletedOn?: moment.Moment | undefined;
-    deletedById?: number | undefined;
-    deletedBy?: User;
-    isDeleted?: boolean;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-}
-
-export class ContactTypeModel implements IContactTypeModel {
-    id?: number;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-
-    constructor(data?: IContactTypeModel) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["Id"];
-            this.code = _data["Code"];
-            this.description = _data["Description"];
-            this.displayOrder = _data["DisplayOrder"];
-            this.isActive = _data["IsActive"];
-        }
-    }
-
-    static fromJS(data: any): ContactTypeModel {
-        data = typeof data === 'object' ? data : {};
-        let result = new ContactTypeModel();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Id"] = this.id;
-        data["Code"] = this.code;
-        data["Description"] = this.description;
-        data["DisplayOrder"] = this.displayOrder;
-        data["IsActive"] = this.isActive;
-        return data;
-    }
-}
-
-export interface IContactTypeModel {
-    id?: number;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
+export enum ContactType {
+    MailPrimary = "MailPrimary",
+    MailWork = "MailWork",
+    PhonePrimary = "PhonePrimary",
+    PhoneWork = "PhoneWork",
+    Website = "Website",
+    Facebook = "Facebook",
+    Instagram = "Instagram",
+    Twitter = "Twitter",
 }
 
 export class Corporate implements ICorporate {
     id?: number;
-    createdOn?: moment.Moment | undefined;
-    createdById?: number | undefined;
-    createdBy?: User;
-    updatedOn?: moment.Moment | undefined;
-    updatedById?: number | undefined;
-    updatedBy?: User;
-    deletedOn?: moment.Moment | undefined;
-    deletedById?: number | undefined;
-    deletedBy?: User;
-    isDeleted?: boolean;
+    user?: User;
     name!: string;
-    categoryId?: number;
-    category?: CorporateCategory;
     phoneNumber?: string | undefined;
     email?: string | undefined;
     logoId?: number | undefined;
@@ -9885,7 +6989,6 @@ export class Corporate implements ICorporate {
     taxOffice?: string | undefined;
     description?: string | undefined;
     isActive?: boolean;
-    customer?: Customer;
 
     constructor(data?: ICorporate) {
         if (data) {
@@ -9902,19 +7005,8 @@ export class Corporate implements ICorporate {
     init(_data?: any) {
         if (_data) {
             this.id = _data["Id"];
-            this.createdOn = _data["CreatedOn"] ? moment(_data["CreatedOn"].toString()) : <any>undefined;
-            this.createdById = _data["CreatedById"];
-            this.createdBy = _data["CreatedBy"] ? User.fromJS(_data["CreatedBy"]) : <any>undefined;
-            this.updatedOn = _data["UpdatedOn"] ? moment(_data["UpdatedOn"].toString()) : <any>undefined;
-            this.updatedById = _data["UpdatedById"];
-            this.updatedBy = _data["UpdatedBy"] ? User.fromJS(_data["UpdatedBy"]) : <any>undefined;
-            this.deletedOn = _data["DeletedOn"] ? moment(_data["DeletedOn"].toString()) : <any>undefined;
-            this.deletedById = _data["DeletedById"];
-            this.deletedBy = _data["DeletedBy"] ? User.fromJS(_data["DeletedBy"]) : <any>undefined;
-            this.isDeleted = _data["IsDeleted"];
+            this.user = _data["User"] ? User.fromJS(_data["User"]) : <any>undefined;
             this.name = _data["Name"];
-            this.categoryId = _data["CategoryId"];
-            this.category = _data["Category"] ? CorporateCategory.fromJS(_data["Category"]) : <any>undefined;
             this.phoneNumber = _data["PhoneNumber"];
             this.email = _data["Email"];
             this.logoId = _data["LogoId"];
@@ -9923,7 +7015,6 @@ export class Corporate implements ICorporate {
             this.taxOffice = _data["TaxOffice"];
             this.description = _data["Description"];
             this.isActive = _data["IsActive"] !== undefined ? _data["IsActive"] : true;
-            this.customer = _data["Customer"] ? Customer.fromJS(_data["Customer"]) : <any>undefined;
         }
     }
 
@@ -9937,19 +7028,8 @@ export class Corporate implements ICorporate {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["Id"] = this.id;
-        data["CreatedOn"] = this.createdOn ? this.createdOn.toISOString() : <any>undefined;
-        data["CreatedById"] = this.createdById;
-        data["CreatedBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
-        data["UpdatedOn"] = this.updatedOn ? this.updatedOn.toISOString() : <any>undefined;
-        data["UpdatedById"] = this.updatedById;
-        data["UpdatedBy"] = this.updatedBy ? this.updatedBy.toJSON() : <any>undefined;
-        data["DeletedOn"] = this.deletedOn ? this.deletedOn.toISOString() : <any>undefined;
-        data["DeletedById"] = this.deletedById;
-        data["DeletedBy"] = this.deletedBy ? this.deletedBy.toJSON() : <any>undefined;
-        data["IsDeleted"] = this.isDeleted;
+        data["User"] = this.user ? this.user.toJSON() : <any>undefined;
         data["Name"] = this.name;
-        data["CategoryId"] = this.categoryId;
-        data["Category"] = this.category ? this.category.toJSON() : <any>undefined;
         data["PhoneNumber"] = this.phoneNumber;
         data["Email"] = this.email;
         data["LogoId"] = this.logoId;
@@ -9958,26 +7038,14 @@ export class Corporate implements ICorporate {
         data["TaxOffice"] = this.taxOffice;
         data["Description"] = this.description;
         data["IsActive"] = this.isActive;
-        data["Customer"] = this.customer ? this.customer.toJSON() : <any>undefined;
         return data;
     }
 }
 
 export interface ICorporate {
     id?: number;
-    createdOn?: moment.Moment | undefined;
-    createdById?: number | undefined;
-    createdBy?: User;
-    updatedOn?: moment.Moment | undefined;
-    updatedById?: number | undefined;
-    updatedBy?: User;
-    deletedOn?: moment.Moment | undefined;
-    deletedById?: number | undefined;
-    deletedBy?: User;
-    isDeleted?: boolean;
+    user?: User;
     name: string;
-    categoryId?: number;
-    category?: CorporateCategory;
     phoneNumber?: string | undefined;
     email?: string | undefined;
     logoId?: number | undefined;
@@ -9986,159 +7054,12 @@ export interface ICorporate {
     taxOffice?: string | undefined;
     description?: string | undefined;
     isActive?: boolean;
-    customer?: Customer;
-}
-
-export class CorporateCategory implements ICorporateCategory {
-    id?: number;
-    createdOn?: moment.Moment | undefined;
-    createdById?: number | undefined;
-    createdBy?: User;
-    updatedOn?: moment.Moment | undefined;
-    updatedById?: number | undefined;
-    updatedBy?: User;
-    deletedOn?: moment.Moment | undefined;
-    deletedById?: number | undefined;
-    deletedBy?: User;
-    isDeleted?: boolean;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-
-    constructor(data?: ICorporateCategory) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["Id"];
-            this.createdOn = _data["CreatedOn"] ? moment(_data["CreatedOn"].toString()) : <any>undefined;
-            this.createdById = _data["CreatedById"];
-            this.createdBy = _data["CreatedBy"] ? User.fromJS(_data["CreatedBy"]) : <any>undefined;
-            this.updatedOn = _data["UpdatedOn"] ? moment(_data["UpdatedOn"].toString()) : <any>undefined;
-            this.updatedById = _data["UpdatedById"];
-            this.updatedBy = _data["UpdatedBy"] ? User.fromJS(_data["UpdatedBy"]) : <any>undefined;
-            this.deletedOn = _data["DeletedOn"] ? moment(_data["DeletedOn"].toString()) : <any>undefined;
-            this.deletedById = _data["DeletedById"];
-            this.deletedBy = _data["DeletedBy"] ? User.fromJS(_data["DeletedBy"]) : <any>undefined;
-            this.isDeleted = _data["IsDeleted"];
-            this.code = _data["Code"];
-            this.description = _data["Description"];
-            this.displayOrder = _data["DisplayOrder"];
-            this.isActive = _data["IsActive"];
-        }
-    }
-
-    static fromJS(data: any): CorporateCategory {
-        data = typeof data === 'object' ? data : {};
-        let result = new CorporateCategory();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Id"] = this.id;
-        data["CreatedOn"] = this.createdOn ? this.createdOn.toISOString() : <any>undefined;
-        data["CreatedById"] = this.createdById;
-        data["CreatedBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
-        data["UpdatedOn"] = this.updatedOn ? this.updatedOn.toISOString() : <any>undefined;
-        data["UpdatedById"] = this.updatedById;
-        data["UpdatedBy"] = this.updatedBy ? this.updatedBy.toJSON() : <any>undefined;
-        data["DeletedOn"] = this.deletedOn ? this.deletedOn.toISOString() : <any>undefined;
-        data["DeletedById"] = this.deletedById;
-        data["DeletedBy"] = this.deletedBy ? this.deletedBy.toJSON() : <any>undefined;
-        data["IsDeleted"] = this.isDeleted;
-        data["Code"] = this.code;
-        data["Description"] = this.description;
-        data["DisplayOrder"] = this.displayOrder;
-        data["IsActive"] = this.isActive;
-        return data;
-    }
-}
-
-export interface ICorporateCategory {
-    id?: number;
-    createdOn?: moment.Moment | undefined;
-    createdById?: number | undefined;
-    createdBy?: User;
-    updatedOn?: moment.Moment | undefined;
-    updatedById?: number | undefined;
-    updatedBy?: User;
-    deletedOn?: moment.Moment | undefined;
-    deletedById?: number | undefined;
-    deletedBy?: User;
-    isDeleted?: boolean;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-}
-
-export class CorporateCategoryModel implements ICorporateCategoryModel {
-    id?: number;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-
-    constructor(data?: ICorporateCategoryModel) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["Id"];
-            this.code = _data["Code"];
-            this.description = _data["Description"];
-            this.displayOrder = _data["DisplayOrder"];
-            this.isActive = _data["IsActive"];
-        }
-    }
-
-    static fromJS(data: any): CorporateCategoryModel {
-        data = typeof data === 'object' ? data : {};
-        let result = new CorporateCategoryModel();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Id"] = this.id;
-        data["Code"] = this.code;
-        data["Description"] = this.description;
-        data["DisplayOrder"] = this.displayOrder;
-        data["IsActive"] = this.isActive;
-        return data;
-    }
-}
-
-export interface ICorporateCategoryModel {
-    id?: number;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
 }
 
 export class CorporateModel implements ICorporateModel {
     id?: number;
     name?: string | undefined;
-    categoryId?: number;
-    category?: CorporateCategoryModel;
-    customer?: CustomerModel;
+    user?: UserModel;
 
     constructor(data?: ICorporateModel) {
         if (data) {
@@ -10153,9 +7074,7 @@ export class CorporateModel implements ICorporateModel {
         if (_data) {
             this.id = _data["Id"];
             this.name = _data["Name"];
-            this.categoryId = _data["CategoryId"];
-            this.category = _data["Category"] ? CorporateCategoryModel.fromJS(_data["Category"]) : <any>undefined;
-            this.customer = _data["Customer"] ? CustomerModel.fromJS(_data["Customer"]) : <any>undefined;
+            this.user = _data["User"] ? UserModel.fromJS(_data["User"]) : <any>undefined;
         }
     }
 
@@ -10170,9 +7089,7 @@ export class CorporateModel implements ICorporateModel {
         data = typeof data === 'object' ? data : {};
         data["Id"] = this.id;
         data["Name"] = this.name;
-        data["CategoryId"] = this.categoryId;
-        data["Category"] = this.category ? this.category.toJSON() : <any>undefined;
-        data["Customer"] = this.customer ? this.customer.toJSON() : <any>undefined;
+        data["User"] = this.user ? this.user.toJSON() : <any>undefined;
         return data;
     }
 }
@@ -10180,9 +7097,7 @@ export class CorporateModel implements ICorporateModel {
 export interface ICorporateModel {
     id?: number;
     name?: string | undefined;
-    categoryId?: number;
-    category?: CorporateCategoryModel;
-    customer?: CustomerModel;
+    user?: UserModel;
 }
 
 export class Country implements ICountry {
@@ -10285,16 +7200,13 @@ export class Coupon implements ICoupon {
     id?: number;
     createdOn?: moment.Moment | undefined;
     createdById?: number | undefined;
-    createdBy?: User;
     updatedOn?: moment.Moment | undefined;
     updatedById?: number | undefined;
-    updatedBy?: User;
     deletedOn?: moment.Moment | undefined;
     deletedById?: number | undefined;
-    deletedBy?: User;
     isDeleted?: boolean;
-    customerId?: number;
-    customer?: Customer;
+    userId?: number;
+    user?: User;
     code?: string | undefined;
     createDate?: moment.Moment;
     expireDate?: moment.Moment;
@@ -10313,16 +7225,13 @@ export class Coupon implements ICoupon {
             this.id = _data["Id"];
             this.createdOn = _data["CreatedOn"] ? moment(_data["CreatedOn"].toString()) : <any>undefined;
             this.createdById = _data["CreatedById"];
-            this.createdBy = _data["CreatedBy"] ? User.fromJS(_data["CreatedBy"]) : <any>undefined;
             this.updatedOn = _data["UpdatedOn"] ? moment(_data["UpdatedOn"].toString()) : <any>undefined;
             this.updatedById = _data["UpdatedById"];
-            this.updatedBy = _data["UpdatedBy"] ? User.fromJS(_data["UpdatedBy"]) : <any>undefined;
             this.deletedOn = _data["DeletedOn"] ? moment(_data["DeletedOn"].toString()) : <any>undefined;
             this.deletedById = _data["DeletedById"];
-            this.deletedBy = _data["DeletedBy"] ? User.fromJS(_data["DeletedBy"]) : <any>undefined;
             this.isDeleted = _data["IsDeleted"];
-            this.customerId = _data["CustomerId"];
-            this.customer = _data["Customer"] ? Customer.fromJS(_data["Customer"]) : <any>undefined;
+            this.userId = _data["UserId"];
+            this.user = _data["User"] ? User.fromJS(_data["User"]) : <any>undefined;
             this.code = _data["Code"];
             this.createDate = _data["CreateDate"] ? moment(_data["CreateDate"].toString()) : <any>undefined;
             this.expireDate = _data["ExpireDate"] ? moment(_data["ExpireDate"].toString()) : <any>undefined;
@@ -10341,16 +7250,13 @@ export class Coupon implements ICoupon {
         data["Id"] = this.id;
         data["CreatedOn"] = this.createdOn ? this.createdOn.toISOString() : <any>undefined;
         data["CreatedById"] = this.createdById;
-        data["CreatedBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
         data["UpdatedOn"] = this.updatedOn ? this.updatedOn.toISOString() : <any>undefined;
         data["UpdatedById"] = this.updatedById;
-        data["UpdatedBy"] = this.updatedBy ? this.updatedBy.toJSON() : <any>undefined;
         data["DeletedOn"] = this.deletedOn ? this.deletedOn.toISOString() : <any>undefined;
         data["DeletedById"] = this.deletedById;
-        data["DeletedBy"] = this.deletedBy ? this.deletedBy.toJSON() : <any>undefined;
         data["IsDeleted"] = this.isDeleted;
-        data["CustomerId"] = this.customerId;
-        data["Customer"] = this.customer ? this.customer.toJSON() : <any>undefined;
+        data["UserId"] = this.userId;
+        data["User"] = this.user ? this.user.toJSON() : <any>undefined;
         data["Code"] = this.code;
         data["CreateDate"] = this.createDate ? this.createDate.toISOString() : <any>undefined;
         data["ExpireDate"] = this.expireDate ? this.expireDate.toISOString() : <any>undefined;
@@ -10362,16 +7268,13 @@ export interface ICoupon {
     id?: number;
     createdOn?: moment.Moment | undefined;
     createdById?: number | undefined;
-    createdBy?: User;
     updatedOn?: moment.Moment | undefined;
     updatedById?: number | undefined;
-    updatedBy?: User;
     deletedOn?: moment.Moment | undefined;
     deletedById?: number | undefined;
-    deletedBy?: User;
     isDeleted?: boolean;
-    customerId?: number;
-    customer?: Customer;
+    userId?: number;
+    user?: User;
     code?: string | undefined;
     createDate?: moment.Moment;
     expireDate?: moment.Moment;
@@ -10474,23 +7377,6 @@ export interface ICreditCardPaymentRequestModel {
 }
 
 export class CreditCardPaymentSummaryModel implements ICreditCardPaymentSummaryModel {
-    kPayTxnID?: string | undefined;
-    paymentType?: PaymentTypeEnum;
-    paymentStatus?: PaymentStatusEnum;
-    requestTimeStamp?: moment.Moment | undefined;
-    paymentTimeStamp?: moment.Moment | undefined;
-    transactionAmountTRY?: number | undefined;
-    paymentAmountTRY?: number | undefined;
-    discountAmountTRY?: number | undefined;
-    campaignInfo?: string | undefined;
-    institutionName?: string | undefined;
-    branchName?: string | undefined;
-    hasError?: boolean | undefined;
-    errorDescription?: string | undefined;
-    isThreeDS?: boolean | undefined;
-    threeDS_HTML?: string | undefined;
-    paymentResultDescription?: string | undefined;
-    additionalProperties?: { [key: string]: any; } | undefined;
 
     constructor(data?: ICreditCardPaymentSummaryModel) {
         if (data) {
@@ -10502,31 +7388,6 @@ export class CreditCardPaymentSummaryModel implements ICreditCardPaymentSummaryM
     }
 
     init(_data?: any) {
-        if (_data) {
-            this.kPayTxnID = _data["KPayTxnID"];
-            this.paymentType = _data["PaymentType"];
-            this.paymentStatus = _data["PaymentStatus"];
-            this.requestTimeStamp = _data["RequestTimeStamp"] ? moment(_data["RequestTimeStamp"].toString()) : <any>undefined;
-            this.paymentTimeStamp = _data["PaymentTimeStamp"] ? moment(_data["PaymentTimeStamp"].toString()) : <any>undefined;
-            this.transactionAmountTRY = _data["TransactionAmountTRY"];
-            this.paymentAmountTRY = _data["PaymentAmountTRY"];
-            this.discountAmountTRY = _data["DiscountAmountTRY"];
-            this.campaignInfo = _data["CampaignInfo"];
-            this.institutionName = _data["InstitutionName"];
-            this.branchName = _data["BranchName"];
-            this.hasError = _data["HasError"];
-            this.errorDescription = _data["ErrorDescription"];
-            this.isThreeDS = _data["IsThreeDS"];
-            this.threeDS_HTML = _data["ThreeDS_HTML"];
-            this.paymentResultDescription = _data["PaymentResultDescription"];
-            if (_data["AdditionalProperties"]) {
-                this.additionalProperties = {} as any;
-                for (let key in _data["AdditionalProperties"]) {
-                    if (_data["AdditionalProperties"].hasOwnProperty(key))
-                        (<any>this.additionalProperties)![key] = _data["AdditionalProperties"][key];
-                }
-            }
-        }
     }
 
     static fromJS(data: any): CreditCardPaymentSummaryModel {
@@ -10538,945 +7399,11 @@ export class CreditCardPaymentSummaryModel implements ICreditCardPaymentSummaryM
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["KPayTxnID"] = this.kPayTxnID;
-        data["PaymentType"] = this.paymentType;
-        data["PaymentStatus"] = this.paymentStatus;
-        data["RequestTimeStamp"] = this.requestTimeStamp ? this.requestTimeStamp.toISOString() : <any>undefined;
-        data["PaymentTimeStamp"] = this.paymentTimeStamp ? this.paymentTimeStamp.toISOString() : <any>undefined;
-        data["TransactionAmountTRY"] = this.transactionAmountTRY;
-        data["PaymentAmountTRY"] = this.paymentAmountTRY;
-        data["DiscountAmountTRY"] = this.discountAmountTRY;
-        data["CampaignInfo"] = this.campaignInfo;
-        data["InstitutionName"] = this.institutionName;
-        data["BranchName"] = this.branchName;
-        data["HasError"] = this.hasError;
-        data["ErrorDescription"] = this.errorDescription;
-        data["IsThreeDS"] = this.isThreeDS;
-        data["ThreeDS_HTML"] = this.threeDS_HTML;
-        data["PaymentResultDescription"] = this.paymentResultDescription;
-        if (this.additionalProperties) {
-            data["AdditionalProperties"] = {};
-            for (let key in this.additionalProperties) {
-                if (this.additionalProperties.hasOwnProperty(key))
-                    (<any>data["AdditionalProperties"])[key] = this.additionalProperties[key];
-            }
-        }
         return data;
     }
 }
 
 export interface ICreditCardPaymentSummaryModel {
-    kPayTxnID?: string | undefined;
-    paymentType?: PaymentTypeEnum;
-    paymentStatus?: PaymentStatusEnum;
-    requestTimeStamp?: moment.Moment | undefined;
-    paymentTimeStamp?: moment.Moment | undefined;
-    transactionAmountTRY?: number | undefined;
-    paymentAmountTRY?: number | undefined;
-    discountAmountTRY?: number | undefined;
-    campaignInfo?: string | undefined;
-    institutionName?: string | undefined;
-    branchName?: string | undefined;
-    hasError?: boolean | undefined;
-    errorDescription?: string | undefined;
-    isThreeDS?: boolean | undefined;
-    threeDS_HTML?: string | undefined;
-    paymentResultDescription?: string | undefined;
-    additionalProperties?: { [key: string]: any; } | undefined;
-}
-
-export enum CreditCardTypeEnum {
-    _0 = 0,
-    _1 = 1,
-    _2 = 2,
-    _3 = 3,
-    _4 = 4,
-    _5 = 5,
-    _6 = 6,
-    _7 = 7,
-}
-
-export class Customer implements ICustomer {
-    id?: number;
-    createdOn?: moment.Moment | undefined;
-    createdById?: number | undefined;
-    createdBy?: User;
-    updatedOn?: moment.Moment | undefined;
-    updatedById?: number | undefined;
-    updatedBy?: User;
-    deletedOn?: moment.Moment | undefined;
-    deletedById?: number | undefined;
-    deletedBy?: User;
-    isDeleted?: boolean;
-    customerType?: CustomerType;
-    retail?: Retail;
-    corporate?: Corporate;
-    store?: Store;
-    channelTypeId?: number | undefined;
-    channelType?: ChannelType;
-    groupId?: number | undefined;
-    group?: Group;
-    users?: User[] | undefined;
-    assets?: Asset[] | undefined;
-    bonuses?: Bonus[] | undefined;
-    coupons?: Coupon[] | undefined;
-    transactions?: Transaction[] | undefined;
-    customerAddresses?: CustomerAddress[] | undefined;
-    customerBankAccounts?: CustomerBankAccount[] | undefined;
-    customerContacts?: CustomerContact[] | undefined;
-    customerDocuments?: CustomerDocument[] | undefined;
-
-    constructor(data?: ICustomer) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["Id"];
-            this.createdOn = _data["CreatedOn"] ? moment(_data["CreatedOn"].toString()) : <any>undefined;
-            this.createdById = _data["CreatedById"];
-            this.createdBy = _data["CreatedBy"] ? User.fromJS(_data["CreatedBy"]) : <any>undefined;
-            this.updatedOn = _data["UpdatedOn"] ? moment(_data["UpdatedOn"].toString()) : <any>undefined;
-            this.updatedById = _data["UpdatedById"];
-            this.updatedBy = _data["UpdatedBy"] ? User.fromJS(_data["UpdatedBy"]) : <any>undefined;
-            this.deletedOn = _data["DeletedOn"] ? moment(_data["DeletedOn"].toString()) : <any>undefined;
-            this.deletedById = _data["DeletedById"];
-            this.deletedBy = _data["DeletedBy"] ? User.fromJS(_data["DeletedBy"]) : <any>undefined;
-            this.isDeleted = _data["IsDeleted"];
-            this.customerType = _data["CustomerType"];
-            this.retail = _data["Retail"] ? Retail.fromJS(_data["Retail"]) : <any>undefined;
-            this.corporate = _data["Corporate"] ? Corporate.fromJS(_data["Corporate"]) : <any>undefined;
-            this.store = _data["Store"] ? Store.fromJS(_data["Store"]) : <any>undefined;
-            this.channelTypeId = _data["ChannelTypeId"];
-            this.channelType = _data["ChannelType"] ? ChannelType.fromJS(_data["ChannelType"]) : <any>undefined;
-            this.groupId = _data["GroupId"];
-            this.group = _data["Group"] ? Group.fromJS(_data["Group"]) : <any>undefined;
-            if (Array.isArray(_data["Users"])) {
-                this.users = [] as any;
-                for (let item of _data["Users"])
-                    this.users!.push(User.fromJS(item));
-            }
-            if (Array.isArray(_data["Assets"])) {
-                this.assets = [] as any;
-                for (let item of _data["Assets"])
-                    this.assets!.push(Asset.fromJS(item));
-            }
-            if (Array.isArray(_data["Bonuses"])) {
-                this.bonuses = [] as any;
-                for (let item of _data["Bonuses"])
-                    this.bonuses!.push(Bonus.fromJS(item));
-            }
-            if (Array.isArray(_data["Coupons"])) {
-                this.coupons = [] as any;
-                for (let item of _data["Coupons"])
-                    this.coupons!.push(Coupon.fromJS(item));
-            }
-            if (Array.isArray(_data["Transactions"])) {
-                this.transactions = [] as any;
-                for (let item of _data["Transactions"])
-                    this.transactions!.push(Transaction.fromJS(item));
-            }
-            if (Array.isArray(_data["CustomerAddresses"])) {
-                this.customerAddresses = [] as any;
-                for (let item of _data["CustomerAddresses"])
-                    this.customerAddresses!.push(CustomerAddress.fromJS(item));
-            }
-            if (Array.isArray(_data["CustomerBankAccounts"])) {
-                this.customerBankAccounts = [] as any;
-                for (let item of _data["CustomerBankAccounts"])
-                    this.customerBankAccounts!.push(CustomerBankAccount.fromJS(item));
-            }
-            if (Array.isArray(_data["CustomerContacts"])) {
-                this.customerContacts = [] as any;
-                for (let item of _data["CustomerContacts"])
-                    this.customerContacts!.push(CustomerContact.fromJS(item));
-            }
-            if (Array.isArray(_data["CustomerDocuments"])) {
-                this.customerDocuments = [] as any;
-                for (let item of _data["CustomerDocuments"])
-                    this.customerDocuments!.push(CustomerDocument.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): Customer {
-        data = typeof data === 'object' ? data : {};
-        let result = new Customer();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Id"] = this.id;
-        data["CreatedOn"] = this.createdOn ? this.createdOn.toISOString() : <any>undefined;
-        data["CreatedById"] = this.createdById;
-        data["CreatedBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
-        data["UpdatedOn"] = this.updatedOn ? this.updatedOn.toISOString() : <any>undefined;
-        data["UpdatedById"] = this.updatedById;
-        data["UpdatedBy"] = this.updatedBy ? this.updatedBy.toJSON() : <any>undefined;
-        data["DeletedOn"] = this.deletedOn ? this.deletedOn.toISOString() : <any>undefined;
-        data["DeletedById"] = this.deletedById;
-        data["DeletedBy"] = this.deletedBy ? this.deletedBy.toJSON() : <any>undefined;
-        data["IsDeleted"] = this.isDeleted;
-        data["CustomerType"] = this.customerType;
-        data["Retail"] = this.retail ? this.retail.toJSON() : <any>undefined;
-        data["Corporate"] = this.corporate ? this.corporate.toJSON() : <any>undefined;
-        data["Store"] = this.store ? this.store.toJSON() : <any>undefined;
-        data["ChannelTypeId"] = this.channelTypeId;
-        data["ChannelType"] = this.channelType ? this.channelType.toJSON() : <any>undefined;
-        data["GroupId"] = this.groupId;
-        data["Group"] = this.group ? this.group.toJSON() : <any>undefined;
-        if (Array.isArray(this.users)) {
-            data["Users"] = [];
-            for (let item of this.users)
-                data["Users"].push(item.toJSON());
-        }
-        if (Array.isArray(this.assets)) {
-            data["Assets"] = [];
-            for (let item of this.assets)
-                data["Assets"].push(item.toJSON());
-        }
-        if (Array.isArray(this.bonuses)) {
-            data["Bonuses"] = [];
-            for (let item of this.bonuses)
-                data["Bonuses"].push(item.toJSON());
-        }
-        if (Array.isArray(this.coupons)) {
-            data["Coupons"] = [];
-            for (let item of this.coupons)
-                data["Coupons"].push(item.toJSON());
-        }
-        if (Array.isArray(this.transactions)) {
-            data["Transactions"] = [];
-            for (let item of this.transactions)
-                data["Transactions"].push(item.toJSON());
-        }
-        if (Array.isArray(this.customerAddresses)) {
-            data["CustomerAddresses"] = [];
-            for (let item of this.customerAddresses)
-                data["CustomerAddresses"].push(item.toJSON());
-        }
-        if (Array.isArray(this.customerBankAccounts)) {
-            data["CustomerBankAccounts"] = [];
-            for (let item of this.customerBankAccounts)
-                data["CustomerBankAccounts"].push(item.toJSON());
-        }
-        if (Array.isArray(this.customerContacts)) {
-            data["CustomerContacts"] = [];
-            for (let item of this.customerContacts)
-                data["CustomerContacts"].push(item.toJSON());
-        }
-        if (Array.isArray(this.customerDocuments)) {
-            data["CustomerDocuments"] = [];
-            for (let item of this.customerDocuments)
-                data["CustomerDocuments"].push(item.toJSON());
-        }
-        return data;
-    }
-}
-
-export interface ICustomer {
-    id?: number;
-    createdOn?: moment.Moment | undefined;
-    createdById?: number | undefined;
-    createdBy?: User;
-    updatedOn?: moment.Moment | undefined;
-    updatedById?: number | undefined;
-    updatedBy?: User;
-    deletedOn?: moment.Moment | undefined;
-    deletedById?: number | undefined;
-    deletedBy?: User;
-    isDeleted?: boolean;
-    customerType?: CustomerType;
-    retail?: Retail;
-    corporate?: Corporate;
-    store?: Store;
-    channelTypeId?: number | undefined;
-    channelType?: ChannelType;
-    groupId?: number | undefined;
-    group?: Group;
-    users?: User[] | undefined;
-    assets?: Asset[] | undefined;
-    bonuses?: Bonus[] | undefined;
-    coupons?: Coupon[] | undefined;
-    transactions?: Transaction[] | undefined;
-    customerAddresses?: CustomerAddress[] | undefined;
-    customerBankAccounts?: CustomerBankAccount[] | undefined;
-    customerContacts?: CustomerContact[] | undefined;
-    customerDocuments?: CustomerDocument[] | undefined;
-}
-
-export class CustomerAddress implements ICustomerAddress {
-    id?: number;
-    customerId?: number;
-    customer?: Customer;
-    addressId?: number;
-    address?: Address;
-    lastUsedOn?: moment.Moment | undefined;
-    isPrimary?: boolean;
-
-    constructor(data?: ICustomerAddress) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["Id"];
-            this.customerId = _data["CustomerId"];
-            this.customer = _data["Customer"] ? Customer.fromJS(_data["Customer"]) : <any>undefined;
-            this.addressId = _data["AddressId"];
-            this.address = _data["Address"] ? Address.fromJS(_data["Address"]) : <any>undefined;
-            this.lastUsedOn = _data["LastUsedOn"] ? moment(_data["LastUsedOn"].toString()) : <any>undefined;
-            this.isPrimary = _data["IsPrimary"];
-        }
-    }
-
-    static fromJS(data: any): CustomerAddress {
-        data = typeof data === 'object' ? data : {};
-        let result = new CustomerAddress();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Id"] = this.id;
-        data["CustomerId"] = this.customerId;
-        data["Customer"] = this.customer ? this.customer.toJSON() : <any>undefined;
-        data["AddressId"] = this.addressId;
-        data["Address"] = this.address ? this.address.toJSON() : <any>undefined;
-        data["LastUsedOn"] = this.lastUsedOn ? this.lastUsedOn.toISOString() : <any>undefined;
-        data["IsPrimary"] = this.isPrimary;
-        return data;
-    }
-}
-
-export interface ICustomerAddress {
-    id?: number;
-    customerId?: number;
-    customer?: Customer;
-    addressId?: number;
-    address?: Address;
-    lastUsedOn?: moment.Moment | undefined;
-    isPrimary?: boolean;
-}
-
-export class CustomerBankAccount implements ICustomerBankAccount {
-    id?: number;
-    createdOn?: moment.Moment | undefined;
-    createdById?: number | undefined;
-    createdBy?: User;
-    updatedOn?: moment.Moment | undefined;
-    updatedById?: number | undefined;
-    updatedBy?: User;
-    deletedOn?: moment.Moment | undefined;
-    deletedById?: number | undefined;
-    deletedBy?: User;
-    isDeleted?: boolean;
-    customerId?: number;
-    customer?: Customer;
-    symbolId?: number;
-    symbol?: Symbol;
-    bankId?: number;
-    bank?: Bank;
-    name?: string | undefined;
-    accountNo?: string | undefined;
-
-    constructor(data?: ICustomerBankAccount) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["Id"];
-            this.createdOn = _data["CreatedOn"] ? moment(_data["CreatedOn"].toString()) : <any>undefined;
-            this.createdById = _data["CreatedById"];
-            this.createdBy = _data["CreatedBy"] ? User.fromJS(_data["CreatedBy"]) : <any>undefined;
-            this.updatedOn = _data["UpdatedOn"] ? moment(_data["UpdatedOn"].toString()) : <any>undefined;
-            this.updatedById = _data["UpdatedById"];
-            this.updatedBy = _data["UpdatedBy"] ? User.fromJS(_data["UpdatedBy"]) : <any>undefined;
-            this.deletedOn = _data["DeletedOn"] ? moment(_data["DeletedOn"].toString()) : <any>undefined;
-            this.deletedById = _data["DeletedById"];
-            this.deletedBy = _data["DeletedBy"] ? User.fromJS(_data["DeletedBy"]) : <any>undefined;
-            this.isDeleted = _data["IsDeleted"];
-            this.customerId = _data["CustomerId"];
-            this.customer = _data["Customer"] ? Customer.fromJS(_data["Customer"]) : <any>undefined;
-            this.symbolId = _data["SymbolId"];
-            this.symbol = _data["Symbol"] ? Symbol.fromJS(_data["Symbol"]) : <any>undefined;
-            this.bankId = _data["BankId"];
-            this.bank = _data["Bank"] ? Bank.fromJS(_data["Bank"]) : <any>undefined;
-            this.name = _data["Name"];
-            this.accountNo = _data["AccountNo"];
-        }
-    }
-
-    static fromJS(data: any): CustomerBankAccount {
-        data = typeof data === 'object' ? data : {};
-        let result = new CustomerBankAccount();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Id"] = this.id;
-        data["CreatedOn"] = this.createdOn ? this.createdOn.toISOString() : <any>undefined;
-        data["CreatedById"] = this.createdById;
-        data["CreatedBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
-        data["UpdatedOn"] = this.updatedOn ? this.updatedOn.toISOString() : <any>undefined;
-        data["UpdatedById"] = this.updatedById;
-        data["UpdatedBy"] = this.updatedBy ? this.updatedBy.toJSON() : <any>undefined;
-        data["DeletedOn"] = this.deletedOn ? this.deletedOn.toISOString() : <any>undefined;
-        data["DeletedById"] = this.deletedById;
-        data["DeletedBy"] = this.deletedBy ? this.deletedBy.toJSON() : <any>undefined;
-        data["IsDeleted"] = this.isDeleted;
-        data["CustomerId"] = this.customerId;
-        data["Customer"] = this.customer ? this.customer.toJSON() : <any>undefined;
-        data["SymbolId"] = this.symbolId;
-        data["Symbol"] = this.symbol ? this.symbol.toJSON() : <any>undefined;
-        data["BankId"] = this.bankId;
-        data["Bank"] = this.bank ? this.bank.toJSON() : <any>undefined;
-        data["Name"] = this.name;
-        data["AccountNo"] = this.accountNo;
-        return data;
-    }
-}
-
-export interface ICustomerBankAccount {
-    id?: number;
-    createdOn?: moment.Moment | undefined;
-    createdById?: number | undefined;
-    createdBy?: User;
-    updatedOn?: moment.Moment | undefined;
-    updatedById?: number | undefined;
-    updatedBy?: User;
-    deletedOn?: moment.Moment | undefined;
-    deletedById?: number | undefined;
-    deletedBy?: User;
-    isDeleted?: boolean;
-    customerId?: number;
-    customer?: Customer;
-    symbolId?: number;
-    symbol?: Symbol;
-    bankId?: number;
-    bank?: Bank;
-    name?: string | undefined;
-    accountNo?: string | undefined;
-}
-
-export class CustomerBankAccountModel implements ICustomerBankAccountModel {
-    customerId?: number;
-    customer?: CustomerModel;
-    symbolId?: number;
-    symbol?: SymbolModel;
-    bankId?: number;
-    bank?: BankModel;
-    name?: string | undefined;
-    accountNo?: string | undefined;
-
-    constructor(data?: ICustomerBankAccountModel) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.customerId = _data["CustomerId"];
-            this.customer = _data["Customer"] ? CustomerModel.fromJS(_data["Customer"]) : <any>undefined;
-            this.symbolId = _data["SymbolId"];
-            this.symbol = _data["Symbol"] ? SymbolModel.fromJS(_data["Symbol"]) : <any>undefined;
-            this.bankId = _data["BankId"];
-            this.bank = _data["Bank"] ? BankModel.fromJS(_data["Bank"]) : <any>undefined;
-            this.name = _data["Name"];
-            this.accountNo = _data["AccountNo"];
-        }
-    }
-
-    static fromJS(data: any): CustomerBankAccountModel {
-        data = typeof data === 'object' ? data : {};
-        let result = new CustomerBankAccountModel();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["CustomerId"] = this.customerId;
-        data["Customer"] = this.customer ? this.customer.toJSON() : <any>undefined;
-        data["SymbolId"] = this.symbolId;
-        data["Symbol"] = this.symbol ? this.symbol.toJSON() : <any>undefined;
-        data["BankId"] = this.bankId;
-        data["Bank"] = this.bank ? this.bank.toJSON() : <any>undefined;
-        data["Name"] = this.name;
-        data["AccountNo"] = this.accountNo;
-        return data;
-    }
-}
-
-export interface ICustomerBankAccountModel {
-    customerId?: number;
-    customer?: CustomerModel;
-    symbolId?: number;
-    symbol?: SymbolModel;
-    bankId?: number;
-    bank?: BankModel;
-    name?: string | undefined;
-    accountNo?: string | undefined;
-}
-
-export class CustomerContact implements ICustomerContact {
-    id?: number;
-    createdOn?: moment.Moment | undefined;
-    createdById?: number | undefined;
-    createdBy?: User;
-    updatedOn?: moment.Moment | undefined;
-    updatedById?: number | undefined;
-    updatedBy?: User;
-    deletedOn?: moment.Moment | undefined;
-    deletedById?: number | undefined;
-    deletedBy?: User;
-    isDeleted?: boolean;
-    customerId?: number;
-    customer?: Customer;
-    contactTypeId?: number;
-    contactType?: ContactType;
-    contactValue?: string | undefined;
-    isPrimary?: boolean;
-
-    constructor(data?: ICustomerContact) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["Id"];
-            this.createdOn = _data["CreatedOn"] ? moment(_data["CreatedOn"].toString()) : <any>undefined;
-            this.createdById = _data["CreatedById"];
-            this.createdBy = _data["CreatedBy"] ? User.fromJS(_data["CreatedBy"]) : <any>undefined;
-            this.updatedOn = _data["UpdatedOn"] ? moment(_data["UpdatedOn"].toString()) : <any>undefined;
-            this.updatedById = _data["UpdatedById"];
-            this.updatedBy = _data["UpdatedBy"] ? User.fromJS(_data["UpdatedBy"]) : <any>undefined;
-            this.deletedOn = _data["DeletedOn"] ? moment(_data["DeletedOn"].toString()) : <any>undefined;
-            this.deletedById = _data["DeletedById"];
-            this.deletedBy = _data["DeletedBy"] ? User.fromJS(_data["DeletedBy"]) : <any>undefined;
-            this.isDeleted = _data["IsDeleted"];
-            this.customerId = _data["CustomerId"];
-            this.customer = _data["Customer"] ? Customer.fromJS(_data["Customer"]) : <any>undefined;
-            this.contactTypeId = _data["ContactTypeId"];
-            this.contactType = _data["ContactType"] ? ContactType.fromJS(_data["ContactType"]) : <any>undefined;
-            this.contactValue = _data["ContactValue"];
-            this.isPrimary = _data["IsPrimary"];
-        }
-    }
-
-    static fromJS(data: any): CustomerContact {
-        data = typeof data === 'object' ? data : {};
-        let result = new CustomerContact();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Id"] = this.id;
-        data["CreatedOn"] = this.createdOn ? this.createdOn.toISOString() : <any>undefined;
-        data["CreatedById"] = this.createdById;
-        data["CreatedBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
-        data["UpdatedOn"] = this.updatedOn ? this.updatedOn.toISOString() : <any>undefined;
-        data["UpdatedById"] = this.updatedById;
-        data["UpdatedBy"] = this.updatedBy ? this.updatedBy.toJSON() : <any>undefined;
-        data["DeletedOn"] = this.deletedOn ? this.deletedOn.toISOString() : <any>undefined;
-        data["DeletedById"] = this.deletedById;
-        data["DeletedBy"] = this.deletedBy ? this.deletedBy.toJSON() : <any>undefined;
-        data["IsDeleted"] = this.isDeleted;
-        data["CustomerId"] = this.customerId;
-        data["Customer"] = this.customer ? this.customer.toJSON() : <any>undefined;
-        data["ContactTypeId"] = this.contactTypeId;
-        data["ContactType"] = this.contactType ? this.contactType.toJSON() : <any>undefined;
-        data["ContactValue"] = this.contactValue;
-        data["IsPrimary"] = this.isPrimary;
-        return data;
-    }
-}
-
-export interface ICustomerContact {
-    id?: number;
-    createdOn?: moment.Moment | undefined;
-    createdById?: number | undefined;
-    createdBy?: User;
-    updatedOn?: moment.Moment | undefined;
-    updatedById?: number | undefined;
-    updatedBy?: User;
-    deletedOn?: moment.Moment | undefined;
-    deletedById?: number | undefined;
-    deletedBy?: User;
-    isDeleted?: boolean;
-    customerId?: number;
-    customer?: Customer;
-    contactTypeId?: number;
-    contactType?: ContactType;
-    contactValue?: string | undefined;
-    isPrimary?: boolean;
-}
-
-export class CustomerDocument implements ICustomerDocument {
-    id?: number;
-    createdOn?: moment.Moment | undefined;
-    createdById?: number | undefined;
-    createdBy?: User;
-    updatedOn?: moment.Moment | undefined;
-    updatedById?: number | undefined;
-    updatedBy?: User;
-    deletedOn?: moment.Moment | undefined;
-    deletedById?: number | undefined;
-    deletedBy?: User;
-    isDeleted?: boolean;
-    customerId?: number;
-    customer?: Customer;
-    documentTypeId?: number;
-    documentType?: DocumentType;
-    medias?: CustomerDocumentMedia[] | undefined;
-    countryId?: string | undefined;
-    country?: Country;
-    documentNo?: string | undefined;
-    serialNo?: string | undefined;
-    dateOfIssue?: moment.Moment;
-    dateOfExpiry?: moment.Moment;
-    isVerified?: boolean;
-    verifiedOn?: moment.Moment;
-
-    constructor(data?: ICustomerDocument) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["Id"];
-            this.createdOn = _data["CreatedOn"] ? moment(_data["CreatedOn"].toString()) : <any>undefined;
-            this.createdById = _data["CreatedById"];
-            this.createdBy = _data["CreatedBy"] ? User.fromJS(_data["CreatedBy"]) : <any>undefined;
-            this.updatedOn = _data["UpdatedOn"] ? moment(_data["UpdatedOn"].toString()) : <any>undefined;
-            this.updatedById = _data["UpdatedById"];
-            this.updatedBy = _data["UpdatedBy"] ? User.fromJS(_data["UpdatedBy"]) : <any>undefined;
-            this.deletedOn = _data["DeletedOn"] ? moment(_data["DeletedOn"].toString()) : <any>undefined;
-            this.deletedById = _data["DeletedById"];
-            this.deletedBy = _data["DeletedBy"] ? User.fromJS(_data["DeletedBy"]) : <any>undefined;
-            this.isDeleted = _data["IsDeleted"];
-            this.customerId = _data["CustomerId"];
-            this.customer = _data["Customer"] ? Customer.fromJS(_data["Customer"]) : <any>undefined;
-            this.documentTypeId = _data["DocumentTypeId"];
-            this.documentType = _data["DocumentType"] ? DocumentType.fromJS(_data["DocumentType"]) : <any>undefined;
-            if (Array.isArray(_data["Medias"])) {
-                this.medias = [] as any;
-                for (let item of _data["Medias"])
-                    this.medias!.push(CustomerDocumentMedia.fromJS(item));
-            }
-            this.countryId = _data["CountryId"];
-            this.country = _data["Country"] ? Country.fromJS(_data["Country"]) : <any>undefined;
-            this.documentNo = _data["DocumentNo"];
-            this.serialNo = _data["SerialNo"];
-            this.dateOfIssue = _data["DateOfIssue"] ? moment(_data["DateOfIssue"].toString()) : <any>undefined;
-            this.dateOfExpiry = _data["DateOfExpiry"] ? moment(_data["DateOfExpiry"].toString()) : <any>undefined;
-            this.isVerified = _data["IsVerified"];
-            this.verifiedOn = _data["VerifiedOn"] ? moment(_data["VerifiedOn"].toString()) : <any>undefined;
-        }
-    }
-
-    static fromJS(data: any): CustomerDocument {
-        data = typeof data === 'object' ? data : {};
-        let result = new CustomerDocument();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Id"] = this.id;
-        data["CreatedOn"] = this.createdOn ? this.createdOn.toISOString() : <any>undefined;
-        data["CreatedById"] = this.createdById;
-        data["CreatedBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
-        data["UpdatedOn"] = this.updatedOn ? this.updatedOn.toISOString() : <any>undefined;
-        data["UpdatedById"] = this.updatedById;
-        data["UpdatedBy"] = this.updatedBy ? this.updatedBy.toJSON() : <any>undefined;
-        data["DeletedOn"] = this.deletedOn ? this.deletedOn.toISOString() : <any>undefined;
-        data["DeletedById"] = this.deletedById;
-        data["DeletedBy"] = this.deletedBy ? this.deletedBy.toJSON() : <any>undefined;
-        data["IsDeleted"] = this.isDeleted;
-        data["CustomerId"] = this.customerId;
-        data["Customer"] = this.customer ? this.customer.toJSON() : <any>undefined;
-        data["DocumentTypeId"] = this.documentTypeId;
-        data["DocumentType"] = this.documentType ? this.documentType.toJSON() : <any>undefined;
-        if (Array.isArray(this.medias)) {
-            data["Medias"] = [];
-            for (let item of this.medias)
-                data["Medias"].push(item.toJSON());
-        }
-        data["CountryId"] = this.countryId;
-        data["Country"] = this.country ? this.country.toJSON() : <any>undefined;
-        data["DocumentNo"] = this.documentNo;
-        data["SerialNo"] = this.serialNo;
-        data["DateOfIssue"] = this.dateOfIssue ? this.dateOfIssue.toISOString() : <any>undefined;
-        data["DateOfExpiry"] = this.dateOfExpiry ? this.dateOfExpiry.toISOString() : <any>undefined;
-        data["IsVerified"] = this.isVerified;
-        data["VerifiedOn"] = this.verifiedOn ? this.verifiedOn.toISOString() : <any>undefined;
-        return data;
-    }
-}
-
-export interface ICustomerDocument {
-    id?: number;
-    createdOn?: moment.Moment | undefined;
-    createdById?: number | undefined;
-    createdBy?: User;
-    updatedOn?: moment.Moment | undefined;
-    updatedById?: number | undefined;
-    updatedBy?: User;
-    deletedOn?: moment.Moment | undefined;
-    deletedById?: number | undefined;
-    deletedBy?: User;
-    isDeleted?: boolean;
-    customerId?: number;
-    customer?: Customer;
-    documentTypeId?: number;
-    documentType?: DocumentType;
-    medias?: CustomerDocumentMedia[] | undefined;
-    countryId?: string | undefined;
-    country?: Country;
-    documentNo?: string | undefined;
-    serialNo?: string | undefined;
-    dateOfIssue?: moment.Moment;
-    dateOfExpiry?: moment.Moment;
-    isVerified?: boolean;
-    verifiedOn?: moment.Moment;
-}
-
-export class CustomerDocumentMedia implements ICustomerDocumentMedia {
-    id?: number;
-    customerDocumentId?: number;
-    customerDocument?: CustomerDocument;
-    mediaId?: number;
-    media?: Media;
-    scanTypeId?: number;
-    scanType?: ScanType;
-
-    constructor(data?: ICustomerDocumentMedia) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["Id"];
-            this.customerDocumentId = _data["CustomerDocumentId"];
-            this.customerDocument = _data["CustomerDocument"] ? CustomerDocument.fromJS(_data["CustomerDocument"]) : <any>undefined;
-            this.mediaId = _data["MediaId"];
-            this.media = _data["Media"] ? Media.fromJS(_data["Media"]) : <any>undefined;
-            this.scanTypeId = _data["ScanTypeId"];
-            this.scanType = _data["ScanType"] ? ScanType.fromJS(_data["ScanType"]) : <any>undefined;
-        }
-    }
-
-    static fromJS(data: any): CustomerDocumentMedia {
-        data = typeof data === 'object' ? data : {};
-        let result = new CustomerDocumentMedia();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Id"] = this.id;
-        data["CustomerDocumentId"] = this.customerDocumentId;
-        data["CustomerDocument"] = this.customerDocument ? this.customerDocument.toJSON() : <any>undefined;
-        data["MediaId"] = this.mediaId;
-        data["Media"] = this.media ? this.media.toJSON() : <any>undefined;
-        data["ScanTypeId"] = this.scanTypeId;
-        data["ScanType"] = this.scanType ? this.scanType.toJSON() : <any>undefined;
-        return data;
-    }
-}
-
-export interface ICustomerDocumentMedia {
-    id?: number;
-    customerDocumentId?: number;
-    customerDocument?: CustomerDocument;
-    mediaId?: number;
-    media?: Media;
-    scanTypeId?: number;
-    scanType?: ScanType;
-}
-
-export class CustomerDocumentModel implements ICustomerDocumentModel {
-
-    constructor(data?: ICustomerDocumentModel) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-    }
-
-    static fromJS(data: any): CustomerDocumentModel {
-        data = typeof data === 'object' ? data : {};
-        let result = new CustomerDocumentModel();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        return data;
-    }
-}
-
-export interface ICustomerDocumentModel {
-}
-
-export class CustomerModel implements ICustomerModel {
-    customerType?: CustomerType;
-    channelTypeId?: number | undefined;
-
-    constructor(data?: ICustomerModel) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.customerType = _data["CustomerType"];
-            this.channelTypeId = _data["ChannelTypeId"];
-        }
-    }
-
-    static fromJS(data: any): CustomerModel {
-        data = typeof data === 'object' ? data : {};
-        let result = new CustomerModel();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["CustomerType"] = this.customerType;
-        data["ChannelTypeId"] = this.channelTypeId;
-        return data;
-    }
-}
-
-export interface ICustomerModel {
-    customerType?: CustomerType;
-    channelTypeId?: number | undefined;
-}
-
-export enum CustomerType {
-    _1 = 1,
-    _2 = 2,
-}
-
-export class Cyp implements ICyp {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-
-    constructor(data?: ICyp) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alis = _data["Alis"];
-            this.satis = _data["Satis"];
-            this.tarih = _data["Tarih"];
-            this.sonkapanis = _data["Sonkapanis"];
-            this.son = _data["Son"];
-            this.endusuk = _data["Endusuk"];
-            this.enyuksek = _data["Enyuksek"];
-            this.gunlukyuzde = _data["Gunlukyuzde"];
-        }
-    }
-
-    static fromJS(data: any): Cyp {
-        data = typeof data === 'object' ? data : {};
-        let result = new Cyp();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alis"] = this.alis;
-        data["Satis"] = this.satis;
-        data["Tarih"] = this.tarih;
-        data["Sonkapanis"] = this.sonkapanis;
-        data["Son"] = this.son;
-        data["Endusuk"] = this.endusuk;
-        data["Enyuksek"] = this.enyuksek;
-        data["Gunlukyuzde"] = this.gunlukyuzde;
-        return data;
-    }
-}
-
-export interface ICyp {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
 }
 
 export class Data implements IData {
@@ -11795,148 +7722,9 @@ export interface IDebentureModelData {
     sermaye?: string | undefined;
 }
 
-export class DemandType implements IDemandType {
-    id?: number;
-    createdOn?: moment.Moment | undefined;
-    createdById?: number | undefined;
-    createdBy?: User;
-    updatedOn?: moment.Moment | undefined;
-    updatedById?: number | undefined;
-    updatedBy?: User;
-    deletedOn?: moment.Moment | undefined;
-    deletedById?: number | undefined;
-    deletedBy?: User;
-    isDeleted?: boolean;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-
-    constructor(data?: IDemandType) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["Id"];
-            this.createdOn = _data["CreatedOn"] ? moment(_data["CreatedOn"].toString()) : <any>undefined;
-            this.createdById = _data["CreatedById"];
-            this.createdBy = _data["CreatedBy"] ? User.fromJS(_data["CreatedBy"]) : <any>undefined;
-            this.updatedOn = _data["UpdatedOn"] ? moment(_data["UpdatedOn"].toString()) : <any>undefined;
-            this.updatedById = _data["UpdatedById"];
-            this.updatedBy = _data["UpdatedBy"] ? User.fromJS(_data["UpdatedBy"]) : <any>undefined;
-            this.deletedOn = _data["DeletedOn"] ? moment(_data["DeletedOn"].toString()) : <any>undefined;
-            this.deletedById = _data["DeletedById"];
-            this.deletedBy = _data["DeletedBy"] ? User.fromJS(_data["DeletedBy"]) : <any>undefined;
-            this.isDeleted = _data["IsDeleted"];
-            this.code = _data["Code"];
-            this.description = _data["Description"];
-            this.displayOrder = _data["DisplayOrder"];
-            this.isActive = _data["IsActive"];
-        }
-    }
-
-    static fromJS(data: any): DemandType {
-        data = typeof data === 'object' ? data : {};
-        let result = new DemandType();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Id"] = this.id;
-        data["CreatedOn"] = this.createdOn ? this.createdOn.toISOString() : <any>undefined;
-        data["CreatedById"] = this.createdById;
-        data["CreatedBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
-        data["UpdatedOn"] = this.updatedOn ? this.updatedOn.toISOString() : <any>undefined;
-        data["UpdatedById"] = this.updatedById;
-        data["UpdatedBy"] = this.updatedBy ? this.updatedBy.toJSON() : <any>undefined;
-        data["DeletedOn"] = this.deletedOn ? this.deletedOn.toISOString() : <any>undefined;
-        data["DeletedById"] = this.deletedById;
-        data["DeletedBy"] = this.deletedBy ? this.deletedBy.toJSON() : <any>undefined;
-        data["IsDeleted"] = this.isDeleted;
-        data["Code"] = this.code;
-        data["Description"] = this.description;
-        data["DisplayOrder"] = this.displayOrder;
-        data["IsActive"] = this.isActive;
-        return data;
-    }
-}
-
-export interface IDemandType {
-    id?: number;
-    createdOn?: moment.Moment | undefined;
-    createdById?: number | undefined;
-    createdBy?: User;
-    updatedOn?: moment.Moment | undefined;
-    updatedById?: number | undefined;
-    updatedBy?: User;
-    deletedOn?: moment.Moment | undefined;
-    deletedById?: number | undefined;
-    deletedBy?: User;
-    isDeleted?: boolean;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-}
-
-export class DemandTypeModel implements IDemandTypeModel {
-    id?: number;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-
-    constructor(data?: IDemandTypeModel) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["Id"];
-            this.code = _data["Code"];
-            this.description = _data["Description"];
-            this.displayOrder = _data["DisplayOrder"];
-            this.isActive = _data["IsActive"];
-        }
-    }
-
-    static fromJS(data: any): DemandTypeModel {
-        data = typeof data === 'object' ? data : {};
-        let result = new DemandTypeModel();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Id"] = this.id;
-        data["Code"] = this.code;
-        data["Description"] = this.description;
-        data["DisplayOrder"] = this.displayOrder;
-        data["IsActive"] = this.isActive;
-        return data;
-    }
-}
-
-export interface IDemandTypeModel {
-    id?: number;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
+export enum DemandType {
+    Digital = "Digital",
+    Physical = "Physical",
 }
 
 export class District implements IDistrict {
@@ -11995,212 +7783,17 @@ export interface IDistrict {
     location?: string | undefined;
 }
 
-export class Dkk implements IDkk {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-
-    constructor(data?: IDkk) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alis = _data["Alis"];
-            this.satis = _data["Satis"];
-            this.tarih = _data["Tarih"];
-            this.sonkapanis = _data["Sonkapanis"];
-            this.son = _data["Son"];
-            this.endusuk = _data["Endusuk"];
-            this.enyuksek = _data["Enyuksek"];
-            this.gunlukyuzde = _data["Gunlukyuzde"];
-        }
-    }
-
-    static fromJS(data: any): Dkk {
-        data = typeof data === 'object' ? data : {};
-        let result = new Dkk();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alis"] = this.alis;
-        data["Satis"] = this.satis;
-        data["Tarih"] = this.tarih;
-        data["Sonkapanis"] = this.sonkapanis;
-        data["Son"] = this.son;
-        data["Endusuk"] = this.endusuk;
-        data["Enyuksek"] = this.enyuksek;
-        data["Gunlukyuzde"] = this.gunlukyuzde;
-        return data;
-    }
-}
-
-export interface IDkk {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-}
-
-export class DocumentType implements IDocumentType {
-    id?: number;
-    createdOn?: moment.Moment | undefined;
-    createdById?: number | undefined;
-    createdBy?: User;
-    updatedOn?: moment.Moment | undefined;
-    updatedById?: number | undefined;
-    updatedBy?: User;
-    deletedOn?: moment.Moment | undefined;
-    deletedById?: number | undefined;
-    deletedBy?: User;
-    isDeleted?: boolean;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-
-    constructor(data?: IDocumentType) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["Id"];
-            this.createdOn = _data["CreatedOn"] ? moment(_data["CreatedOn"].toString()) : <any>undefined;
-            this.createdById = _data["CreatedById"];
-            this.createdBy = _data["CreatedBy"] ? User.fromJS(_data["CreatedBy"]) : <any>undefined;
-            this.updatedOn = _data["UpdatedOn"] ? moment(_data["UpdatedOn"].toString()) : <any>undefined;
-            this.updatedById = _data["UpdatedById"];
-            this.updatedBy = _data["UpdatedBy"] ? User.fromJS(_data["UpdatedBy"]) : <any>undefined;
-            this.deletedOn = _data["DeletedOn"] ? moment(_data["DeletedOn"].toString()) : <any>undefined;
-            this.deletedById = _data["DeletedById"];
-            this.deletedBy = _data["DeletedBy"] ? User.fromJS(_data["DeletedBy"]) : <any>undefined;
-            this.isDeleted = _data["IsDeleted"];
-            this.code = _data["Code"];
-            this.description = _data["Description"];
-            this.displayOrder = _data["DisplayOrder"];
-            this.isActive = _data["IsActive"];
-        }
-    }
-
-    static fromJS(data: any): DocumentType {
-        data = typeof data === 'object' ? data : {};
-        let result = new DocumentType();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Id"] = this.id;
-        data["CreatedOn"] = this.createdOn ? this.createdOn.toISOString() : <any>undefined;
-        data["CreatedById"] = this.createdById;
-        data["CreatedBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
-        data["UpdatedOn"] = this.updatedOn ? this.updatedOn.toISOString() : <any>undefined;
-        data["UpdatedById"] = this.updatedById;
-        data["UpdatedBy"] = this.updatedBy ? this.updatedBy.toJSON() : <any>undefined;
-        data["DeletedOn"] = this.deletedOn ? this.deletedOn.toISOString() : <any>undefined;
-        data["DeletedById"] = this.deletedById;
-        data["DeletedBy"] = this.deletedBy ? this.deletedBy.toJSON() : <any>undefined;
-        data["IsDeleted"] = this.isDeleted;
-        data["Code"] = this.code;
-        data["Description"] = this.description;
-        data["DisplayOrder"] = this.displayOrder;
-        data["IsActive"] = this.isActive;
-        return data;
-    }
-}
-
-export interface IDocumentType {
-    id?: number;
-    createdOn?: moment.Moment | undefined;
-    createdById?: number | undefined;
-    createdBy?: User;
-    updatedOn?: moment.Moment | undefined;
-    updatedById?: number | undefined;
-    updatedBy?: User;
-    deletedOn?: moment.Moment | undefined;
-    deletedById?: number | undefined;
-    deletedBy?: User;
-    isDeleted?: boolean;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-}
-
-export class DocumentTypeModel implements IDocumentTypeModel {
-    id?: number;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-
-    constructor(data?: IDocumentTypeModel) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["Id"];
-            this.code = _data["Code"];
-            this.description = _data["Description"];
-            this.displayOrder = _data["DisplayOrder"];
-            this.isActive = _data["IsActive"];
-        }
-    }
-
-    static fromJS(data: any): DocumentTypeModel {
-        data = typeof data === 'object' ? data : {};
-        let result = new DocumentTypeModel();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Id"] = this.id;
-        data["Code"] = this.code;
-        data["Description"] = this.description;
-        data["DisplayOrder"] = this.displayOrder;
-        data["IsActive"] = this.isActive;
-        return data;
-    }
-}
-
-export interface IDocumentTypeModel {
-    id?: number;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
+export enum DocumentType {
+    IdCard = "IdCard",
+    Passport = "Passport",
+    DrivingLicence = "DrivingLicence",
+    UtilityBill = "UtilityBill",
+    BankStatement = "BankStatement",
+    ResidencyLetter = "ResidencyLetter",
+    AuthoriizedSignatory = "AuthoriizedSignatory",
+    TaxSignboard = "TaxSignboard",
+    RegistryNewspaper = "RegistryNewspaper",
+    CertificateOfActivity = "CertificateOfActivity",
 }
 
 export class ErrorDto implements IErrorDto {
@@ -12247,134 +7840,6 @@ export interface IErrorDto {
     message?: string | undefined;
 }
 
-export class Euro implements IEuro {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-
-    constructor(data?: IEuro) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alis = _data["Alis"];
-            this.satis = _data["Satis"];
-            this.tarih = _data["Tarih"];
-            this.sonkapanis = _data["Sonkapanis"];
-            this.son = _data["Son"];
-            this.endusuk = _data["Endusuk"];
-            this.enyuksek = _data["Enyuksek"];
-            this.gunlukyuzde = _data["Gunlukyuzde"];
-        }
-    }
-
-    static fromJS(data: any): Euro {
-        data = typeof data === 'object' ? data : {};
-        let result = new Euro();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alis"] = this.alis;
-        data["Satis"] = this.satis;
-        data["Tarih"] = this.tarih;
-        data["Sonkapanis"] = this.sonkapanis;
-        data["Son"] = this.son;
-        data["Endusuk"] = this.endusuk;
-        data["Enyuksek"] = this.enyuksek;
-        data["Gunlukyuzde"] = this.gunlukyuzde;
-        return data;
-    }
-}
-
-export interface IEuro {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-}
-
-export class Eurtry implements IEurtry {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-
-    constructor(data?: IEurtry) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alis = _data["Alis"];
-            this.satis = _data["Satis"];
-            this.tarih = _data["Tarih"];
-            this.sonkapanis = _data["Sonkapanis"];
-            this.son = _data["Son"];
-            this.endusuk = _data["Endusuk"];
-            this.enyuksek = _data["Enyuksek"];
-            this.gunlukyuzde = _data["Gunlukyuzde"];
-        }
-    }
-
-    static fromJS(data: any): Eurtry {
-        data = typeof data === 'object' ? data : {};
-        let result = new Eurtry();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alis"] = this.alis;
-        data["Satis"] = this.satis;
-        data["Tarih"] = this.tarih;
-        data["Sonkapanis"] = this.sonkapanis;
-        data["Son"] = this.son;
-        data["Endusuk"] = this.endusuk;
-        data["Enyuksek"] = this.enyuksek;
-        data["Gunlukyuzde"] = this.gunlukyuzde;
-        return data;
-    }
-}
-
-export interface IEurtry {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-}
-
 export class ForgotModel implements IForgotModel {
     email?: string | undefined;
     phoneNumber?: string | undefined;
@@ -12415,212 +7880,11 @@ export interface IForgotModel {
     phoneNumber?: string | undefined;
 }
 
-export class Gbp implements IGbp {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-
-    constructor(data?: IGbp) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alis = _data["Alis"];
-            this.satis = _data["Satis"];
-            this.tarih = _data["Tarih"];
-            this.sonkapanis = _data["Sonkapanis"];
-            this.son = _data["Son"];
-            this.endusuk = _data["Endusuk"];
-            this.enyuksek = _data["Enyuksek"];
-            this.gunlukyuzde = _data["Gunlukyuzde"];
-        }
-    }
-
-    static fromJS(data: any): Gbp {
-        data = typeof data === 'object' ? data : {};
-        let result = new Gbp();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alis"] = this.alis;
-        data["Satis"] = this.satis;
-        data["Tarih"] = this.tarih;
-        data["Sonkapanis"] = this.sonkapanis;
-        data["Son"] = this.son;
-        data["Endusuk"] = this.endusuk;
-        data["Enyuksek"] = this.enyuksek;
-        data["Gunlukyuzde"] = this.gunlukyuzde;
-        return data;
-    }
-}
-
-export interface IGbp {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-}
-
-export class Gender implements IGender {
-    id?: number;
-    createdOn?: moment.Moment | undefined;
-    createdById?: number | undefined;
-    createdBy?: User;
-    updatedOn?: moment.Moment | undefined;
-    updatedById?: number | undefined;
-    updatedBy?: User;
-    deletedOn?: moment.Moment | undefined;
-    deletedById?: number | undefined;
-    deletedBy?: User;
-    isDeleted?: boolean;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-
-    constructor(data?: IGender) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["Id"];
-            this.createdOn = _data["CreatedOn"] ? moment(_data["CreatedOn"].toString()) : <any>undefined;
-            this.createdById = _data["CreatedById"];
-            this.createdBy = _data["CreatedBy"] ? User.fromJS(_data["CreatedBy"]) : <any>undefined;
-            this.updatedOn = _data["UpdatedOn"] ? moment(_data["UpdatedOn"].toString()) : <any>undefined;
-            this.updatedById = _data["UpdatedById"];
-            this.updatedBy = _data["UpdatedBy"] ? User.fromJS(_data["UpdatedBy"]) : <any>undefined;
-            this.deletedOn = _data["DeletedOn"] ? moment(_data["DeletedOn"].toString()) : <any>undefined;
-            this.deletedById = _data["DeletedById"];
-            this.deletedBy = _data["DeletedBy"] ? User.fromJS(_data["DeletedBy"]) : <any>undefined;
-            this.isDeleted = _data["IsDeleted"];
-            this.code = _data["Code"];
-            this.description = _data["Description"];
-            this.displayOrder = _data["DisplayOrder"];
-            this.isActive = _data["IsActive"];
-        }
-    }
-
-    static fromJS(data: any): Gender {
-        data = typeof data === 'object' ? data : {};
-        let result = new Gender();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Id"] = this.id;
-        data["CreatedOn"] = this.createdOn ? this.createdOn.toISOString() : <any>undefined;
-        data["CreatedById"] = this.createdById;
-        data["CreatedBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
-        data["UpdatedOn"] = this.updatedOn ? this.updatedOn.toISOString() : <any>undefined;
-        data["UpdatedById"] = this.updatedById;
-        data["UpdatedBy"] = this.updatedBy ? this.updatedBy.toJSON() : <any>undefined;
-        data["DeletedOn"] = this.deletedOn ? this.deletedOn.toISOString() : <any>undefined;
-        data["DeletedById"] = this.deletedById;
-        data["DeletedBy"] = this.deletedBy ? this.deletedBy.toJSON() : <any>undefined;
-        data["IsDeleted"] = this.isDeleted;
-        data["Code"] = this.code;
-        data["Description"] = this.description;
-        data["DisplayOrder"] = this.displayOrder;
-        data["IsActive"] = this.isActive;
-        return data;
-    }
-}
-
-export interface IGender {
-    id?: number;
-    createdOn?: moment.Moment | undefined;
-    createdById?: number | undefined;
-    createdBy?: User;
-    updatedOn?: moment.Moment | undefined;
-    updatedById?: number | undefined;
-    updatedBy?: User;
-    deletedOn?: moment.Moment | undefined;
-    deletedById?: number | undefined;
-    deletedBy?: User;
-    isDeleted?: boolean;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-}
-
-export class GenderModel implements IGenderModel {
-    id?: number;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-
-    constructor(data?: IGenderModel) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["Id"];
-            this.code = _data["Code"];
-            this.description = _data["Description"];
-            this.displayOrder = _data["DisplayOrder"];
-            this.isActive = _data["IsActive"];
-        }
-    }
-
-    static fromJS(data: any): GenderModel {
-        data = typeof data === 'object' ? data : {};
-        let result = new GenderModel();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Id"] = this.id;
-        data["Code"] = this.code;
-        data["Description"] = this.description;
-        data["DisplayOrder"] = this.displayOrder;
-        data["IsActive"] = this.isActive;
-        return data;
-    }
-}
-
-export interface IGenderModel {
-    id?: number;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
+export enum Gender {
+    Unknown = "Unknown",
+    Female = "Female",
+    Male = "Male",
+    Other = "Other",
 }
 
 export class GraphicData implements IGraphicData {
@@ -12855,1210 +8119,6 @@ export interface IGroupModel {
     description?: string | undefined;
 }
 
-export class Gumus implements IGumus {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-
-    constructor(data?: IGumus) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alis = _data["Alis"];
-            this.satis = _data["Satis"];
-            this.tarih = _data["Tarih"];
-            this.sonkapanis = _data["Sonkapanis"];
-            this.son = _data["Son"];
-            this.endusuk = _data["Endusuk"];
-            this.enyuksek = _data["Enyuksek"];
-            this.gunlukyuzde = _data["Gunlukyuzde"];
-        }
-    }
-
-    static fromJS(data: any): Gumus {
-        data = typeof data === 'object' ? data : {};
-        let result = new Gumus();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alis"] = this.alis;
-        data["Satis"] = this.satis;
-        data["Tarih"] = this.tarih;
-        data["Sonkapanis"] = this.sonkapanis;
-        data["Son"] = this.son;
-        data["Endusuk"] = this.endusuk;
-        data["Enyuksek"] = this.enyuksek;
-        data["Gunlukyuzde"] = this.gunlukyuzde;
-        return data;
-    }
-}
-
-export interface IGumus {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-}
-
-export class Gumuseur implements IGumuseur {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-
-    constructor(data?: IGumuseur) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alis = _data["Alis"];
-            this.satis = _data["Satis"];
-            this.tarih = _data["Tarih"];
-            this.sonkapanis = _data["Sonkapanis"];
-            this.son = _data["Son"];
-            this.endusuk = _data["Endusuk"];
-            this.enyuksek = _data["Enyuksek"];
-            this.gunlukyuzde = _data["Gunlukyuzde"];
-        }
-    }
-
-    static fromJS(data: any): Gumuseur {
-        data = typeof data === 'object' ? data : {};
-        let result = new Gumuseur();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alis"] = this.alis;
-        data["Satis"] = this.satis;
-        data["Tarih"] = this.tarih;
-        data["Sonkapanis"] = this.sonkapanis;
-        data["Son"] = this.son;
-        data["Endusuk"] = this.endusuk;
-        data["Enyuksek"] = this.enyuksek;
-        data["Gunlukyuzde"] = this.gunlukyuzde;
-        return data;
-    }
-}
-
-export interface IGumuseur {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-}
-
-export class Gumusfix implements IGumusfix {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-
-    constructor(data?: IGumusfix) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alis = _data["Alis"];
-            this.satis = _data["Satis"];
-            this.tarih = _data["Tarih"];
-            this.sonkapanis = _data["Sonkapanis"];
-            this.son = _data["Son"];
-            this.endusuk = _data["Endusuk"];
-            this.enyuksek = _data["Enyuksek"];
-            this.gunlukyuzde = _data["Gunlukyuzde"];
-        }
-    }
-
-    static fromJS(data: any): Gumusfix {
-        data = typeof data === 'object' ? data : {};
-        let result = new Gumusfix();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alis"] = this.alis;
-        data["Satis"] = this.satis;
-        data["Tarih"] = this.tarih;
-        data["Sonkapanis"] = this.sonkapanis;
-        data["Son"] = this.son;
-        data["Endusuk"] = this.endusuk;
-        data["Enyuksek"] = this.enyuksek;
-        data["Gunlukyuzde"] = this.gunlukyuzde;
-        return data;
-    }
-}
-
-export interface IGumusfix {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-}
-
-export class Gumusserbest implements IGumusserbest {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-
-    constructor(data?: IGumusserbest) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alis = _data["Alis"];
-            this.satis = _data["Satis"];
-            this.tarih = _data["Tarih"];
-            this.sonkapanis = _data["Sonkapanis"];
-            this.son = _data["Son"];
-            this.endusuk = _data["Endusuk"];
-            this.enyuksek = _data["Enyuksek"];
-            this.gunlukyuzde = _data["Gunlukyuzde"];
-        }
-    }
-
-    static fromJS(data: any): Gumusserbest {
-        data = typeof data === 'object' ? data : {};
-        let result = new Gumusserbest();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alis"] = this.alis;
-        data["Satis"] = this.satis;
-        data["Tarih"] = this.tarih;
-        data["Sonkapanis"] = this.sonkapanis;
-        data["Son"] = this.son;
-        data["Endusuk"] = this.endusuk;
-        data["Enyuksek"] = this.enyuksek;
-        data["Gunlukyuzde"] = this.gunlukyuzde;
-        return data;
-    }
-}
-
-export interface IGumusserbest {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-}
-
-export class Gumususd implements IGumususd {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-
-    constructor(data?: IGumususd) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alis = _data["Alis"];
-            this.satis = _data["Satis"];
-            this.tarih = _data["Tarih"];
-            this.sonkapanis = _data["Sonkapanis"];
-            this.son = _data["Son"];
-            this.endusuk = _data["Endusuk"];
-            this.enyuksek = _data["Enyuksek"];
-            this.gunlukyuzde = _data["Gunlukyuzde"];
-        }
-    }
-
-    static fromJS(data: any): Gumususd {
-        data = typeof data === 'object' ? data : {};
-        let result = new Gumususd();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alis"] = this.alis;
-        data["Satis"] = this.satis;
-        data["Tarih"] = this.tarih;
-        data["Sonkapanis"] = this.sonkapanis;
-        data["Son"] = this.son;
-        data["Endusuk"] = this.endusuk;
-        data["Enyuksek"] = this.enyuksek;
-        data["Gunlukyuzde"] = this.gunlukyuzde;
-        return data;
-    }
-}
-
-export interface IGumususd {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-}
-
-export class Iko01 implements IIko01 {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-
-    constructor(data?: IIko01) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alis = _data["Alis"];
-            this.satis = _data["Satis"];
-            this.tarih = _data["Tarih"];
-            this.sonkapanis = _data["Sonkapanis"];
-            this.son = _data["Son"];
-            this.endusuk = _data["Endusuk"];
-            this.enyuksek = _data["Enyuksek"];
-            this.gunlukyuzde = _data["Gunlukyuzde"];
-        }
-    }
-
-    static fromJS(data: any): Iko01 {
-        data = typeof data === 'object' ? data : {};
-        let result = new Iko01();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alis"] = this.alis;
-        data["Satis"] = this.satis;
-        data["Tarih"] = this.tarih;
-        data["Sonkapanis"] = this.sonkapanis;
-        data["Son"] = this.son;
-        data["Endusuk"] = this.endusuk;
-        data["Enyuksek"] = this.enyuksek;
-        data["Gunlukyuzde"] = this.gunlukyuzde;
-        return data;
-    }
-}
-
-export interface IIko01 {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-}
-
-export class Iko02 implements IIko02 {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-
-    constructor(data?: IIko02) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alis = _data["Alis"];
-            this.satis = _data["Satis"];
-            this.tarih = _data["Tarih"];
-            this.sonkapanis = _data["Sonkapanis"];
-            this.son = _data["Son"];
-            this.endusuk = _data["Endusuk"];
-            this.enyuksek = _data["Enyuksek"];
-            this.gunlukyuzde = _data["Gunlukyuzde"];
-        }
-    }
-
-    static fromJS(data: any): Iko02 {
-        data = typeof data === 'object' ? data : {};
-        let result = new Iko02();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alis"] = this.alis;
-        data["Satis"] = this.satis;
-        data["Tarih"] = this.tarih;
-        data["Sonkapanis"] = this.sonkapanis;
-        data["Son"] = this.son;
-        data["Endusuk"] = this.endusuk;
-        data["Enyuksek"] = this.enyuksek;
-        data["Gunlukyuzde"] = this.gunlukyuzde;
-        return data;
-    }
-}
-
-export interface IIko02 {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-}
-
-export class Iko03 implements IIko03 {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-
-    constructor(data?: IIko03) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alis = _data["Alis"];
-            this.satis = _data["Satis"];
-            this.tarih = _data["Tarih"];
-            this.sonkapanis = _data["Sonkapanis"];
-            this.son = _data["Son"];
-            this.endusuk = _data["Endusuk"];
-            this.enyuksek = _data["Enyuksek"];
-            this.gunlukyuzde = _data["Gunlukyuzde"];
-        }
-    }
-
-    static fromJS(data: any): Iko03 {
-        data = typeof data === 'object' ? data : {};
-        let result = new Iko03();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alis"] = this.alis;
-        data["Satis"] = this.satis;
-        data["Tarih"] = this.tarih;
-        data["Sonkapanis"] = this.sonkapanis;
-        data["Son"] = this.son;
-        data["Endusuk"] = this.endusuk;
-        data["Enyuksek"] = this.enyuksek;
-        data["Gunlukyuzde"] = this.gunlukyuzde;
-        return data;
-    }
-}
-
-export interface IIko03 {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-}
-
-export class Iko04 implements IIko04 {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-
-    constructor(data?: IIko04) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alis = _data["Alis"];
-            this.satis = _data["Satis"];
-            this.tarih = _data["Tarih"];
-            this.sonkapanis = _data["Sonkapanis"];
-            this.son = _data["Son"];
-            this.endusuk = _data["Endusuk"];
-            this.enyuksek = _data["Enyuksek"];
-            this.gunlukyuzde = _data["Gunlukyuzde"];
-        }
-    }
-
-    static fromJS(data: any): Iko04 {
-        data = typeof data === 'object' ? data : {};
-        let result = new Iko04();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alis"] = this.alis;
-        data["Satis"] = this.satis;
-        data["Tarih"] = this.tarih;
-        data["Sonkapanis"] = this.sonkapanis;
-        data["Son"] = this.son;
-        data["Endusuk"] = this.endusuk;
-        data["Enyuksek"] = this.enyuksek;
-        data["Gunlukyuzde"] = this.gunlukyuzde;
-        return data;
-    }
-}
-
-export interface IIko04 {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-}
-
-export class Iko05 implements IIko05 {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-
-    constructor(data?: IIko05) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alis = _data["Alis"];
-            this.satis = _data["Satis"];
-            this.tarih = _data["Tarih"];
-            this.sonkapanis = _data["Sonkapanis"];
-            this.son = _data["Son"];
-            this.endusuk = _data["Endusuk"];
-            this.enyuksek = _data["Enyuksek"];
-            this.gunlukyuzde = _data["Gunlukyuzde"];
-        }
-    }
-
-    static fromJS(data: any): Iko05 {
-        data = typeof data === 'object' ? data : {};
-        let result = new Iko05();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alis"] = this.alis;
-        data["Satis"] = this.satis;
-        data["Tarih"] = this.tarih;
-        data["Sonkapanis"] = this.sonkapanis;
-        data["Son"] = this.son;
-        data["Endusuk"] = this.endusuk;
-        data["Enyuksek"] = this.enyuksek;
-        data["Gunlukyuzde"] = this.gunlukyuzde;
-        return data;
-    }
-}
-
-export interface IIko05 {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-}
-
-export class Iko06 implements IIko06 {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-
-    constructor(data?: IIko06) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alis = _data["Alis"];
-            this.satis = _data["Satis"];
-            this.tarih = _data["Tarih"];
-            this.sonkapanis = _data["Sonkapanis"];
-            this.son = _data["Son"];
-            this.endusuk = _data["Endusuk"];
-            this.enyuksek = _data["Enyuksek"];
-            this.gunlukyuzde = _data["Gunlukyuzde"];
-        }
-    }
-
-    static fromJS(data: any): Iko06 {
-        data = typeof data === 'object' ? data : {};
-        let result = new Iko06();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alis"] = this.alis;
-        data["Satis"] = this.satis;
-        data["Tarih"] = this.tarih;
-        data["Sonkapanis"] = this.sonkapanis;
-        data["Son"] = this.son;
-        data["Endusuk"] = this.endusuk;
-        data["Enyuksek"] = this.enyuksek;
-        data["Gunlukyuzde"] = this.gunlukyuzde;
-        return data;
-    }
-}
-
-export interface IIko06 {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-}
-
-export class Iko07 implements IIko07 {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-
-    constructor(data?: IIko07) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alis = _data["Alis"];
-            this.satis = _data["Satis"];
-            this.tarih = _data["Tarih"];
-            this.sonkapanis = _data["Sonkapanis"];
-            this.son = _data["Son"];
-            this.endusuk = _data["Endusuk"];
-            this.enyuksek = _data["Enyuksek"];
-            this.gunlukyuzde = _data["Gunlukyuzde"];
-        }
-    }
-
-    static fromJS(data: any): Iko07 {
-        data = typeof data === 'object' ? data : {};
-        let result = new Iko07();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alis"] = this.alis;
-        data["Satis"] = this.satis;
-        data["Tarih"] = this.tarih;
-        data["Sonkapanis"] = this.sonkapanis;
-        data["Son"] = this.son;
-        data["Endusuk"] = this.endusuk;
-        data["Enyuksek"] = this.enyuksek;
-        data["Gunlukyuzde"] = this.gunlukyuzde;
-        return data;
-    }
-}
-
-export interface IIko07 {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-}
-
-export class Iko08 implements IIko08 {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-
-    constructor(data?: IIko08) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alis = _data["Alis"];
-            this.satis = _data["Satis"];
-            this.tarih = _data["Tarih"];
-            this.sonkapanis = _data["Sonkapanis"];
-            this.son = _data["Son"];
-            this.endusuk = _data["Endusuk"];
-            this.enyuksek = _data["Enyuksek"];
-            this.gunlukyuzde = _data["Gunlukyuzde"];
-        }
-    }
-
-    static fromJS(data: any): Iko08 {
-        data = typeof data === 'object' ? data : {};
-        let result = new Iko08();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alis"] = this.alis;
-        data["Satis"] = this.satis;
-        data["Tarih"] = this.tarih;
-        data["Sonkapanis"] = this.sonkapanis;
-        data["Son"] = this.son;
-        data["Endusuk"] = this.endusuk;
-        data["Enyuksek"] = this.enyuksek;
-        data["Gunlukyuzde"] = this.gunlukyuzde;
-        return data;
-    }
-}
-
-export interface IIko08 {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-}
-
-export class Iko09 implements IIko09 {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-
-    constructor(data?: IIko09) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alis = _data["Alis"];
-            this.satis = _data["Satis"];
-            this.tarih = _data["Tarih"];
-            this.sonkapanis = _data["Sonkapanis"];
-            this.son = _data["Son"];
-            this.endusuk = _data["Endusuk"];
-            this.enyuksek = _data["Enyuksek"];
-            this.gunlukyuzde = _data["Gunlukyuzde"];
-        }
-    }
-
-    static fromJS(data: any): Iko09 {
-        data = typeof data === 'object' ? data : {};
-        let result = new Iko09();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alis"] = this.alis;
-        data["Satis"] = this.satis;
-        data["Tarih"] = this.tarih;
-        data["Sonkapanis"] = this.sonkapanis;
-        data["Son"] = this.son;
-        data["Endusuk"] = this.endusuk;
-        data["Enyuksek"] = this.enyuksek;
-        data["Gunlukyuzde"] = this.gunlukyuzde;
-        return data;
-    }
-}
-
-export interface IIko09 {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-}
-
-export class Iko10 implements IIko10 {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-
-    constructor(data?: IIko10) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alis = _data["Alis"];
-            this.satis = _data["Satis"];
-            this.tarih = _data["Tarih"];
-            this.sonkapanis = _data["Sonkapanis"];
-            this.son = _data["Son"];
-            this.endusuk = _data["Endusuk"];
-            this.enyuksek = _data["Enyuksek"];
-            this.gunlukyuzde = _data["Gunlukyuzde"];
-        }
-    }
-
-    static fromJS(data: any): Iko10 {
-        data = typeof data === 'object' ? data : {};
-        let result = new Iko10();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alis"] = this.alis;
-        data["Satis"] = this.satis;
-        data["Tarih"] = this.tarih;
-        data["Sonkapanis"] = this.sonkapanis;
-        data["Son"] = this.son;
-        data["Endusuk"] = this.endusuk;
-        data["Enyuksek"] = this.enyuksek;
-        data["Gunlukyuzde"] = this.gunlukyuzde;
-        return data;
-    }
-}
-
-export interface IIko10 {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-}
-
-export class Iko11 implements IIko11 {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-
-    constructor(data?: IIko11) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alis = _data["Alis"];
-            this.satis = _data["Satis"];
-            this.tarih = _data["Tarih"];
-            this.sonkapanis = _data["Sonkapanis"];
-            this.son = _data["Son"];
-            this.endusuk = _data["Endusuk"];
-            this.enyuksek = _data["Enyuksek"];
-            this.gunlukyuzde = _data["Gunlukyuzde"];
-        }
-    }
-
-    static fromJS(data: any): Iko11 {
-        data = typeof data === 'object' ? data : {};
-        let result = new Iko11();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alis"] = this.alis;
-        data["Satis"] = this.satis;
-        data["Tarih"] = this.tarih;
-        data["Sonkapanis"] = this.sonkapanis;
-        data["Son"] = this.son;
-        data["Endusuk"] = this.endusuk;
-        data["Enyuksek"] = this.enyuksek;
-        data["Gunlukyuzde"] = this.gunlukyuzde;
-        return data;
-    }
-}
-
-export interface IIko11 {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-}
-
-export class Iko12 implements IIko12 {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-
-    constructor(data?: IIko12) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alis = _data["Alis"];
-            this.satis = _data["Satis"];
-            this.tarih = _data["Tarih"];
-            this.sonkapanis = _data["Sonkapanis"];
-            this.son = _data["Son"];
-            this.endusuk = _data["Endusuk"];
-            this.enyuksek = _data["Enyuksek"];
-            this.gunlukyuzde = _data["Gunlukyuzde"];
-        }
-    }
-
-    static fromJS(data: any): Iko12 {
-        data = typeof data === 'object' ? data : {};
-        let result = new Iko12();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alis"] = this.alis;
-        data["Satis"] = this.satis;
-        data["Tarih"] = this.tarih;
-        data["Sonkapanis"] = this.sonkapanis;
-        data["Son"] = this.son;
-        data["Endusuk"] = this.endusuk;
-        data["Enyuksek"] = this.enyuksek;
-        data["Gunlukyuzde"] = this.gunlukyuzde;
-        return data;
-    }
-}
-
-export interface IIko12 {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-}
-
-export class InvoiceStatusModel implements IInvoiceStatusModel {
-    id?: number;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-
-    constructor(data?: IInvoiceStatusModel) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["Id"];
-            this.code = _data["Code"];
-            this.description = _data["Description"];
-            this.displayOrder = _data["DisplayOrder"];
-            this.isActive = _data["IsActive"];
-        }
-    }
-
-    static fromJS(data: any): InvoiceStatusModel {
-        data = typeof data === 'object' ? data : {};
-        let result = new InvoiceStatusModel();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Id"] = this.id;
-        data["Code"] = this.code;
-        data["Description"] = this.description;
-        data["DisplayOrder"] = this.displayOrder;
-        data["IsActive"] = this.isActive;
-        return data;
-    }
-}
-
-export interface IInvoiceStatusModel {
-    id?: number;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-}
-
-export class Jpy implements IJpy {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-
-    constructor(data?: IJpy) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alis = _data["Alis"];
-            this.satis = _data["Satis"];
-            this.tarih = _data["Tarih"];
-            this.sonkapanis = _data["Sonkapanis"];
-            this.son = _data["Son"];
-            this.endusuk = _data["Endusuk"];
-            this.enyuksek = _data["Enyuksek"];
-            this.gunlukyuzde = _data["Gunlukyuzde"];
-        }
-    }
-
-    static fromJS(data: any): Jpy {
-        data = typeof data === 'object' ? data : {};
-        let result = new Jpy();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alis"] = this.alis;
-        data["Satis"] = this.satis;
-        data["Tarih"] = this.tarih;
-        data["Sonkapanis"] = this.sonkapanis;
-        data["Son"] = this.son;
-        data["Endusuk"] = this.endusuk;
-        data["Enyuksek"] = this.enyuksek;
-        data["Gunlukyuzde"] = this.gunlukyuzde;
-        return data;
-    }
-}
-
-export interface IJpy {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-}
-
 export class KnowledgeBaseCategoryModel implements IKnowledgeBaseCategoryModel {
     id?: number;
     name?: string | undefined;
@@ -14231,10 +8291,17 @@ export interface ILoginModel {
     password?: string | undefined;
 }
 
-export class LoginResponseModel implements ILoginResponseModel {
-    authenticatorKey?: string | undefined;
+export class MarketItemModel implements IMarketItemModel {
+    alis?: string | undefined;
+    satis?: string | undefined;
+    tarih?: string | undefined;
+    sonkapanis?: string | undefined;
+    son?: string | undefined;
+    endusuk?: string | undefined;
+    enyuksek?: string | undefined;
+    gunlukyuzde?: string | undefined;
 
-    constructor(data?: ILoginResponseModel) {
+    constructor(data?: IMarketItemModel) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -14245,84 +8312,105 @@ export class LoginResponseModel implements ILoginResponseModel {
 
     init(_data?: any) {
         if (_data) {
-            this.authenticatorKey = _data["AuthenticatorKey"];
+            this.alis = _data["Alis"];
+            this.satis = _data["Satis"];
+            this.tarih = _data["Tarih"];
+            this.sonkapanis = _data["Sonkapanis"];
+            this.son = _data["Son"];
+            this.endusuk = _data["Endusuk"];
+            this.enyuksek = _data["Enyuksek"];
+            this.gunlukyuzde = _data["Gunlukyuzde"];
         }
     }
 
-    static fromJS(data: any): LoginResponseModel {
+    static fromJS(data: any): MarketItemModel {
         data = typeof data === 'object' ? data : {};
-        let result = new LoginResponseModel();
+        let result = new MarketItemModel();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["AuthenticatorKey"] = this.authenticatorKey;
+        data["Alis"] = this.alis;
+        data["Satis"] = this.satis;
+        data["Tarih"] = this.tarih;
+        data["Sonkapanis"] = this.sonkapanis;
+        data["Son"] = this.son;
+        data["Endusuk"] = this.endusuk;
+        data["Enyuksek"] = this.enyuksek;
+        data["Gunlukyuzde"] = this.gunlukyuzde;
         return data;
     }
 }
 
-export interface ILoginResponseModel {
-    authenticatorKey?: string | undefined;
+export interface IMarketItemModel {
+    alis?: string | undefined;
+    satis?: string | undefined;
+    tarih?: string | undefined;
+    sonkapanis?: string | undefined;
+    son?: string | undefined;
+    endusuk?: string | undefined;
+    enyuksek?: string | undefined;
+    gunlukyuzde?: string | undefined;
 }
 
 export class MarketModel implements IMarketModel {
-    altin?: Altin;
-    altingr?: Altingr;
-    altinkgtl?: Altinkgtl;
-    altinkgusd?: Altinkgusd;
-    ons?: Ons;
-    gumusserbest?: Gumusserbest;
-    gumususd?: Gumususd;
-    gumuseur?: Gumuseur;
-    gumus?: Gumus;
-    altinusd?: Altinusd;
-    altincum?: Altincum;
-    altingldt?: Altingldt;
-    altingldy?: Altingldy;
-    altingldc?: Altingldc;
-    altinres?: Altinres;
-    altinresk?: Altinresk;
-    usd?: Usd;
-    euro?: Euro;
-    eurtry?: Eurtry;
-    gbp?: Gbp;
-    jpy?: Jpy;
-    cad?: Cad;
-    aud?: Aud;
-    nok?: Nok;
-    dkk?: Dkk;
-    sek?: Sek;
-    sar?: Sar;
-    chf?: Chf;
-    platin?: Platin;
-    paladyum?: Paladyum;
-    cyp?: Cyp;
-    gumusfix?: Gumusfix;
-    altinfixUsdAm?: AltinfixUsdAm;
-    altinfixUsdPm?: AltinfixUsdPm;
-    altinfixEurAm?: AltinfixEurAm;
-    altinfixEurPm?: AltinfixEurPm;
-    altinfixGbpAm?: AltinfixGbpAm;
-    altinfixGbpPm?: AltinfixGbpPm;
-    platinfixAm?: PlatinfixAm;
-    platinfixPm?: PlatinfixPm;
-    paladyumfixAm?: PaladyumfixAm;
-    paladyumfixPm?: PaladyumfixPm;
-    rodyumfix?: Rodyumfix;
-    iko01?: Iko01;
-    iko02?: Iko02;
-    iko03?: Iko03;
-    iko04?: Iko04;
-    iko05?: Iko05;
-    iko06?: Iko06;
-    iko07?: Iko07;
-    iko08?: Iko08;
-    iko09?: Iko09;
-    iko10?: Iko10;
-    iko11?: Iko11;
-    iko12?: Iko12;
+    altin?: MarketItemModel;
+    altingr?: MarketItemModel;
+    altinkgtl?: MarketItemModel;
+    altinkgusd?: MarketItemModel;
+    ons?: MarketItemModel;
+    gumusserbest?: MarketItemModel;
+    gumususd?: MarketItemModel;
+    gumuseur?: MarketItemModel;
+    gumus?: MarketItemModel;
+    altinusd?: MarketItemModel;
+    altincum?: MarketItemModel;
+    altingldt?: MarketItemModel;
+    altingldy?: MarketItemModel;
+    altingldc?: MarketItemModel;
+    altinres?: MarketItemModel;
+    altinresk?: MarketItemModel;
+    usd?: MarketItemModel;
+    euro?: MarketItemModel;
+    eurtry?: MarketItemModel;
+    gbp?: MarketItemModel;
+    jpy?: MarketItemModel;
+    cad?: MarketItemModel;
+    aud?: MarketItemModel;
+    nok?: MarketItemModel;
+    dkk?: MarketItemModel;
+    sek?: MarketItemModel;
+    sar?: MarketItemModel;
+    chf?: MarketItemModel;
+    platin?: MarketItemModel;
+    paladyum?: MarketItemModel;
+    cyp?: MarketItemModel;
+    gumusfix?: MarketItemModel;
+    altinfixUsdAm?: MarketItemModel;
+    altinfixUsdPm?: MarketItemModel;
+    altinfixEurAm?: MarketItemModel;
+    altinfixEurPm?: MarketItemModel;
+    altinfixGbpAm?: MarketItemModel;
+    altinfixGbpPm?: MarketItemModel;
+    platinfixAm?: MarketItemModel;
+    platinfixPm?: MarketItemModel;
+    paladyumfixAm?: MarketItemModel;
+    paladyumfixPm?: MarketItemModel;
+    rodyumfix?: MarketItemModel;
+    iko01?: MarketItemModel;
+    iko02?: MarketItemModel;
+    iko03?: MarketItemModel;
+    iko04?: MarketItemModel;
+    iko05?: MarketItemModel;
+    iko06?: MarketItemModel;
+    iko07?: MarketItemModel;
+    iko08?: MarketItemModel;
+    iko09?: MarketItemModel;
+    iko10?: MarketItemModel;
+    iko11?: MarketItemModel;
+    iko12?: MarketItemModel;
 
     constructor(data?: IMarketModel) {
         if (data) {
@@ -14335,61 +8423,61 @@ export class MarketModel implements IMarketModel {
 
     init(_data?: any) {
         if (_data) {
-            this.altin = _data["Altin"] ? Altin.fromJS(_data["Altin"]) : <any>undefined;
-            this.altingr = _data["Altingr"] ? Altingr.fromJS(_data["Altingr"]) : <any>undefined;
-            this.altinkgtl = _data["Altinkgtl"] ? Altinkgtl.fromJS(_data["Altinkgtl"]) : <any>undefined;
-            this.altinkgusd = _data["Altinkgusd"] ? Altinkgusd.fromJS(_data["Altinkgusd"]) : <any>undefined;
-            this.ons = _data["Ons"] ? Ons.fromJS(_data["Ons"]) : <any>undefined;
-            this.gumusserbest = _data["Gumusserbest"] ? Gumusserbest.fromJS(_data["Gumusserbest"]) : <any>undefined;
-            this.gumususd = _data["Gumususd"] ? Gumususd.fromJS(_data["Gumususd"]) : <any>undefined;
-            this.gumuseur = _data["Gumuseur"] ? Gumuseur.fromJS(_data["Gumuseur"]) : <any>undefined;
-            this.gumus = _data["Gumus"] ? Gumus.fromJS(_data["Gumus"]) : <any>undefined;
-            this.altinusd = _data["Altinusd"] ? Altinusd.fromJS(_data["Altinusd"]) : <any>undefined;
-            this.altincum = _data["Altincum"] ? Altincum.fromJS(_data["Altincum"]) : <any>undefined;
-            this.altingldt = _data["Altingldt"] ? Altingldt.fromJS(_data["Altingldt"]) : <any>undefined;
-            this.altingldy = _data["Altingldy"] ? Altingldy.fromJS(_data["Altingldy"]) : <any>undefined;
-            this.altingldc = _data["Altingldc"] ? Altingldc.fromJS(_data["Altingldc"]) : <any>undefined;
-            this.altinres = _data["Altinres"] ? Altinres.fromJS(_data["Altinres"]) : <any>undefined;
-            this.altinresk = _data["Altinresk"] ? Altinresk.fromJS(_data["Altinresk"]) : <any>undefined;
-            this.usd = _data["Usd"] ? Usd.fromJS(_data["Usd"]) : <any>undefined;
-            this.euro = _data["Euro"] ? Euro.fromJS(_data["Euro"]) : <any>undefined;
-            this.eurtry = _data["Eurtry"] ? Eurtry.fromJS(_data["Eurtry"]) : <any>undefined;
-            this.gbp = _data["Gbp"] ? Gbp.fromJS(_data["Gbp"]) : <any>undefined;
-            this.jpy = _data["Jpy"] ? Jpy.fromJS(_data["Jpy"]) : <any>undefined;
-            this.cad = _data["Cad"] ? Cad.fromJS(_data["Cad"]) : <any>undefined;
-            this.aud = _data["Aud"] ? Aud.fromJS(_data["Aud"]) : <any>undefined;
-            this.nok = _data["Nok"] ? Nok.fromJS(_data["Nok"]) : <any>undefined;
-            this.dkk = _data["Dkk"] ? Dkk.fromJS(_data["Dkk"]) : <any>undefined;
-            this.sek = _data["Sek"] ? Sek.fromJS(_data["Sek"]) : <any>undefined;
-            this.sar = _data["Sar"] ? Sar.fromJS(_data["Sar"]) : <any>undefined;
-            this.chf = _data["Chf"] ? Chf.fromJS(_data["Chf"]) : <any>undefined;
-            this.platin = _data["Platin"] ? Platin.fromJS(_data["Platin"]) : <any>undefined;
-            this.paladyum = _data["Paladyum"] ? Paladyum.fromJS(_data["Paladyum"]) : <any>undefined;
-            this.cyp = _data["Cyp"] ? Cyp.fromJS(_data["Cyp"]) : <any>undefined;
-            this.gumusfix = _data["Gumusfix"] ? Gumusfix.fromJS(_data["Gumusfix"]) : <any>undefined;
-            this.altinfixUsdAm = _data["AltinfixUsdAm"] ? AltinfixUsdAm.fromJS(_data["AltinfixUsdAm"]) : <any>undefined;
-            this.altinfixUsdPm = _data["AltinfixUsdPm"] ? AltinfixUsdPm.fromJS(_data["AltinfixUsdPm"]) : <any>undefined;
-            this.altinfixEurAm = _data["AltinfixEurAm"] ? AltinfixEurAm.fromJS(_data["AltinfixEurAm"]) : <any>undefined;
-            this.altinfixEurPm = _data["AltinfixEurPm"] ? AltinfixEurPm.fromJS(_data["AltinfixEurPm"]) : <any>undefined;
-            this.altinfixGbpAm = _data["AltinfixGbpAm"] ? AltinfixGbpAm.fromJS(_data["AltinfixGbpAm"]) : <any>undefined;
-            this.altinfixGbpPm = _data["AltinfixGbpPm"] ? AltinfixGbpPm.fromJS(_data["AltinfixGbpPm"]) : <any>undefined;
-            this.platinfixAm = _data["PlatinfixAm"] ? PlatinfixAm.fromJS(_data["PlatinfixAm"]) : <any>undefined;
-            this.platinfixPm = _data["PlatinfixPm"] ? PlatinfixPm.fromJS(_data["PlatinfixPm"]) : <any>undefined;
-            this.paladyumfixAm = _data["PaladyumfixAm"] ? PaladyumfixAm.fromJS(_data["PaladyumfixAm"]) : <any>undefined;
-            this.paladyumfixPm = _data["PaladyumfixPm"] ? PaladyumfixPm.fromJS(_data["PaladyumfixPm"]) : <any>undefined;
-            this.rodyumfix = _data["Rodyumfix"] ? Rodyumfix.fromJS(_data["Rodyumfix"]) : <any>undefined;
-            this.iko01 = _data["Iko01"] ? Iko01.fromJS(_data["Iko01"]) : <any>undefined;
-            this.iko02 = _data["Iko02"] ? Iko02.fromJS(_data["Iko02"]) : <any>undefined;
-            this.iko03 = _data["Iko03"] ? Iko03.fromJS(_data["Iko03"]) : <any>undefined;
-            this.iko04 = _data["Iko04"] ? Iko04.fromJS(_data["Iko04"]) : <any>undefined;
-            this.iko05 = _data["Iko05"] ? Iko05.fromJS(_data["Iko05"]) : <any>undefined;
-            this.iko06 = _data["Iko06"] ? Iko06.fromJS(_data["Iko06"]) : <any>undefined;
-            this.iko07 = _data["Iko07"] ? Iko07.fromJS(_data["Iko07"]) : <any>undefined;
-            this.iko08 = _data["Iko08"] ? Iko08.fromJS(_data["Iko08"]) : <any>undefined;
-            this.iko09 = _data["Iko09"] ? Iko09.fromJS(_data["Iko09"]) : <any>undefined;
-            this.iko10 = _data["Iko10"] ? Iko10.fromJS(_data["Iko10"]) : <any>undefined;
-            this.iko11 = _data["Iko11"] ? Iko11.fromJS(_data["Iko11"]) : <any>undefined;
-            this.iko12 = _data["Iko12"] ? Iko12.fromJS(_data["Iko12"]) : <any>undefined;
+            this.altin = _data["Altin"] ? MarketItemModel.fromJS(_data["Altin"]) : <any>undefined;
+            this.altingr = _data["Altingr"] ? MarketItemModel.fromJS(_data["Altingr"]) : <any>undefined;
+            this.altinkgtl = _data["Altinkgtl"] ? MarketItemModel.fromJS(_data["Altinkgtl"]) : <any>undefined;
+            this.altinkgusd = _data["Altinkgusd"] ? MarketItemModel.fromJS(_data["Altinkgusd"]) : <any>undefined;
+            this.ons = _data["Ons"] ? MarketItemModel.fromJS(_data["Ons"]) : <any>undefined;
+            this.gumusserbest = _data["Gumusserbest"] ? MarketItemModel.fromJS(_data["Gumusserbest"]) : <any>undefined;
+            this.gumususd = _data["Gumususd"] ? MarketItemModel.fromJS(_data["Gumususd"]) : <any>undefined;
+            this.gumuseur = _data["Gumuseur"] ? MarketItemModel.fromJS(_data["Gumuseur"]) : <any>undefined;
+            this.gumus = _data["Gumus"] ? MarketItemModel.fromJS(_data["Gumus"]) : <any>undefined;
+            this.altinusd = _data["Altinusd"] ? MarketItemModel.fromJS(_data["Altinusd"]) : <any>undefined;
+            this.altincum = _data["Altincum"] ? MarketItemModel.fromJS(_data["Altincum"]) : <any>undefined;
+            this.altingldt = _data["Altingldt"] ? MarketItemModel.fromJS(_data["Altingldt"]) : <any>undefined;
+            this.altingldy = _data["Altingldy"] ? MarketItemModel.fromJS(_data["Altingldy"]) : <any>undefined;
+            this.altingldc = _data["Altingldc"] ? MarketItemModel.fromJS(_data["Altingldc"]) : <any>undefined;
+            this.altinres = _data["Altinres"] ? MarketItemModel.fromJS(_data["Altinres"]) : <any>undefined;
+            this.altinresk = _data["Altinresk"] ? MarketItemModel.fromJS(_data["Altinresk"]) : <any>undefined;
+            this.usd = _data["Usd"] ? MarketItemModel.fromJS(_data["Usd"]) : <any>undefined;
+            this.euro = _data["Euro"] ? MarketItemModel.fromJS(_data["Euro"]) : <any>undefined;
+            this.eurtry = _data["Eurtry"] ? MarketItemModel.fromJS(_data["Eurtry"]) : <any>undefined;
+            this.gbp = _data["Gbp"] ? MarketItemModel.fromJS(_data["Gbp"]) : <any>undefined;
+            this.jpy = _data["Jpy"] ? MarketItemModel.fromJS(_data["Jpy"]) : <any>undefined;
+            this.cad = _data["Cad"] ? MarketItemModel.fromJS(_data["Cad"]) : <any>undefined;
+            this.aud = _data["Aud"] ? MarketItemModel.fromJS(_data["Aud"]) : <any>undefined;
+            this.nok = _data["Nok"] ? MarketItemModel.fromJS(_data["Nok"]) : <any>undefined;
+            this.dkk = _data["Dkk"] ? MarketItemModel.fromJS(_data["Dkk"]) : <any>undefined;
+            this.sek = _data["Sek"] ? MarketItemModel.fromJS(_data["Sek"]) : <any>undefined;
+            this.sar = _data["Sar"] ? MarketItemModel.fromJS(_data["Sar"]) : <any>undefined;
+            this.chf = _data["Chf"] ? MarketItemModel.fromJS(_data["Chf"]) : <any>undefined;
+            this.platin = _data["Platin"] ? MarketItemModel.fromJS(_data["Platin"]) : <any>undefined;
+            this.paladyum = _data["Paladyum"] ? MarketItemModel.fromJS(_data["Paladyum"]) : <any>undefined;
+            this.cyp = _data["Cyp"] ? MarketItemModel.fromJS(_data["Cyp"]) : <any>undefined;
+            this.gumusfix = _data["Gumusfix"] ? MarketItemModel.fromJS(_data["Gumusfix"]) : <any>undefined;
+            this.altinfixUsdAm = _data["AltinfixUsdAm"] ? MarketItemModel.fromJS(_data["AltinfixUsdAm"]) : <any>undefined;
+            this.altinfixUsdPm = _data["AltinfixUsdPm"] ? MarketItemModel.fromJS(_data["AltinfixUsdPm"]) : <any>undefined;
+            this.altinfixEurAm = _data["AltinfixEurAm"] ? MarketItemModel.fromJS(_data["AltinfixEurAm"]) : <any>undefined;
+            this.altinfixEurPm = _data["AltinfixEurPm"] ? MarketItemModel.fromJS(_data["AltinfixEurPm"]) : <any>undefined;
+            this.altinfixGbpAm = _data["AltinfixGbpAm"] ? MarketItemModel.fromJS(_data["AltinfixGbpAm"]) : <any>undefined;
+            this.altinfixGbpPm = _data["AltinfixGbpPm"] ? MarketItemModel.fromJS(_data["AltinfixGbpPm"]) : <any>undefined;
+            this.platinfixAm = _data["PlatinfixAm"] ? MarketItemModel.fromJS(_data["PlatinfixAm"]) : <any>undefined;
+            this.platinfixPm = _data["PlatinfixPm"] ? MarketItemModel.fromJS(_data["PlatinfixPm"]) : <any>undefined;
+            this.paladyumfixAm = _data["PaladyumfixAm"] ? MarketItemModel.fromJS(_data["PaladyumfixAm"]) : <any>undefined;
+            this.paladyumfixPm = _data["PaladyumfixPm"] ? MarketItemModel.fromJS(_data["PaladyumfixPm"]) : <any>undefined;
+            this.rodyumfix = _data["Rodyumfix"] ? MarketItemModel.fromJS(_data["Rodyumfix"]) : <any>undefined;
+            this.iko01 = _data["Iko01"] ? MarketItemModel.fromJS(_data["Iko01"]) : <any>undefined;
+            this.iko02 = _data["Iko02"] ? MarketItemModel.fromJS(_data["Iko02"]) : <any>undefined;
+            this.iko03 = _data["Iko03"] ? MarketItemModel.fromJS(_data["Iko03"]) : <any>undefined;
+            this.iko04 = _data["Iko04"] ? MarketItemModel.fromJS(_data["Iko04"]) : <any>undefined;
+            this.iko05 = _data["Iko05"] ? MarketItemModel.fromJS(_data["Iko05"]) : <any>undefined;
+            this.iko06 = _data["Iko06"] ? MarketItemModel.fromJS(_data["Iko06"]) : <any>undefined;
+            this.iko07 = _data["Iko07"] ? MarketItemModel.fromJS(_data["Iko07"]) : <any>undefined;
+            this.iko08 = _data["Iko08"] ? MarketItemModel.fromJS(_data["Iko08"]) : <any>undefined;
+            this.iko09 = _data["Iko09"] ? MarketItemModel.fromJS(_data["Iko09"]) : <any>undefined;
+            this.iko10 = _data["Iko10"] ? MarketItemModel.fromJS(_data["Iko10"]) : <any>undefined;
+            this.iko11 = _data["Iko11"] ? MarketItemModel.fromJS(_data["Iko11"]) : <any>undefined;
+            this.iko12 = _data["Iko12"] ? MarketItemModel.fromJS(_data["Iko12"]) : <any>undefined;
         }
     }
 
@@ -14462,61 +8550,61 @@ export class MarketModel implements IMarketModel {
 }
 
 export interface IMarketModel {
-    altin?: Altin;
-    altingr?: Altingr;
-    altinkgtl?: Altinkgtl;
-    altinkgusd?: Altinkgusd;
-    ons?: Ons;
-    gumusserbest?: Gumusserbest;
-    gumususd?: Gumususd;
-    gumuseur?: Gumuseur;
-    gumus?: Gumus;
-    altinusd?: Altinusd;
-    altincum?: Altincum;
-    altingldt?: Altingldt;
-    altingldy?: Altingldy;
-    altingldc?: Altingldc;
-    altinres?: Altinres;
-    altinresk?: Altinresk;
-    usd?: Usd;
-    euro?: Euro;
-    eurtry?: Eurtry;
-    gbp?: Gbp;
-    jpy?: Jpy;
-    cad?: Cad;
-    aud?: Aud;
-    nok?: Nok;
-    dkk?: Dkk;
-    sek?: Sek;
-    sar?: Sar;
-    chf?: Chf;
-    platin?: Platin;
-    paladyum?: Paladyum;
-    cyp?: Cyp;
-    gumusfix?: Gumusfix;
-    altinfixUsdAm?: AltinfixUsdAm;
-    altinfixUsdPm?: AltinfixUsdPm;
-    altinfixEurAm?: AltinfixEurAm;
-    altinfixEurPm?: AltinfixEurPm;
-    altinfixGbpAm?: AltinfixGbpAm;
-    altinfixGbpPm?: AltinfixGbpPm;
-    platinfixAm?: PlatinfixAm;
-    platinfixPm?: PlatinfixPm;
-    paladyumfixAm?: PaladyumfixAm;
-    paladyumfixPm?: PaladyumfixPm;
-    rodyumfix?: Rodyumfix;
-    iko01?: Iko01;
-    iko02?: Iko02;
-    iko03?: Iko03;
-    iko04?: Iko04;
-    iko05?: Iko05;
-    iko06?: Iko06;
-    iko07?: Iko07;
-    iko08?: Iko08;
-    iko09?: Iko09;
-    iko10?: Iko10;
-    iko11?: Iko11;
-    iko12?: Iko12;
+    altin?: MarketItemModel;
+    altingr?: MarketItemModel;
+    altinkgtl?: MarketItemModel;
+    altinkgusd?: MarketItemModel;
+    ons?: MarketItemModel;
+    gumusserbest?: MarketItemModel;
+    gumususd?: MarketItemModel;
+    gumuseur?: MarketItemModel;
+    gumus?: MarketItemModel;
+    altinusd?: MarketItemModel;
+    altincum?: MarketItemModel;
+    altingldt?: MarketItemModel;
+    altingldy?: MarketItemModel;
+    altingldc?: MarketItemModel;
+    altinres?: MarketItemModel;
+    altinresk?: MarketItemModel;
+    usd?: MarketItemModel;
+    euro?: MarketItemModel;
+    eurtry?: MarketItemModel;
+    gbp?: MarketItemModel;
+    jpy?: MarketItemModel;
+    cad?: MarketItemModel;
+    aud?: MarketItemModel;
+    nok?: MarketItemModel;
+    dkk?: MarketItemModel;
+    sek?: MarketItemModel;
+    sar?: MarketItemModel;
+    chf?: MarketItemModel;
+    platin?: MarketItemModel;
+    paladyum?: MarketItemModel;
+    cyp?: MarketItemModel;
+    gumusfix?: MarketItemModel;
+    altinfixUsdAm?: MarketItemModel;
+    altinfixUsdPm?: MarketItemModel;
+    altinfixEurAm?: MarketItemModel;
+    altinfixEurPm?: MarketItemModel;
+    altinfixGbpAm?: MarketItemModel;
+    altinfixGbpPm?: MarketItemModel;
+    platinfixAm?: MarketItemModel;
+    platinfixPm?: MarketItemModel;
+    paladyumfixAm?: MarketItemModel;
+    paladyumfixPm?: MarketItemModel;
+    rodyumfix?: MarketItemModel;
+    iko01?: MarketItemModel;
+    iko02?: MarketItemModel;
+    iko03?: MarketItemModel;
+    iko04?: MarketItemModel;
+    iko05?: MarketItemModel;
+    iko06?: MarketItemModel;
+    iko07?: MarketItemModel;
+    iko08?: MarketItemModel;
+    iko09?: MarketItemModel;
+    iko10?: MarketItemModel;
+    iko11?: MarketItemModel;
+    iko12?: MarketItemModel;
 }
 
 export class MatriksEconomyNewsModel implements IMatriksEconomyNewsModel {
@@ -14604,14 +8692,14 @@ export interface IMatriksError {
 }
 
 export enum MatriksGraphType {
-    _1 = 1,
-    _2 = 2,
-    _3 = 3,
-    _4 = 4,
-    _5 = 5,
-    _6 = 6,
-    _7 = 7,
-    _8 = 8,
+    Min5 = "Min5",
+    Min15 = "Min15",
+    Min30 = "Min30",
+    Min60 = "Min60",
+    Daily = "Daily",
+    Weekly = "Weekly",
+    Monthly = "Monthly",
+    Yearly = "Yearly",
 }
 
 export class MatriksNewsModel implements IMatriksNewsModel {
@@ -14726,18 +8814,14 @@ export class Media implements IMedia {
     id?: number;
     createdOn?: moment.Moment | undefined;
     createdById?: number | undefined;
-    createdBy?: User;
     updatedOn?: moment.Moment | undefined;
     updatedById?: number | undefined;
-    updatedBy?: User;
     deletedOn?: moment.Moment | undefined;
     deletedById?: number | undefined;
-    deletedBy?: User;
     isDeleted?: boolean;
     caption?: string | undefined;
     fileSize?: number;
     fileName?: string | undefined;
-    mediaTypeId?: number;
     mediaType?: MediaType;
 
     constructor(data?: IMedia) {
@@ -14754,19 +8838,15 @@ export class Media implements IMedia {
             this.id = _data["Id"];
             this.createdOn = _data["CreatedOn"] ? moment(_data["CreatedOn"].toString()) : <any>undefined;
             this.createdById = _data["CreatedById"];
-            this.createdBy = _data["CreatedBy"] ? User.fromJS(_data["CreatedBy"]) : <any>undefined;
             this.updatedOn = _data["UpdatedOn"] ? moment(_data["UpdatedOn"].toString()) : <any>undefined;
             this.updatedById = _data["UpdatedById"];
-            this.updatedBy = _data["UpdatedBy"] ? User.fromJS(_data["UpdatedBy"]) : <any>undefined;
             this.deletedOn = _data["DeletedOn"] ? moment(_data["DeletedOn"].toString()) : <any>undefined;
             this.deletedById = _data["DeletedById"];
-            this.deletedBy = _data["DeletedBy"] ? User.fromJS(_data["DeletedBy"]) : <any>undefined;
             this.isDeleted = _data["IsDeleted"];
             this.caption = _data["Caption"];
             this.fileSize = _data["FileSize"];
             this.fileName = _data["FileName"];
-            this.mediaTypeId = _data["MediaTypeId"];
-            this.mediaType = _data["MediaType"] ? MediaType.fromJS(_data["MediaType"]) : <any>undefined;
+            this.mediaType = _data["MediaType"];
         }
     }
 
@@ -14782,19 +8862,15 @@ export class Media implements IMedia {
         data["Id"] = this.id;
         data["CreatedOn"] = this.createdOn ? this.createdOn.toISOString() : <any>undefined;
         data["CreatedById"] = this.createdById;
-        data["CreatedBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
         data["UpdatedOn"] = this.updatedOn ? this.updatedOn.toISOString() : <any>undefined;
         data["UpdatedById"] = this.updatedById;
-        data["UpdatedBy"] = this.updatedBy ? this.updatedBy.toJSON() : <any>undefined;
         data["DeletedOn"] = this.deletedOn ? this.deletedOn.toISOString() : <any>undefined;
         data["DeletedById"] = this.deletedById;
-        data["DeletedBy"] = this.deletedBy ? this.deletedBy.toJSON() : <any>undefined;
         data["IsDeleted"] = this.isDeleted;
         data["Caption"] = this.caption;
         data["FileSize"] = this.fileSize;
         data["FileName"] = this.fileName;
-        data["MediaTypeId"] = this.mediaTypeId;
-        data["MediaType"] = this.mediaType ? this.mediaType.toJSON() : <any>undefined;
+        data["MediaType"] = this.mediaType;
         return data;
     }
 }
@@ -14803,18 +8879,14 @@ export interface IMedia {
     id?: number;
     createdOn?: moment.Moment | undefined;
     createdById?: number | undefined;
-    createdBy?: User;
     updatedOn?: moment.Moment | undefined;
     updatedById?: number | undefined;
-    updatedBy?: User;
     deletedOn?: moment.Moment | undefined;
     deletedById?: number | undefined;
-    deletedBy?: User;
     isDeleted?: boolean;
     caption?: string | undefined;
     fileSize?: number;
     fileName?: string | undefined;
-    mediaTypeId?: number;
     mediaType?: MediaType;
 }
 
@@ -14858,148 +8930,11 @@ export interface IMediaModel {
     thumbnailUrl?: string | undefined;
 }
 
-export class MediaType implements IMediaType {
-    id?: number;
-    createdOn?: moment.Moment | undefined;
-    createdById?: number | undefined;
-    createdBy?: User;
-    updatedOn?: moment.Moment | undefined;
-    updatedById?: number | undefined;
-    updatedBy?: User;
-    deletedOn?: moment.Moment | undefined;
-    deletedById?: number | undefined;
-    deletedBy?: User;
-    isDeleted?: boolean;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-
-    constructor(data?: IMediaType) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["Id"];
-            this.createdOn = _data["CreatedOn"] ? moment(_data["CreatedOn"].toString()) : <any>undefined;
-            this.createdById = _data["CreatedById"];
-            this.createdBy = _data["CreatedBy"] ? User.fromJS(_data["CreatedBy"]) : <any>undefined;
-            this.updatedOn = _data["UpdatedOn"] ? moment(_data["UpdatedOn"].toString()) : <any>undefined;
-            this.updatedById = _data["UpdatedById"];
-            this.updatedBy = _data["UpdatedBy"] ? User.fromJS(_data["UpdatedBy"]) : <any>undefined;
-            this.deletedOn = _data["DeletedOn"] ? moment(_data["DeletedOn"].toString()) : <any>undefined;
-            this.deletedById = _data["DeletedById"];
-            this.deletedBy = _data["DeletedBy"] ? User.fromJS(_data["DeletedBy"]) : <any>undefined;
-            this.isDeleted = _data["IsDeleted"];
-            this.code = _data["Code"];
-            this.description = _data["Description"];
-            this.displayOrder = _data["DisplayOrder"];
-            this.isActive = _data["IsActive"];
-        }
-    }
-
-    static fromJS(data: any): MediaType {
-        data = typeof data === 'object' ? data : {};
-        let result = new MediaType();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Id"] = this.id;
-        data["CreatedOn"] = this.createdOn ? this.createdOn.toISOString() : <any>undefined;
-        data["CreatedById"] = this.createdById;
-        data["CreatedBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
-        data["UpdatedOn"] = this.updatedOn ? this.updatedOn.toISOString() : <any>undefined;
-        data["UpdatedById"] = this.updatedById;
-        data["UpdatedBy"] = this.updatedBy ? this.updatedBy.toJSON() : <any>undefined;
-        data["DeletedOn"] = this.deletedOn ? this.deletedOn.toISOString() : <any>undefined;
-        data["DeletedById"] = this.deletedById;
-        data["DeletedBy"] = this.deletedBy ? this.deletedBy.toJSON() : <any>undefined;
-        data["IsDeleted"] = this.isDeleted;
-        data["Code"] = this.code;
-        data["Description"] = this.description;
-        data["DisplayOrder"] = this.displayOrder;
-        data["IsActive"] = this.isActive;
-        return data;
-    }
-}
-
-export interface IMediaType {
-    id?: number;
-    createdOn?: moment.Moment | undefined;
-    createdById?: number | undefined;
-    createdBy?: User;
-    updatedOn?: moment.Moment | undefined;
-    updatedById?: number | undefined;
-    updatedBy?: User;
-    deletedOn?: moment.Moment | undefined;
-    deletedById?: number | undefined;
-    deletedBy?: User;
-    isDeleted?: boolean;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-}
-
-export class MediaTypeModel implements IMediaTypeModel {
-    id?: number;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-
-    constructor(data?: IMediaTypeModel) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["Id"];
-            this.code = _data["Code"];
-            this.description = _data["Description"];
-            this.displayOrder = _data["DisplayOrder"];
-            this.isActive = _data["IsActive"];
-        }
-    }
-
-    static fromJS(data: any): MediaTypeModel {
-        data = typeof data === 'object' ? data : {};
-        let result = new MediaTypeModel();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Id"] = this.id;
-        data["Code"] = this.code;
-        data["Description"] = this.description;
-        data["DisplayOrder"] = this.displayOrder;
-        data["IsActive"] = this.isActive;
-        return data;
-    }
-}
-
-export interface IMediaTypeModel {
-    id?: number;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
+export enum MediaType {
+    Image = "Image",
+    Video = "Video",
+    Document = "Document",
+    Other = "Other",
 }
 
 export class Neighborhood implements INeighborhood {
@@ -15054,70 +8989,6 @@ export interface INeighborhood {
     zipCode?: string | undefined;
 }
 
-export class Nok implements INok {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-
-    constructor(data?: INok) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alis = _data["Alis"];
-            this.satis = _data["Satis"];
-            this.tarih = _data["Tarih"];
-            this.sonkapanis = _data["Sonkapanis"];
-            this.son = _data["Son"];
-            this.endusuk = _data["Endusuk"];
-            this.enyuksek = _data["Enyuksek"];
-            this.gunlukyuzde = _data["Gunlukyuzde"];
-        }
-    }
-
-    static fromJS(data: any): Nok {
-        data = typeof data === 'object' ? data : {};
-        let result = new Nok();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alis"] = this.alis;
-        data["Satis"] = this.satis;
-        data["Tarih"] = this.tarih;
-        data["Sonkapanis"] = this.sonkapanis;
-        data["Son"] = this.son;
-        data["Endusuk"] = this.endusuk;
-        data["Enyuksek"] = this.enyuksek;
-        data["Gunlukyuzde"] = this.gunlukyuzde;
-        return data;
-    }
-}
-
-export interface INok {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-}
-
 export class NotificationModel implements INotificationModel {
     id?: number;
     title?: string | undefined;
@@ -15129,8 +9000,7 @@ export class NotificationModel implements INotificationModel {
     user?: UserModel;
     sendDate?: moment.Moment;
     sendFailCount?: number;
-    typeId?: number;
-    type?: NotificationTypeModel;
+    typeId?: NotificationType;
     isSent?: boolean;
     isDeleted?: boolean;
 
@@ -15156,7 +9026,6 @@ export class NotificationModel implements INotificationModel {
             this.sendDate = _data["SendDate"] ? moment(_data["SendDate"].toString()) : <any>undefined;
             this.sendFailCount = _data["SendFailCount"];
             this.typeId = _data["TypeId"];
-            this.type = _data["Type"] ? NotificationTypeModel.fromJS(_data["Type"]) : <any>undefined;
             this.isSent = _data["IsSent"];
             this.isDeleted = _data["IsDeleted"];
         }
@@ -15182,7 +9051,6 @@ export class NotificationModel implements INotificationModel {
         data["SendDate"] = this.sendDate ? this.sendDate.toISOString() : <any>undefined;
         data["SendFailCount"] = this.sendFailCount;
         data["TypeId"] = this.typeId;
-        data["Type"] = this.type ? this.type.toJSON() : <any>undefined;
         data["IsSent"] = this.isSent;
         data["IsDeleted"] = this.isDeleted;
         return data;
@@ -15200,20 +9068,48 @@ export interface INotificationModel {
     user?: UserModel;
     sendDate?: moment.Moment;
     sendFailCount?: number;
-    typeId?: number;
-    type?: NotificationTypeModel;
+    typeId?: NotificationType;
     isSent?: boolean;
     isDeleted?: boolean;
 }
 
-export class NotificationTypeModel implements INotificationTypeModel {
-    id?: number;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
+export enum NotificationType {
+    System = "System",
+    Manual = "Manual",
+}
 
-    constructor(data?: INotificationTypeModel) {
+export class Order implements IOrder {
+    id?: number;
+    createdOn?: moment.Moment | undefined;
+    createdById?: number | undefined;
+    updatedOn?: moment.Moment | undefined;
+    updatedById?: number | undefined;
+    deletedOn?: moment.Moment | undefined;
+    deletedById?: number | undefined;
+    isDeleted?: boolean;
+    userId?: number;
+    user?: User;
+    deliveryTime?: TimeSpan;
+    subTotal?: number;
+    total?: number;
+    shippingAddressId?: number | undefined;
+    shippingAddress?: OrderAddress;
+    billingAddressId?: number | undefined;
+    billingAddress?: OrderAddress;
+    orderStatus?: OrderStatus;
+    sourceTransactionId?: number | undefined;
+    sourceTransaction?: Transaction;
+    targetTransactionId?: number | undefined;
+    targetTransaction?: Transaction;
+    sourceAssetId?: number;
+    sourceAsset?: Asset;
+    targetAssetId?: number | undefined;
+    targetAsset?: Asset;
+    note?: string | undefined;
+    isTest?: boolean;
+    readonly orderItems?: OrderItem[] | undefined;
+
+    constructor(data?: IOrder) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -15225,16 +9121,44 @@ export class NotificationTypeModel implements INotificationTypeModel {
     init(_data?: any) {
         if (_data) {
             this.id = _data["Id"];
-            this.code = _data["Code"];
-            this.description = _data["Description"];
-            this.displayOrder = _data["DisplayOrder"];
-            this.isActive = _data["IsActive"];
+            this.createdOn = _data["CreatedOn"] ? moment(_data["CreatedOn"].toString()) : <any>undefined;
+            this.createdById = _data["CreatedById"];
+            this.updatedOn = _data["UpdatedOn"] ? moment(_data["UpdatedOn"].toString()) : <any>undefined;
+            this.updatedById = _data["UpdatedById"];
+            this.deletedOn = _data["DeletedOn"] ? moment(_data["DeletedOn"].toString()) : <any>undefined;
+            this.deletedById = _data["DeletedById"];
+            this.isDeleted = _data["IsDeleted"];
+            this.userId = _data["UserId"];
+            this.user = _data["User"] ? User.fromJS(_data["User"]) : <any>undefined;
+            this.deliveryTime = _data["DeliveryTime"] ? TimeSpan.fromJS(_data["DeliveryTime"]) : <any>undefined;
+            this.subTotal = _data["SubTotal"];
+            this.total = _data["Total"];
+            this.shippingAddressId = _data["ShippingAddressId"];
+            this.shippingAddress = _data["ShippingAddress"] ? OrderAddress.fromJS(_data["ShippingAddress"]) : <any>undefined;
+            this.billingAddressId = _data["BillingAddressId"];
+            this.billingAddress = _data["BillingAddress"] ? OrderAddress.fromJS(_data["BillingAddress"]) : <any>undefined;
+            this.orderStatus = _data["OrderStatus"];
+            this.sourceTransactionId = _data["SourceTransactionId"];
+            this.sourceTransaction = _data["SourceTransaction"] ? Transaction.fromJS(_data["SourceTransaction"]) : <any>undefined;
+            this.targetTransactionId = _data["TargetTransactionId"];
+            this.targetTransaction = _data["TargetTransaction"] ? Transaction.fromJS(_data["TargetTransaction"]) : <any>undefined;
+            this.sourceAssetId = _data["SourceAssetId"];
+            this.sourceAsset = _data["SourceAsset"] ? Asset.fromJS(_data["SourceAsset"]) : <any>undefined;
+            this.targetAssetId = _data["TargetAssetId"];
+            this.targetAsset = _data["TargetAsset"] ? Asset.fromJS(_data["TargetAsset"]) : <any>undefined;
+            this.note = _data["Note"];
+            this.isTest = _data["IsTest"];
+            if (Array.isArray(_data["OrderItems"])) {
+                (<any>this).orderItems = [] as any;
+                for (let item of _data["OrderItems"])
+                    (<any>this).orderItems!.push(OrderItem.fromJS(item));
+            }
         }
     }
 
-    static fromJS(data: any): NotificationTypeModel {
+    static fromJS(data: any): Order {
         data = typeof data === 'object' ? data : {};
-        let result = new NotificationTypeModel();
+        let result = new Order();
         result.init(data);
         return result;
     }
@@ -15242,33 +9166,91 @@ export class NotificationTypeModel implements INotificationTypeModel {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["Id"] = this.id;
-        data["Code"] = this.code;
-        data["Description"] = this.description;
-        data["DisplayOrder"] = this.displayOrder;
-        data["IsActive"] = this.isActive;
+        data["CreatedOn"] = this.createdOn ? this.createdOn.toISOString() : <any>undefined;
+        data["CreatedById"] = this.createdById;
+        data["UpdatedOn"] = this.updatedOn ? this.updatedOn.toISOString() : <any>undefined;
+        data["UpdatedById"] = this.updatedById;
+        data["DeletedOn"] = this.deletedOn ? this.deletedOn.toISOString() : <any>undefined;
+        data["DeletedById"] = this.deletedById;
+        data["IsDeleted"] = this.isDeleted;
+        data["UserId"] = this.userId;
+        data["User"] = this.user ? this.user.toJSON() : <any>undefined;
+        data["DeliveryTime"] = this.deliveryTime ? this.deliveryTime.toJSON() : <any>undefined;
+        data["SubTotal"] = this.subTotal;
+        data["Total"] = this.total;
+        data["ShippingAddressId"] = this.shippingAddressId;
+        data["ShippingAddress"] = this.shippingAddress ? this.shippingAddress.toJSON() : <any>undefined;
+        data["BillingAddressId"] = this.billingAddressId;
+        data["BillingAddress"] = this.billingAddress ? this.billingAddress.toJSON() : <any>undefined;
+        data["OrderStatus"] = this.orderStatus;
+        data["SourceTransactionId"] = this.sourceTransactionId;
+        data["SourceTransaction"] = this.sourceTransaction ? this.sourceTransaction.toJSON() : <any>undefined;
+        data["TargetTransactionId"] = this.targetTransactionId;
+        data["TargetTransaction"] = this.targetTransaction ? this.targetTransaction.toJSON() : <any>undefined;
+        data["SourceAssetId"] = this.sourceAssetId;
+        data["SourceAsset"] = this.sourceAsset ? this.sourceAsset.toJSON() : <any>undefined;
+        data["TargetAssetId"] = this.targetAssetId;
+        data["TargetAsset"] = this.targetAsset ? this.targetAsset.toJSON() : <any>undefined;
+        data["Note"] = this.note;
+        data["IsTest"] = this.isTest;
+        if (Array.isArray(this.orderItems)) {
+            data["OrderItems"] = [];
+            for (let item of this.orderItems)
+                data["OrderItems"].push(item.toJSON());
+        }
         return data;
     }
 }
 
-export interface INotificationTypeModel {
+export interface IOrder {
     id?: number;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
+    createdOn?: moment.Moment | undefined;
+    createdById?: number | undefined;
+    updatedOn?: moment.Moment | undefined;
+    updatedById?: number | undefined;
+    deletedOn?: moment.Moment | undefined;
+    deletedById?: number | undefined;
+    isDeleted?: boolean;
+    userId?: number;
+    user?: User;
+    deliveryTime?: TimeSpan;
+    subTotal?: number;
+    total?: number;
+    shippingAddressId?: number | undefined;
+    shippingAddress?: OrderAddress;
+    billingAddressId?: number | undefined;
+    billingAddress?: OrderAddress;
+    orderStatus?: OrderStatus;
+    sourceTransactionId?: number | undefined;
+    sourceTransaction?: Transaction;
+    targetTransactionId?: number | undefined;
+    targetTransaction?: Transaction;
+    sourceAssetId?: number;
+    sourceAsset?: Asset;
+    targetAssetId?: number | undefined;
+    targetAsset?: Asset;
+    note?: string | undefined;
+    isTest?: boolean;
+    orderItems?: OrderItem[] | undefined;
 }
 
-export class Ons implements IOns {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
+export class OrderAddress implements IOrderAddress {
+    id?: number;
+    name?: string | undefined;
+    contactName?: string | undefined;
+    phone?: string | undefined;
+    addressLine?: string | undefined;
+    directions?: string | undefined;
+    neighborhoodId?: number | undefined;
+    neighborhood?: Neighborhood;
+    districtId?: number;
+    district?: District;
+    provinceId?: number;
+    province?: Province;
+    countryId?: string | undefined;
+    country?: Country;
 
-    constructor(data?: IOns) {
+    constructor(data?: IOrderAddress) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -15279,47 +9261,157 @@ export class Ons implements IOns {
 
     init(_data?: any) {
         if (_data) {
-            this.alis = _data["Alis"];
-            this.satis = _data["Satis"];
-            this.tarih = _data["Tarih"];
-            this.sonkapanis = _data["Sonkapanis"];
-            this.son = _data["Son"];
-            this.endusuk = _data["Endusuk"];
-            this.enyuksek = _data["Enyuksek"];
-            this.gunlukyuzde = _data["Gunlukyuzde"];
+            this.id = _data["Id"];
+            this.name = _data["Name"];
+            this.contactName = _data["ContactName"];
+            this.phone = _data["Phone"];
+            this.addressLine = _data["AddressLine"];
+            this.directions = _data["Directions"];
+            this.neighborhoodId = _data["NeighborhoodId"];
+            this.neighborhood = _data["Neighborhood"] ? Neighborhood.fromJS(_data["Neighborhood"]) : <any>undefined;
+            this.districtId = _data["DistrictId"];
+            this.district = _data["District"] ? District.fromJS(_data["District"]) : <any>undefined;
+            this.provinceId = _data["ProvinceId"];
+            this.province = _data["Province"] ? Province.fromJS(_data["Province"]) : <any>undefined;
+            this.countryId = _data["CountryId"];
+            this.country = _data["Country"] ? Country.fromJS(_data["Country"]) : <any>undefined;
         }
     }
 
-    static fromJS(data: any): Ons {
+    static fromJS(data: any): OrderAddress {
         data = typeof data === 'object' ? data : {};
-        let result = new Ons();
+        let result = new OrderAddress();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["Alis"] = this.alis;
-        data["Satis"] = this.satis;
-        data["Tarih"] = this.tarih;
-        data["Sonkapanis"] = this.sonkapanis;
-        data["Son"] = this.son;
-        data["Endusuk"] = this.endusuk;
-        data["Enyuksek"] = this.enyuksek;
-        data["Gunlukyuzde"] = this.gunlukyuzde;
+        data["Id"] = this.id;
+        data["Name"] = this.name;
+        data["ContactName"] = this.contactName;
+        data["Phone"] = this.phone;
+        data["AddressLine"] = this.addressLine;
+        data["Directions"] = this.directions;
+        data["NeighborhoodId"] = this.neighborhoodId;
+        data["Neighborhood"] = this.neighborhood ? this.neighborhood.toJSON() : <any>undefined;
+        data["DistrictId"] = this.districtId;
+        data["District"] = this.district ? this.district.toJSON() : <any>undefined;
+        data["ProvinceId"] = this.provinceId;
+        data["Province"] = this.province ? this.province.toJSON() : <any>undefined;
+        data["CountryId"] = this.countryId;
+        data["Country"] = this.country ? this.country.toJSON() : <any>undefined;
         return data;
     }
 }
 
-export interface IOns {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
+export interface IOrderAddress {
+    id?: number;
+    name?: string | undefined;
+    contactName?: string | undefined;
+    phone?: string | undefined;
+    addressLine?: string | undefined;
+    directions?: string | undefined;
+    neighborhoodId?: number | undefined;
+    neighborhood?: Neighborhood;
+    districtId?: number;
+    district?: District;
+    provinceId?: number;
+    province?: Province;
+    countryId?: string | undefined;
+    country?: Country;
+}
+
+export class OrderItem implements IOrderItem {
+    id?: number;
+    createdOn?: moment.Moment | undefined;
+    createdById?: number | undefined;
+    updatedOn?: moment.Moment | undefined;
+    updatedById?: number | undefined;
+    deletedOn?: moment.Moment | undefined;
+    deletedById?: number | undefined;
+    isDeleted?: boolean;
+    orderId?: number;
+    order?: Order;
+    productId?: number;
+    product?: Product;
+    quantity?: number;
+    productPrice?: number;
+    amount?: number;
+
+    constructor(data?: IOrderItem) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["Id"];
+            this.createdOn = _data["CreatedOn"] ? moment(_data["CreatedOn"].toString()) : <any>undefined;
+            this.createdById = _data["CreatedById"];
+            this.updatedOn = _data["UpdatedOn"] ? moment(_data["UpdatedOn"].toString()) : <any>undefined;
+            this.updatedById = _data["UpdatedById"];
+            this.deletedOn = _data["DeletedOn"] ? moment(_data["DeletedOn"].toString()) : <any>undefined;
+            this.deletedById = _data["DeletedById"];
+            this.isDeleted = _data["IsDeleted"];
+            this.orderId = _data["OrderId"];
+            this.order = _data["Order"] ? Order.fromJS(_data["Order"]) : <any>undefined;
+            this.productId = _data["ProductId"];
+            this.product = _data["Product"] ? Product.fromJS(_data["Product"]) : <any>undefined;
+            this.quantity = _data["Quantity"];
+            this.productPrice = _data["ProductPrice"];
+            this.amount = _data["Amount"];
+        }
+    }
+
+    static fromJS(data: any): OrderItem {
+        data = typeof data === 'object' ? data : {};
+        let result = new OrderItem();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["Id"] = this.id;
+        data["CreatedOn"] = this.createdOn ? this.createdOn.toISOString() : <any>undefined;
+        data["CreatedById"] = this.createdById;
+        data["UpdatedOn"] = this.updatedOn ? this.updatedOn.toISOString() : <any>undefined;
+        data["UpdatedById"] = this.updatedById;
+        data["DeletedOn"] = this.deletedOn ? this.deletedOn.toISOString() : <any>undefined;
+        data["DeletedById"] = this.deletedById;
+        data["IsDeleted"] = this.isDeleted;
+        data["OrderId"] = this.orderId;
+        data["Order"] = this.order ? this.order.toJSON() : <any>undefined;
+        data["ProductId"] = this.productId;
+        data["Product"] = this.product ? this.product.toJSON() : <any>undefined;
+        data["Quantity"] = this.quantity;
+        data["ProductPrice"] = this.productPrice;
+        data["Amount"] = this.amount;
+        return data;
+    }
+}
+
+export interface IOrderItem {
+    id?: number;
+    createdOn?: moment.Moment | undefined;
+    createdById?: number | undefined;
+    updatedOn?: moment.Moment | undefined;
+    updatedById?: number | undefined;
+    deletedOn?: moment.Moment | undefined;
+    deletedById?: number | undefined;
+    isDeleted?: boolean;
+    orderId?: number;
+    order?: Order;
+    productId?: number;
+    product?: Product;
+    quantity?: number;
+    productPrice?: number;
+    amount?: number;
 }
 
 export class OrderItemModel implements IOrderItemModel {
@@ -15378,612 +9470,28 @@ export interface IOrderItemModel {
     amount?: number;
 }
 
-export class OrderStatusModel implements IOrderStatusModel {
-    id?: number;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-
-    constructor(data?: IOrderStatusModel) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["Id"];
-            this.code = _data["Code"];
-            this.description = _data["Description"];
-            this.displayOrder = _data["DisplayOrder"];
-            this.isActive = _data["IsActive"];
-        }
-    }
-
-    static fromJS(data: any): OrderStatusModel {
-        data = typeof data === 'object' ? data : {};
-        let result = new OrderStatusModel();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Id"] = this.id;
-        data["Code"] = this.code;
-        data["Description"] = this.description;
-        data["DisplayOrder"] = this.displayOrder;
-        data["IsActive"] = this.isActive;
-        return data;
-    }
+export enum OrderStatus {
+    OnHold = "OnHold",
+    Pending = "Pending",
+    Processing = "Processing",
+    Cancelled = "Cancelled",
+    Completed = "Completed",
+    Refunded = "Refunded",
+    Shipped = "Shipped",
 }
 
-export interface IOrderStatusModel {
-    id?: number;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-}
-
-export class Paladyum implements IPaladyum {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-
-    constructor(data?: IPaladyum) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alis = _data["Alis"];
-            this.satis = _data["Satis"];
-            this.tarih = _data["Tarih"];
-            this.sonkapanis = _data["Sonkapanis"];
-            this.son = _data["Son"];
-            this.endusuk = _data["Endusuk"];
-            this.enyuksek = _data["Enyuksek"];
-            this.gunlukyuzde = _data["Gunlukyuzde"];
-        }
-    }
-
-    static fromJS(data: any): Paladyum {
-        data = typeof data === 'object' ? data : {};
-        let result = new Paladyum();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alis"] = this.alis;
-        data["Satis"] = this.satis;
-        data["Tarih"] = this.tarih;
-        data["Sonkapanis"] = this.sonkapanis;
-        data["Son"] = this.son;
-        data["Endusuk"] = this.endusuk;
-        data["Enyuksek"] = this.enyuksek;
-        data["Gunlukyuzde"] = this.gunlukyuzde;
-        return data;
-    }
-}
-
-export interface IPaladyum {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-}
-
-export class PaladyumfixAm implements IPaladyumfixAm {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-
-    constructor(data?: IPaladyumfixAm) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alis = _data["Alis"];
-            this.satis = _data["Satis"];
-            this.tarih = _data["Tarih"];
-            this.sonkapanis = _data["Sonkapanis"];
-            this.son = _data["Son"];
-            this.endusuk = _data["Endusuk"];
-            this.enyuksek = _data["Enyuksek"];
-            this.gunlukyuzde = _data["Gunlukyuzde"];
-        }
-    }
-
-    static fromJS(data: any): PaladyumfixAm {
-        data = typeof data === 'object' ? data : {};
-        let result = new PaladyumfixAm();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alis"] = this.alis;
-        data["Satis"] = this.satis;
-        data["Tarih"] = this.tarih;
-        data["Sonkapanis"] = this.sonkapanis;
-        data["Son"] = this.son;
-        data["Endusuk"] = this.endusuk;
-        data["Enyuksek"] = this.enyuksek;
-        data["Gunlukyuzde"] = this.gunlukyuzde;
-        return data;
-    }
-}
-
-export interface IPaladyumfixAm {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-}
-
-export class PaladyumfixPm implements IPaladyumfixPm {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-
-    constructor(data?: IPaladyumfixPm) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alis = _data["Alis"];
-            this.satis = _data["Satis"];
-            this.tarih = _data["Tarih"];
-            this.sonkapanis = _data["Sonkapanis"];
-            this.son = _data["Son"];
-            this.endusuk = _data["Endusuk"];
-            this.enyuksek = _data["Enyuksek"];
-            this.gunlukyuzde = _data["Gunlukyuzde"];
-        }
-    }
-
-    static fromJS(data: any): PaladyumfixPm {
-        data = typeof data === 'object' ? data : {};
-        let result = new PaladyumfixPm();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alis"] = this.alis;
-        data["Satis"] = this.satis;
-        data["Tarih"] = this.tarih;
-        data["Sonkapanis"] = this.sonkapanis;
-        data["Son"] = this.son;
-        data["Endusuk"] = this.endusuk;
-        data["Enyuksek"] = this.enyuksek;
-        data["Gunlukyuzde"] = this.gunlukyuzde;
-        return data;
-    }
-}
-
-export interface IPaladyumfixPm {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-}
-
-export enum PaymentStatusEnum {
-    _0 = 0,
-    _1 = 1,
-    _2 = 2,
-    _3 = 3,
-    _4 = 4,
-    _5 = 5,
-    _6 = 6,
-    _7 = 7,
-    _8 = 8,
-    _9 = 9,
-}
-
-export class PaymentType implements IPaymentType {
-    id?: number;
-    createdOn?: moment.Moment | undefined;
-    createdById?: number | undefined;
-    createdBy?: User;
-    updatedOn?: moment.Moment | undefined;
-    updatedById?: number | undefined;
-    updatedBy?: User;
-    deletedOn?: moment.Moment | undefined;
-    deletedById?: number | undefined;
-    deletedBy?: User;
-    isDeleted?: boolean;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-
-    constructor(data?: IPaymentType) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["Id"];
-            this.createdOn = _data["CreatedOn"] ? moment(_data["CreatedOn"].toString()) : <any>undefined;
-            this.createdById = _data["CreatedById"];
-            this.createdBy = _data["CreatedBy"] ? User.fromJS(_data["CreatedBy"]) : <any>undefined;
-            this.updatedOn = _data["UpdatedOn"] ? moment(_data["UpdatedOn"].toString()) : <any>undefined;
-            this.updatedById = _data["UpdatedById"];
-            this.updatedBy = _data["UpdatedBy"] ? User.fromJS(_data["UpdatedBy"]) : <any>undefined;
-            this.deletedOn = _data["DeletedOn"] ? moment(_data["DeletedOn"].toString()) : <any>undefined;
-            this.deletedById = _data["DeletedById"];
-            this.deletedBy = _data["DeletedBy"] ? User.fromJS(_data["DeletedBy"]) : <any>undefined;
-            this.isDeleted = _data["IsDeleted"];
-            this.code = _data["Code"];
-            this.description = _data["Description"];
-            this.displayOrder = _data["DisplayOrder"];
-            this.isActive = _data["IsActive"];
-        }
-    }
-
-    static fromJS(data: any): PaymentType {
-        data = typeof data === 'object' ? data : {};
-        let result = new PaymentType();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Id"] = this.id;
-        data["CreatedOn"] = this.createdOn ? this.createdOn.toISOString() : <any>undefined;
-        data["CreatedById"] = this.createdById;
-        data["CreatedBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
-        data["UpdatedOn"] = this.updatedOn ? this.updatedOn.toISOString() : <any>undefined;
-        data["UpdatedById"] = this.updatedById;
-        data["UpdatedBy"] = this.updatedBy ? this.updatedBy.toJSON() : <any>undefined;
-        data["DeletedOn"] = this.deletedOn ? this.deletedOn.toISOString() : <any>undefined;
-        data["DeletedById"] = this.deletedById;
-        data["DeletedBy"] = this.deletedBy ? this.deletedBy.toJSON() : <any>undefined;
-        data["IsDeleted"] = this.isDeleted;
-        data["Code"] = this.code;
-        data["Description"] = this.description;
-        data["DisplayOrder"] = this.displayOrder;
-        data["IsActive"] = this.isActive;
-        return data;
-    }
-}
-
-export interface IPaymentType {
-    id?: number;
-    createdOn?: moment.Moment | undefined;
-    createdById?: number | undefined;
-    createdBy?: User;
-    updatedOn?: moment.Moment | undefined;
-    updatedById?: number | undefined;
-    updatedBy?: User;
-    deletedOn?: moment.Moment | undefined;
-    deletedById?: number | undefined;
-    deletedBy?: User;
-    isDeleted?: boolean;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-}
-
-export enum PaymentTypeEnum {
-    _0 = 0,
-    _1 = 1,
-    _2 = 2,
-    _3 = 3,
-    _4 = 4,
-    _5 = 5,
-    _6 = 6,
-    _7 = 7,
-    _8 = 8,
-    _9 = 9,
-    _10 = 10,
-    _11 = 11,
-}
-
-export class PaymentTypeModel implements IPaymentTypeModel {
-    id?: number;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-
-    constructor(data?: IPaymentTypeModel) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["Id"];
-            this.code = _data["Code"];
-            this.description = _data["Description"];
-            this.displayOrder = _data["DisplayOrder"];
-            this.isActive = _data["IsActive"];
-        }
-    }
-
-    static fromJS(data: any): PaymentTypeModel {
-        data = typeof data === 'object' ? data : {};
-        let result = new PaymentTypeModel();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Id"] = this.id;
-        data["Code"] = this.code;
-        data["Description"] = this.description;
-        data["DisplayOrder"] = this.displayOrder;
-        data["IsActive"] = this.isActive;
-        return data;
-    }
-}
-
-export interface IPaymentTypeModel {
-    id?: number;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-}
-
-export class Platin implements IPlatin {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-
-    constructor(data?: IPlatin) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alis = _data["Alis"];
-            this.satis = _data["Satis"];
-            this.tarih = _data["Tarih"];
-            this.sonkapanis = _data["Sonkapanis"];
-            this.son = _data["Son"];
-            this.endusuk = _data["Endusuk"];
-            this.enyuksek = _data["Enyuksek"];
-            this.gunlukyuzde = _data["Gunlukyuzde"];
-        }
-    }
-
-    static fromJS(data: any): Platin {
-        data = typeof data === 'object' ? data : {};
-        let result = new Platin();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alis"] = this.alis;
-        data["Satis"] = this.satis;
-        data["Tarih"] = this.tarih;
-        data["Sonkapanis"] = this.sonkapanis;
-        data["Son"] = this.son;
-        data["Endusuk"] = this.endusuk;
-        data["Enyuksek"] = this.enyuksek;
-        data["Gunlukyuzde"] = this.gunlukyuzde;
-        return data;
-    }
-}
-
-export interface IPlatin {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-}
-
-export class PlatinfixAm implements IPlatinfixAm {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-
-    constructor(data?: IPlatinfixAm) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alis = _data["Alis"];
-            this.satis = _data["Satis"];
-            this.tarih = _data["Tarih"];
-            this.sonkapanis = _data["Sonkapanis"];
-            this.son = _data["Son"];
-            this.endusuk = _data["Endusuk"];
-            this.enyuksek = _data["Enyuksek"];
-            this.gunlukyuzde = _data["Gunlukyuzde"];
-        }
-    }
-
-    static fromJS(data: any): PlatinfixAm {
-        data = typeof data === 'object' ? data : {};
-        let result = new PlatinfixAm();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alis"] = this.alis;
-        data["Satis"] = this.satis;
-        data["Tarih"] = this.tarih;
-        data["Sonkapanis"] = this.sonkapanis;
-        data["Son"] = this.son;
-        data["Endusuk"] = this.endusuk;
-        data["Enyuksek"] = this.enyuksek;
-        data["Gunlukyuzde"] = this.gunlukyuzde;
-        return data;
-    }
-}
-
-export interface IPlatinfixAm {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-}
-
-export class PlatinfixPm implements IPlatinfixPm {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-
-    constructor(data?: IPlatinfixPm) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alis = _data["Alis"];
-            this.satis = _data["Satis"];
-            this.tarih = _data["Tarih"];
-            this.sonkapanis = _data["Sonkapanis"];
-            this.son = _data["Son"];
-            this.endusuk = _data["Endusuk"];
-            this.enyuksek = _data["Enyuksek"];
-            this.gunlukyuzde = _data["Gunlukyuzde"];
-        }
-    }
-
-    static fromJS(data: any): PlatinfixPm {
-        data = typeof data === 'object' ? data : {};
-        let result = new PlatinfixPm();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alis"] = this.alis;
-        data["Satis"] = this.satis;
-        data["Tarih"] = this.tarih;
-        data["Sonkapanis"] = this.sonkapanis;
-        data["Son"] = this.son;
-        data["Endusuk"] = this.endusuk;
-        data["Enyuksek"] = this.enyuksek;
-        data["Gunlukyuzde"] = this.gunlukyuzde;
-        return data;
-    }
-}
-
-export interface IPlatinfixPm {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
+export enum PaymentType {
+    None = "None",
+    Cash = "Cash",
+    CreditCard = "CreditCard",
+    StoredCard = "StoredCard",
+    BankTransfer = "BankTransfer",
+    SwiftTransfer = "SwiftTransfer",
+    Cheque = "Cheque",
+    GiftCard = "GiftCard",
+    Paypal = "Paypal",
+    Crypto = "Crypto",
+    Metal = "Metal",
 }
 
 export class PostCategoryModel implements IPostCategoryModel {
@@ -16174,13 +9682,10 @@ export class Product implements IProduct {
     id?: number;
     createdOn?: moment.Moment | undefined;
     createdById?: number | undefined;
-    createdBy?: User;
     updatedOn?: moment.Moment | undefined;
     updatedById?: number | undefined;
-    updatedBy?: User;
     deletedOn?: moment.Moment | undefined;
     deletedById?: number | undefined;
-    deletedBy?: User;
     isDeleted?: boolean;
     code?: string | undefined;
     barcode?: string | undefined;
@@ -16221,13 +9726,10 @@ export class Product implements IProduct {
             this.id = _data["Id"];
             this.createdOn = _data["CreatedOn"] ? moment(_data["CreatedOn"].toString()) : <any>undefined;
             this.createdById = _data["CreatedById"];
-            this.createdBy = _data["CreatedBy"] ? User.fromJS(_data["CreatedBy"]) : <any>undefined;
             this.updatedOn = _data["UpdatedOn"] ? moment(_data["UpdatedOn"].toString()) : <any>undefined;
             this.updatedById = _data["UpdatedById"];
-            this.updatedBy = _data["UpdatedBy"] ? User.fromJS(_data["UpdatedBy"]) : <any>undefined;
             this.deletedOn = _data["DeletedOn"] ? moment(_data["DeletedOn"].toString()) : <any>undefined;
             this.deletedById = _data["DeletedById"];
-            this.deletedBy = _data["DeletedBy"] ? User.fromJS(_data["DeletedBy"]) : <any>undefined;
             this.isDeleted = _data["IsDeleted"];
             this.code = _data["Code"];
             this.barcode = _data["Barcode"];
@@ -16246,9 +9748,9 @@ export class Product implements IProduct {
             this.isFeatured = _data["IsFeatured"];
             this.isPublished = _data["IsPublished"];
             this.unitId = _data["UnitId"];
-            this.unit = _data["Unit"] ? ProductUnit.fromJS(_data["Unit"]) : <any>undefined;
+            this.unit = _data["Unit"];
             this.productTypeId = _data["ProductTypeId"];
-            this.productType = _data["ProductType"] ? ProductType.fromJS(_data["ProductType"]) : <any>undefined;
+            this.productType = _data["ProductType"];
             this.mediaId = _data["MediaId"];
             this.media = _data["Media"] ? Media.fromJS(_data["Media"]) : <any>undefined;
             this.yatirimimId = _data["YatirimimId"];
@@ -16272,13 +9774,10 @@ export class Product implements IProduct {
         data["Id"] = this.id;
         data["CreatedOn"] = this.createdOn ? this.createdOn.toISOString() : <any>undefined;
         data["CreatedById"] = this.createdById;
-        data["CreatedBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
         data["UpdatedOn"] = this.updatedOn ? this.updatedOn.toISOString() : <any>undefined;
         data["UpdatedById"] = this.updatedById;
-        data["UpdatedBy"] = this.updatedBy ? this.updatedBy.toJSON() : <any>undefined;
         data["DeletedOn"] = this.deletedOn ? this.deletedOn.toISOString() : <any>undefined;
         data["DeletedById"] = this.deletedById;
-        data["DeletedBy"] = this.deletedBy ? this.deletedBy.toJSON() : <any>undefined;
         data["IsDeleted"] = this.isDeleted;
         data["Code"] = this.code;
         data["Barcode"] = this.barcode;
@@ -16297,9 +9796,9 @@ export class Product implements IProduct {
         data["IsFeatured"] = this.isFeatured;
         data["IsPublished"] = this.isPublished;
         data["UnitId"] = this.unitId;
-        data["Unit"] = this.unit ? this.unit.toJSON() : <any>undefined;
+        data["Unit"] = this.unit;
         data["ProductTypeId"] = this.productTypeId;
-        data["ProductType"] = this.productType ? this.productType.toJSON() : <any>undefined;
+        data["ProductType"] = this.productType;
         data["MediaId"] = this.mediaId;
         data["Media"] = this.media ? this.media.toJSON() : <any>undefined;
         data["YatirimimId"] = this.yatirimimId;
@@ -16316,13 +9815,10 @@ export interface IProduct {
     id?: number;
     createdOn?: moment.Moment | undefined;
     createdById?: number | undefined;
-    createdBy?: User;
     updatedOn?: moment.Moment | undefined;
     updatedById?: number | undefined;
-    updatedBy?: User;
     deletedOn?: moment.Moment | undefined;
     deletedById?: number | undefined;
-    deletedBy?: User;
     isDeleted?: boolean;
     code?: string | undefined;
     barcode?: string | undefined;
@@ -16402,300 +9898,18 @@ export interface IProductCategory {
     category?: Category;
 }
 
-export class ProductType implements IProductType {
-    id?: number;
-    createdOn?: moment.Moment | undefined;
-    createdById?: number | undefined;
-    createdBy?: User;
-    updatedOn?: moment.Moment | undefined;
-    updatedById?: number | undefined;
-    updatedBy?: User;
-    deletedOn?: moment.Moment | undefined;
-    deletedById?: number | undefined;
-    deletedBy?: User;
-    isDeleted?: boolean;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-
-    constructor(data?: IProductType) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["Id"];
-            this.createdOn = _data["CreatedOn"] ? moment(_data["CreatedOn"].toString()) : <any>undefined;
-            this.createdById = _data["CreatedById"];
-            this.createdBy = _data["CreatedBy"] ? User.fromJS(_data["CreatedBy"]) : <any>undefined;
-            this.updatedOn = _data["UpdatedOn"] ? moment(_data["UpdatedOn"].toString()) : <any>undefined;
-            this.updatedById = _data["UpdatedById"];
-            this.updatedBy = _data["UpdatedBy"] ? User.fromJS(_data["UpdatedBy"]) : <any>undefined;
-            this.deletedOn = _data["DeletedOn"] ? moment(_data["DeletedOn"].toString()) : <any>undefined;
-            this.deletedById = _data["DeletedById"];
-            this.deletedBy = _data["DeletedBy"] ? User.fromJS(_data["DeletedBy"]) : <any>undefined;
-            this.isDeleted = _data["IsDeleted"];
-            this.code = _data["Code"];
-            this.description = _data["Description"];
-            this.displayOrder = _data["DisplayOrder"];
-            this.isActive = _data["IsActive"];
-        }
-    }
-
-    static fromJS(data: any): ProductType {
-        data = typeof data === 'object' ? data : {};
-        let result = new ProductType();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Id"] = this.id;
-        data["CreatedOn"] = this.createdOn ? this.createdOn.toISOString() : <any>undefined;
-        data["CreatedById"] = this.createdById;
-        data["CreatedBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
-        data["UpdatedOn"] = this.updatedOn ? this.updatedOn.toISOString() : <any>undefined;
-        data["UpdatedById"] = this.updatedById;
-        data["UpdatedBy"] = this.updatedBy ? this.updatedBy.toJSON() : <any>undefined;
-        data["DeletedOn"] = this.deletedOn ? this.deletedOn.toISOString() : <any>undefined;
-        data["DeletedById"] = this.deletedById;
-        data["DeletedBy"] = this.deletedBy ? this.deletedBy.toJSON() : <any>undefined;
-        data["IsDeleted"] = this.isDeleted;
-        data["Code"] = this.code;
-        data["Description"] = this.description;
-        data["DisplayOrder"] = this.displayOrder;
-        data["IsActive"] = this.isActive;
-        return data;
-    }
+export enum ProductType {
+    Basic = "Basic",
+    Grouped = "Grouped",
 }
 
-export interface IProductType {
-    id?: number;
-    createdOn?: moment.Moment | undefined;
-    createdById?: number | undefined;
-    createdBy?: User;
-    updatedOn?: moment.Moment | undefined;
-    updatedById?: number | undefined;
-    updatedBy?: User;
-    deletedOn?: moment.Moment | undefined;
-    deletedById?: number | undefined;
-    deletedBy?: User;
-    isDeleted?: boolean;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-}
-
-export class ProductTypeModel implements IProductTypeModel {
-    id?: number;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-
-    constructor(data?: IProductTypeModel) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["Id"];
-            this.code = _data["Code"];
-            this.description = _data["Description"];
-            this.displayOrder = _data["DisplayOrder"];
-            this.isActive = _data["IsActive"];
-        }
-    }
-
-    static fromJS(data: any): ProductTypeModel {
-        data = typeof data === 'object' ? data : {};
-        let result = new ProductTypeModel();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Id"] = this.id;
-        data["Code"] = this.code;
-        data["Description"] = this.description;
-        data["DisplayOrder"] = this.displayOrder;
-        data["IsActive"] = this.isActive;
-        return data;
-    }
-}
-
-export interface IProductTypeModel {
-    id?: number;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-}
-
-export class ProductUnit implements IProductUnit {
-    id?: number;
-    createdOn?: moment.Moment | undefined;
-    createdById?: number | undefined;
-    createdBy?: User;
-    updatedOn?: moment.Moment | undefined;
-    updatedById?: number | undefined;
-    updatedBy?: User;
-    deletedOn?: moment.Moment | undefined;
-    deletedById?: number | undefined;
-    deletedBy?: User;
-    isDeleted?: boolean;
-    code?: string | undefined;
-    short?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-
-    constructor(data?: IProductUnit) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["Id"];
-            this.createdOn = _data["CreatedOn"] ? moment(_data["CreatedOn"].toString()) : <any>undefined;
-            this.createdById = _data["CreatedById"];
-            this.createdBy = _data["CreatedBy"] ? User.fromJS(_data["CreatedBy"]) : <any>undefined;
-            this.updatedOn = _data["UpdatedOn"] ? moment(_data["UpdatedOn"].toString()) : <any>undefined;
-            this.updatedById = _data["UpdatedById"];
-            this.updatedBy = _data["UpdatedBy"] ? User.fromJS(_data["UpdatedBy"]) : <any>undefined;
-            this.deletedOn = _data["DeletedOn"] ? moment(_data["DeletedOn"].toString()) : <any>undefined;
-            this.deletedById = _data["DeletedById"];
-            this.deletedBy = _data["DeletedBy"] ? User.fromJS(_data["DeletedBy"]) : <any>undefined;
-            this.isDeleted = _data["IsDeleted"];
-            this.code = _data["Code"];
-            this.short = _data["Short"];
-            this.description = _data["Description"];
-            this.displayOrder = _data["DisplayOrder"];
-            this.isActive = _data["IsActive"];
-        }
-    }
-
-    static fromJS(data: any): ProductUnit {
-        data = typeof data === 'object' ? data : {};
-        let result = new ProductUnit();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Id"] = this.id;
-        data["CreatedOn"] = this.createdOn ? this.createdOn.toISOString() : <any>undefined;
-        data["CreatedById"] = this.createdById;
-        data["CreatedBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
-        data["UpdatedOn"] = this.updatedOn ? this.updatedOn.toISOString() : <any>undefined;
-        data["UpdatedById"] = this.updatedById;
-        data["UpdatedBy"] = this.updatedBy ? this.updatedBy.toJSON() : <any>undefined;
-        data["DeletedOn"] = this.deletedOn ? this.deletedOn.toISOString() : <any>undefined;
-        data["DeletedById"] = this.deletedById;
-        data["DeletedBy"] = this.deletedBy ? this.deletedBy.toJSON() : <any>undefined;
-        data["IsDeleted"] = this.isDeleted;
-        data["Code"] = this.code;
-        data["Short"] = this.short;
-        data["Description"] = this.description;
-        data["DisplayOrder"] = this.displayOrder;
-        data["IsActive"] = this.isActive;
-        return data;
-    }
-}
-
-export interface IProductUnit {
-    id?: number;
-    createdOn?: moment.Moment | undefined;
-    createdById?: number | undefined;
-    createdBy?: User;
-    updatedOn?: moment.Moment | undefined;
-    updatedById?: number | undefined;
-    updatedBy?: User;
-    deletedOn?: moment.Moment | undefined;
-    deletedById?: number | undefined;
-    deletedBy?: User;
-    isDeleted?: boolean;
-    code?: string | undefined;
-    short?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-}
-
-export class ProductUnitModel implements IProductUnitModel {
-    id?: number;
-    code?: string | undefined;
-    short?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-
-    constructor(data?: IProductUnitModel) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["Id"];
-            this.code = _data["Code"];
-            this.short = _data["Short"];
-            this.description = _data["Description"];
-            this.displayOrder = _data["DisplayOrder"];
-            this.isActive = _data["IsActive"];
-        }
-    }
-
-    static fromJS(data: any): ProductUnitModel {
-        data = typeof data === 'object' ? data : {};
-        let result = new ProductUnitModel();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Id"] = this.id;
-        data["Code"] = this.code;
-        data["Short"] = this.short;
-        data["Description"] = this.description;
-        data["DisplayOrder"] = this.displayOrder;
-        data["IsActive"] = this.isActive;
-        return data;
-    }
-}
-
-export interface IProductUnitModel {
-    id?: number;
-    code?: string | undefined;
-    short?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
+export enum ProductUnit {
+    Piece = "Piece",
+    Milligram = "Milligram",
+    Gram = "Gram",
+    Kilogram = "Kilogram",
+    Millimetre = "Millimetre",
+    Metre = "Metre",
 }
 
 export class Province implements IProvince {
@@ -16890,23 +10104,17 @@ export class Request implements IRequest {
     id?: number;
     createdOn?: moment.Moment | undefined;
     createdById?: number | undefined;
-    createdBy?: User;
     updatedOn?: moment.Moment | undefined;
     updatedById?: number | undefined;
-    updatedBy?: User;
     deletedOn?: moment.Moment | undefined;
     deletedById?: number | undefined;
-    deletedBy?: User;
     isDeleted?: boolean;
-    customerId?: number;
-    customer?: Customer;
-    customerBankAccountId?: number | undefined;
-    customerBankAccount?: CustomerBankAccount;
-    requestTypeId?: number;
+    userId?: number;
+    user?: User;
+    userBankAccountId?: number | undefined;
+    userBankAccount?: UserBankAccount;
     requestType?: RequestType;
-    demandTypeId?: number;
     demandType?: DemandType;
-    requestStatusId?: number;
     requestStatus?: RequestStatus;
     comment?: string | undefined;
     quantity?: number;
@@ -16929,24 +10137,18 @@ export class Request implements IRequest {
             this.id = _data["Id"];
             this.createdOn = _data["CreatedOn"] ? moment(_data["CreatedOn"].toString()) : <any>undefined;
             this.createdById = _data["CreatedById"];
-            this.createdBy = _data["CreatedBy"] ? User.fromJS(_data["CreatedBy"]) : <any>undefined;
             this.updatedOn = _data["UpdatedOn"] ? moment(_data["UpdatedOn"].toString()) : <any>undefined;
             this.updatedById = _data["UpdatedById"];
-            this.updatedBy = _data["UpdatedBy"] ? User.fromJS(_data["UpdatedBy"]) : <any>undefined;
             this.deletedOn = _data["DeletedOn"] ? moment(_data["DeletedOn"].toString()) : <any>undefined;
             this.deletedById = _data["DeletedById"];
-            this.deletedBy = _data["DeletedBy"] ? User.fromJS(_data["DeletedBy"]) : <any>undefined;
             this.isDeleted = _data["IsDeleted"];
-            this.customerId = _data["CustomerId"];
-            this.customer = _data["Customer"] ? Customer.fromJS(_data["Customer"]) : <any>undefined;
-            this.customerBankAccountId = _data["CustomerBankAccountId"];
-            this.customerBankAccount = _data["CustomerBankAccount"] ? CustomerBankAccount.fromJS(_data["CustomerBankAccount"]) : <any>undefined;
-            this.requestTypeId = _data["RequestTypeId"];
-            this.requestType = _data["RequestType"] ? RequestType.fromJS(_data["RequestType"]) : <any>undefined;
-            this.demandTypeId = _data["DemandTypeId"];
-            this.demandType = _data["DemandType"] ? DemandType.fromJS(_data["DemandType"]) : <any>undefined;
-            this.requestStatusId = _data["RequestStatusId"];
-            this.requestStatus = _data["RequestStatus"] ? RequestStatus.fromJS(_data["RequestStatus"]) : <any>undefined;
+            this.userId = _data["UserId"];
+            this.user = _data["User"] ? User.fromJS(_data["User"]) : <any>undefined;
+            this.userBankAccountId = _data["UserBankAccountId"];
+            this.userBankAccount = _data["UserBankAccount"] ? UserBankAccount.fromJS(_data["UserBankAccount"]) : <any>undefined;
+            this.requestType = _data["RequestType"];
+            this.demandType = _data["DemandType"];
+            this.requestStatus = _data["RequestStatus"];
             this.comment = _data["Comment"];
             this.quantity = _data["Quantity"];
             this.symbolId = _data["SymbolId"];
@@ -16968,24 +10170,18 @@ export class Request implements IRequest {
         data["Id"] = this.id;
         data["CreatedOn"] = this.createdOn ? this.createdOn.toISOString() : <any>undefined;
         data["CreatedById"] = this.createdById;
-        data["CreatedBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
         data["UpdatedOn"] = this.updatedOn ? this.updatedOn.toISOString() : <any>undefined;
         data["UpdatedById"] = this.updatedById;
-        data["UpdatedBy"] = this.updatedBy ? this.updatedBy.toJSON() : <any>undefined;
         data["DeletedOn"] = this.deletedOn ? this.deletedOn.toISOString() : <any>undefined;
         data["DeletedById"] = this.deletedById;
-        data["DeletedBy"] = this.deletedBy ? this.deletedBy.toJSON() : <any>undefined;
         data["IsDeleted"] = this.isDeleted;
-        data["CustomerId"] = this.customerId;
-        data["Customer"] = this.customer ? this.customer.toJSON() : <any>undefined;
-        data["CustomerBankAccountId"] = this.customerBankAccountId;
-        data["CustomerBankAccount"] = this.customerBankAccount ? this.customerBankAccount.toJSON() : <any>undefined;
-        data["RequestTypeId"] = this.requestTypeId;
-        data["RequestType"] = this.requestType ? this.requestType.toJSON() : <any>undefined;
-        data["DemandTypeId"] = this.demandTypeId;
-        data["DemandType"] = this.demandType ? this.demandType.toJSON() : <any>undefined;
-        data["RequestStatusId"] = this.requestStatusId;
-        data["RequestStatus"] = this.requestStatus ? this.requestStatus.toJSON() : <any>undefined;
+        data["UserId"] = this.userId;
+        data["User"] = this.user ? this.user.toJSON() : <any>undefined;
+        data["UserBankAccountId"] = this.userBankAccountId;
+        data["UserBankAccount"] = this.userBankAccount ? this.userBankAccount.toJSON() : <any>undefined;
+        data["RequestType"] = this.requestType;
+        data["DemandType"] = this.demandType;
+        data["RequestStatus"] = this.requestStatus;
         data["Comment"] = this.comment;
         data["Quantity"] = this.quantity;
         data["SymbolId"] = this.symbolId;
@@ -17000,23 +10196,17 @@ export interface IRequest {
     id?: number;
     createdOn?: moment.Moment | undefined;
     createdById?: number | undefined;
-    createdBy?: User;
     updatedOn?: moment.Moment | undefined;
     updatedById?: number | undefined;
-    updatedBy?: User;
     deletedOn?: moment.Moment | undefined;
     deletedById?: number | undefined;
-    deletedBy?: User;
     isDeleted?: boolean;
-    customerId?: number;
-    customer?: Customer;
-    customerBankAccountId?: number | undefined;
-    customerBankAccount?: CustomerBankAccount;
-    requestTypeId?: number;
+    userId?: number;
+    user?: User;
+    userBankAccountId?: number | undefined;
+    userBankAccount?: UserBankAccount;
     requestType?: RequestType;
-    demandTypeId?: number;
     demandType?: DemandType;
-    requestStatusId?: number;
     requestStatus?: RequestStatus;
     comment?: string | undefined;
     quantity?: number;
@@ -17027,7 +10217,7 @@ export interface IRequest {
 }
 
 export class RequestCompleteDigitalOrderModel implements IRequestCompleteDigitalOrderModel {
-    customerId?: number;
+    userId?: number;
     paymentTypeId?: number;
     sourceAssetId?: number;
     targetAssetId?: number;
@@ -17048,7 +10238,7 @@ export class RequestCompleteDigitalOrderModel implements IRequestCompleteDigital
 
     init(_data?: any) {
         if (_data) {
-            this.customerId = _data["CustomerId"];
+            this.userId = _data["UserId"];
             this.paymentTypeId = _data["PaymentTypeId"];
             this.sourceAssetId = _data["SourceAssetId"];
             this.targetAssetId = _data["TargetAssetId"];
@@ -17073,7 +10263,7 @@ export class RequestCompleteDigitalOrderModel implements IRequestCompleteDigital
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["CustomerId"] = this.customerId;
+        data["UserId"] = this.userId;
         data["PaymentTypeId"] = this.paymentTypeId;
         data["SourceAssetId"] = this.sourceAssetId;
         data["TargetAssetId"] = this.targetAssetId;
@@ -17091,7 +10281,7 @@ export class RequestCompleteDigitalOrderModel implements IRequestCompleteDigital
 }
 
 export interface IRequestCompleteDigitalOrderModel {
-    customerId?: number;
+    userId?: number;
     paymentTypeId?: number;
     sourceAssetId?: number;
     targetAssetId?: number;
@@ -17104,21 +10294,20 @@ export interface IRequestCompleteDigitalOrderModel {
 
 export class RequestModel implements IRequestModel {
     id?: number;
-    customerId?: number;
-    customer?: CustomerModel;
-    customerBankAccountId?: number | undefined;
-    customerBankAccount?: CustomerBankAccountModel;
-    requestTypeId?: number;
-    requestType?: RequestTypeModel;
-    demandTypeId?: number;
-    demandType?: DemandTypeModel;
-    requestStatusId?: number;
-    requestStatus?: RequestStatusModel;
+    userId?: number;
+    user?: UserModel;
+    userBankAccountId?: number | undefined;
+    userBankAccount?: UserBankAccountModel;
+    requestType?: RequestType;
+    demandType?: DemandType;
+    requestStatus?: RequestStatus;
     comment?: string | undefined;
     quantity?: number;
     symbolId?: number;
     symbol?: SymbolModel;
     price?: number;
+    commission?: number;
+    transactionAmount?: number;
 
     constructor(data?: IRequestModel) {
         if (data) {
@@ -17132,21 +10321,20 @@ export class RequestModel implements IRequestModel {
     init(_data?: any) {
         if (_data) {
             this.id = _data["Id"];
-            this.customerId = _data["CustomerId"];
-            this.customer = _data["Customer"] ? CustomerModel.fromJS(_data["Customer"]) : <any>undefined;
-            this.customerBankAccountId = _data["CustomerBankAccountId"];
-            this.customerBankAccount = _data["CustomerBankAccount"] ? CustomerBankAccountModel.fromJS(_data["CustomerBankAccount"]) : <any>undefined;
-            this.requestTypeId = _data["RequestTypeId"];
-            this.requestType = _data["RequestType"] ? RequestTypeModel.fromJS(_data["RequestType"]) : <any>undefined;
-            this.demandTypeId = _data["DemandTypeId"];
-            this.demandType = _data["DemandType"] ? DemandTypeModel.fromJS(_data["DemandType"]) : <any>undefined;
-            this.requestStatusId = _data["RequestStatusId"];
-            this.requestStatus = _data["RequestStatus"] ? RequestStatusModel.fromJS(_data["RequestStatus"]) : <any>undefined;
+            this.userId = _data["UserId"];
+            this.user = _data["User"] ? UserModel.fromJS(_data["User"]) : <any>undefined;
+            this.userBankAccountId = _data["UserBankAccountId"];
+            this.userBankAccount = _data["UserBankAccount"] ? UserBankAccountModel.fromJS(_data["UserBankAccount"]) : <any>undefined;
+            this.requestType = _data["RequestType"];
+            this.demandType = _data["DemandType"];
+            this.requestStatus = _data["RequestStatus"];
             this.comment = _data["Comment"];
             this.quantity = _data["Quantity"];
             this.symbolId = _data["SymbolId"];
             this.symbol = _data["Symbol"] ? SymbolModel.fromJS(_data["Symbol"]) : <any>undefined;
             this.price = _data["Price"];
+            this.commission = _data["Commission"];
+            this.transactionAmount = _data["TransactionAmount"];
         }
     }
 
@@ -17160,46 +10348,44 @@ export class RequestModel implements IRequestModel {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["Id"] = this.id;
-        data["CustomerId"] = this.customerId;
-        data["Customer"] = this.customer ? this.customer.toJSON() : <any>undefined;
-        data["CustomerBankAccountId"] = this.customerBankAccountId;
-        data["CustomerBankAccount"] = this.customerBankAccount ? this.customerBankAccount.toJSON() : <any>undefined;
-        data["RequestTypeId"] = this.requestTypeId;
-        data["RequestType"] = this.requestType ? this.requestType.toJSON() : <any>undefined;
-        data["DemandTypeId"] = this.demandTypeId;
-        data["DemandType"] = this.demandType ? this.demandType.toJSON() : <any>undefined;
-        data["RequestStatusId"] = this.requestStatusId;
-        data["RequestStatus"] = this.requestStatus ? this.requestStatus.toJSON() : <any>undefined;
+        data["UserId"] = this.userId;
+        data["User"] = this.user ? this.user.toJSON() : <any>undefined;
+        data["UserBankAccountId"] = this.userBankAccountId;
+        data["UserBankAccount"] = this.userBankAccount ? this.userBankAccount.toJSON() : <any>undefined;
+        data["RequestType"] = this.requestType;
+        data["DemandType"] = this.demandType;
+        data["RequestStatus"] = this.requestStatus;
         data["Comment"] = this.comment;
         data["Quantity"] = this.quantity;
         data["SymbolId"] = this.symbolId;
         data["Symbol"] = this.symbol ? this.symbol.toJSON() : <any>undefined;
         data["Price"] = this.price;
+        data["Commission"] = this.commission;
+        data["TransactionAmount"] = this.transactionAmount;
         return data;
     }
 }
 
 export interface IRequestModel {
     id?: number;
-    customerId?: number;
-    customer?: CustomerModel;
-    customerBankAccountId?: number | undefined;
-    customerBankAccount?: CustomerBankAccountModel;
-    requestTypeId?: number;
-    requestType?: RequestTypeModel;
-    demandTypeId?: number;
-    demandType?: DemandTypeModel;
-    requestStatusId?: number;
-    requestStatus?: RequestStatusModel;
+    userId?: number;
+    user?: UserModel;
+    userBankAccountId?: number | undefined;
+    userBankAccount?: UserBankAccountModel;
+    requestType?: RequestType;
+    demandType?: DemandType;
+    requestStatus?: RequestStatus;
     comment?: string | undefined;
     quantity?: number;
     symbolId?: number;
     symbol?: SymbolModel;
     price?: number;
+    commission?: number;
+    transactionAmount?: number;
 }
 
 export class RequestPhysicalOrderModel implements IRequestPhysicalOrderModel {
-    customerId?: number;
+    userId?: number;
     paymnetTypeId?: number;
     sourceAssetId?: number;
     subTotal?: number;
@@ -17219,7 +10405,7 @@ export class RequestPhysicalOrderModel implements IRequestPhysicalOrderModel {
 
     init(_data?: any) {
         if (_data) {
-            this.customerId = _data["CustomerId"];
+            this.userId = _data["UserId"];
             this.paymnetTypeId = _data["PaymnetTypeId"];
             this.sourceAssetId = _data["SourceAssetId"];
             this.subTotal = _data["SubTotal"];
@@ -17243,7 +10429,7 @@ export class RequestPhysicalOrderModel implements IRequestPhysicalOrderModel {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["CustomerId"] = this.customerId;
+        data["UserId"] = this.userId;
         data["PaymnetTypeId"] = this.paymnetTypeId;
         data["SourceAssetId"] = this.sourceAssetId;
         data["SubTotal"] = this.subTotal;
@@ -17260,7 +10446,7 @@ export class RequestPhysicalOrderModel implements IRequestPhysicalOrderModel {
 }
 
 export interface IRequestPhysicalOrderModel {
-    customerId?: number;
+    userId?: number;
     paymnetTypeId?: number;
     sourceAssetId?: number;
     subTotal?: number;
@@ -17270,297 +10456,20 @@ export interface IRequestPhysicalOrderModel {
     orderItems?: OrderItemModel[] | undefined;
 }
 
-export class RequestStatus implements IRequestStatus {
-    id?: number;
-    createdOn?: moment.Moment | undefined;
-    createdById?: number | undefined;
-    createdBy?: User;
-    updatedOn?: moment.Moment | undefined;
-    updatedById?: number | undefined;
-    updatedBy?: User;
-    deletedOn?: moment.Moment | undefined;
-    deletedById?: number | undefined;
-    deletedBy?: User;
-    isDeleted?: boolean;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-
-    constructor(data?: IRequestStatus) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["Id"];
-            this.createdOn = _data["CreatedOn"] ? moment(_data["CreatedOn"].toString()) : <any>undefined;
-            this.createdById = _data["CreatedById"];
-            this.createdBy = _data["CreatedBy"] ? User.fromJS(_data["CreatedBy"]) : <any>undefined;
-            this.updatedOn = _data["UpdatedOn"] ? moment(_data["UpdatedOn"].toString()) : <any>undefined;
-            this.updatedById = _data["UpdatedById"];
-            this.updatedBy = _data["UpdatedBy"] ? User.fromJS(_data["UpdatedBy"]) : <any>undefined;
-            this.deletedOn = _data["DeletedOn"] ? moment(_data["DeletedOn"].toString()) : <any>undefined;
-            this.deletedById = _data["DeletedById"];
-            this.deletedBy = _data["DeletedBy"] ? User.fromJS(_data["DeletedBy"]) : <any>undefined;
-            this.isDeleted = _data["IsDeleted"];
-            this.code = _data["Code"];
-            this.description = _data["Description"];
-            this.displayOrder = _data["DisplayOrder"];
-            this.isActive = _data["IsActive"];
-        }
-    }
-
-    static fromJS(data: any): RequestStatus {
-        data = typeof data === 'object' ? data : {};
-        let result = new RequestStatus();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Id"] = this.id;
-        data["CreatedOn"] = this.createdOn ? this.createdOn.toISOString() : <any>undefined;
-        data["CreatedById"] = this.createdById;
-        data["CreatedBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
-        data["UpdatedOn"] = this.updatedOn ? this.updatedOn.toISOString() : <any>undefined;
-        data["UpdatedById"] = this.updatedById;
-        data["UpdatedBy"] = this.updatedBy ? this.updatedBy.toJSON() : <any>undefined;
-        data["DeletedOn"] = this.deletedOn ? this.deletedOn.toISOString() : <any>undefined;
-        data["DeletedById"] = this.deletedById;
-        data["DeletedBy"] = this.deletedBy ? this.deletedBy.toJSON() : <any>undefined;
-        data["IsDeleted"] = this.isDeleted;
-        data["Code"] = this.code;
-        data["Description"] = this.description;
-        data["DisplayOrder"] = this.displayOrder;
-        data["IsActive"] = this.isActive;
-        return data;
-    }
+export enum RequestStatus {
+    Pending = "Pending",
+    Approved = "Approved",
+    Reject = "Reject",
 }
 
-export interface IRequestStatus {
-    id?: number;
-    createdOn?: moment.Moment | undefined;
-    createdById?: number | undefined;
-    createdBy?: User;
-    updatedOn?: moment.Moment | undefined;
-    updatedById?: number | undefined;
-    updatedBy?: User;
-    deletedOn?: moment.Moment | undefined;
-    deletedById?: number | undefined;
-    deletedBy?: User;
-    isDeleted?: boolean;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-}
-
-export class RequestStatusModel implements IRequestStatusModel {
-    id?: number;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-
-    constructor(data?: IRequestStatusModel) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["Id"];
-            this.code = _data["Code"];
-            this.description = _data["Description"];
-            this.displayOrder = _data["DisplayOrder"];
-            this.isActive = _data["IsActive"];
-        }
-    }
-
-    static fromJS(data: any): RequestStatusModel {
-        data = typeof data === 'object' ? data : {};
-        let result = new RequestStatusModel();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Id"] = this.id;
-        data["Code"] = this.code;
-        data["Description"] = this.description;
-        data["DisplayOrder"] = this.displayOrder;
-        data["IsActive"] = this.isActive;
-        return data;
-    }
-}
-
-export interface IRequestStatusModel {
-    id?: number;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-}
-
-export class RequestType implements IRequestType {
-    id?: number;
-    createdOn?: moment.Moment | undefined;
-    createdById?: number | undefined;
-    createdBy?: User;
-    updatedOn?: moment.Moment | undefined;
-    updatedById?: number | undefined;
-    updatedBy?: User;
-    deletedOn?: moment.Moment | undefined;
-    deletedById?: number | undefined;
-    deletedBy?: User;
-    isDeleted?: boolean;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-
-    constructor(data?: IRequestType) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["Id"];
-            this.createdOn = _data["CreatedOn"] ? moment(_data["CreatedOn"].toString()) : <any>undefined;
-            this.createdById = _data["CreatedById"];
-            this.createdBy = _data["CreatedBy"] ? User.fromJS(_data["CreatedBy"]) : <any>undefined;
-            this.updatedOn = _data["UpdatedOn"] ? moment(_data["UpdatedOn"].toString()) : <any>undefined;
-            this.updatedById = _data["UpdatedById"];
-            this.updatedBy = _data["UpdatedBy"] ? User.fromJS(_data["UpdatedBy"]) : <any>undefined;
-            this.deletedOn = _data["DeletedOn"] ? moment(_data["DeletedOn"].toString()) : <any>undefined;
-            this.deletedById = _data["DeletedById"];
-            this.deletedBy = _data["DeletedBy"] ? User.fromJS(_data["DeletedBy"]) : <any>undefined;
-            this.isDeleted = _data["IsDeleted"];
-            this.code = _data["Code"];
-            this.description = _data["Description"];
-            this.displayOrder = _data["DisplayOrder"];
-            this.isActive = _data["IsActive"];
-        }
-    }
-
-    static fromJS(data: any): RequestType {
-        data = typeof data === 'object' ? data : {};
-        let result = new RequestType();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Id"] = this.id;
-        data["CreatedOn"] = this.createdOn ? this.createdOn.toISOString() : <any>undefined;
-        data["CreatedById"] = this.createdById;
-        data["CreatedBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
-        data["UpdatedOn"] = this.updatedOn ? this.updatedOn.toISOString() : <any>undefined;
-        data["UpdatedById"] = this.updatedById;
-        data["UpdatedBy"] = this.updatedBy ? this.updatedBy.toJSON() : <any>undefined;
-        data["DeletedOn"] = this.deletedOn ? this.deletedOn.toISOString() : <any>undefined;
-        data["DeletedById"] = this.deletedById;
-        data["DeletedBy"] = this.deletedBy ? this.deletedBy.toJSON() : <any>undefined;
-        data["IsDeleted"] = this.isDeleted;
-        data["Code"] = this.code;
-        data["Description"] = this.description;
-        data["DisplayOrder"] = this.displayOrder;
-        data["IsActive"] = this.isActive;
-        return data;
-    }
-}
-
-export interface IRequestType {
-    id?: number;
-    createdOn?: moment.Moment | undefined;
-    createdById?: number | undefined;
-    createdBy?: User;
-    updatedOn?: moment.Moment | undefined;
-    updatedById?: number | undefined;
-    updatedBy?: User;
-    deletedOn?: moment.Moment | undefined;
-    deletedById?: number | undefined;
-    deletedBy?: User;
-    isDeleted?: boolean;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-}
-
-export class RequestTypeModel implements IRequestTypeModel {
-    id?: number;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-
-    constructor(data?: IRequestTypeModel) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["Id"];
-            this.code = _data["Code"];
-            this.description = _data["Description"];
-            this.displayOrder = _data["DisplayOrder"];
-            this.isActive = _data["IsActive"];
-        }
-    }
-
-    static fromJS(data: any): RequestTypeModel {
-        data = typeof data === 'object' ? data : {};
-        let result = new RequestTypeModel();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Id"] = this.id;
-        data["Code"] = this.code;
-        data["Description"] = this.description;
-        data["DisplayOrder"] = this.displayOrder;
-        data["IsActive"] = this.isActive;
-        return data;
-    }
-}
-
-export interface IRequestTypeModel {
-    id?: number;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
+export enum RequestType {
+    Withdrawals = "Withdrawals",
+    Deposits = "Deposits",
 }
 
 export class ResponseDigitalOrderModel implements IResponseDigitalOrderModel {
     orderId?: number;
-    customerId?: number;
+    userId?: number;
     paymnetTypeId?: number;
     sourceAssetId?: number;
     targetAssetId?: number;
@@ -17582,7 +10491,7 @@ export class ResponseDigitalOrderModel implements IResponseDigitalOrderModel {
     init(_data?: any) {
         if (_data) {
             this.orderId = _data["OrderId"];
-            this.customerId = _data["CustomerId"];
+            this.userId = _data["UserId"];
             this.paymnetTypeId = _data["PaymnetTypeId"];
             this.sourceAssetId = _data["SourceAssetId"];
             this.targetAssetId = _data["TargetAssetId"];
@@ -17608,7 +10517,7 @@ export class ResponseDigitalOrderModel implements IResponseDigitalOrderModel {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["OrderId"] = this.orderId;
-        data["CustomerId"] = this.customerId;
+        data["UserId"] = this.userId;
         data["PaymnetTypeId"] = this.paymnetTypeId;
         data["SourceAssetId"] = this.sourceAssetId;
         data["TargetAssetId"] = this.targetAssetId;
@@ -17627,7 +10536,7 @@ export class ResponseDigitalOrderModel implements IResponseDigitalOrderModel {
 
 export interface IResponseDigitalOrderModel {
     orderId?: number;
-    customerId?: number;
+    userId?: number;
     paymnetTypeId?: number;
     sourceAssetId?: number;
     targetAssetId?: number;
@@ -17640,7 +10549,7 @@ export interface IResponseDigitalOrderModel {
 
 export class ResponsePhysicalOrderModel implements IResponsePhysicalOrderModel {
     orderId?: number;
-    customerId?: number;
+    userId?: number;
     paymnetTypeId?: number;
     sourceAssetId?: number;
     subTotal?: number;
@@ -17661,7 +10570,7 @@ export class ResponsePhysicalOrderModel implements IResponsePhysicalOrderModel {
     init(_data?: any) {
         if (_data) {
             this.orderId = _data["OrderId"];
-            this.customerId = _data["CustomerId"];
+            this.userId = _data["UserId"];
             this.paymnetTypeId = _data["PaymnetTypeId"];
             this.sourceAssetId = _data["SourceAssetId"];
             this.subTotal = _data["SubTotal"];
@@ -17686,7 +10595,7 @@ export class ResponsePhysicalOrderModel implements IResponsePhysicalOrderModel {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["OrderId"] = this.orderId;
-        data["CustomerId"] = this.customerId;
+        data["UserId"] = this.userId;
         data["PaymnetTypeId"] = this.paymnetTypeId;
         data["SourceAssetId"] = this.sourceAssetId;
         data["SubTotal"] = this.subTotal;
@@ -17704,7 +10613,7 @@ export class ResponsePhysicalOrderModel implements IResponsePhysicalOrderModel {
 
 export interface IResponsePhysicalOrderModel {
     orderId?: number;
-    customerId?: number;
+    userId?: number;
     paymnetTypeId?: number;
     sourceAssetId?: number;
     subTotal?: number;
@@ -17716,19 +10625,9 @@ export interface IResponsePhysicalOrderModel {
 
 export class Retail implements IRetail {
     id?: number;
-    createdOn?: moment.Moment | undefined;
-    createdById?: number | undefined;
-    createdBy?: User;
-    updatedOn?: moment.Moment | undefined;
-    updatedById?: number | undefined;
-    updatedBy?: User;
-    deletedOn?: moment.Moment | undefined;
-    deletedById?: number | undefined;
-    deletedBy?: User;
-    isDeleted?: boolean;
     nationalityId?: string | undefined;
     nationality?: Country;
-    customer?: Customer;
+    user?: User;
     identityNo?: string | undefined;
     passportNo?: string | undefined;
     otpSentOn?: moment.Moment | undefined;
@@ -17740,9 +10639,7 @@ export class Retail implements IRetail {
     fatherLastName?: string | undefined;
     motherFirstName?: string | undefined;
     motherLastName?: string | undefined;
-    genderId?: number | undefined;
     gender?: Gender;
-    bloodTypeId?: number | undefined;
     bloodType?: BloodType;
     birthDate?: moment.Moment | undefined;
     birthInCountry?: boolean;
@@ -17755,8 +10652,6 @@ export class Retail implements IRetail {
     religion?: string | undefined;
     isCitizen?: boolean;
     sSN?: string | undefined;
-    sectorId?: number | undefined;
-    sector?: CorporateCategory;
     job?: string | undefined;
     notes?: string | undefined;
     isActive?: boolean;
@@ -17778,19 +10673,9 @@ export class Retail implements IRetail {
     init(_data?: any) {
         if (_data) {
             this.id = _data["Id"];
-            this.createdOn = _data["CreatedOn"] ? moment(_data["CreatedOn"].toString()) : <any>undefined;
-            this.createdById = _data["CreatedById"];
-            this.createdBy = _data["CreatedBy"] ? User.fromJS(_data["CreatedBy"]) : <any>undefined;
-            this.updatedOn = _data["UpdatedOn"] ? moment(_data["UpdatedOn"].toString()) : <any>undefined;
-            this.updatedById = _data["UpdatedById"];
-            this.updatedBy = _data["UpdatedBy"] ? User.fromJS(_data["UpdatedBy"]) : <any>undefined;
-            this.deletedOn = _data["DeletedOn"] ? moment(_data["DeletedOn"].toString()) : <any>undefined;
-            this.deletedById = _data["DeletedById"];
-            this.deletedBy = _data["DeletedBy"] ? User.fromJS(_data["DeletedBy"]) : <any>undefined;
-            this.isDeleted = _data["IsDeleted"];
             this.nationalityId = _data["NationalityId"];
             this.nationality = _data["Nationality"] ? Country.fromJS(_data["Nationality"]) : <any>undefined;
-            this.customer = _data["Customer"] ? Customer.fromJS(_data["Customer"]) : <any>undefined;
+            this.user = _data["User"] ? User.fromJS(_data["User"]) : <any>undefined;
             this.identityNo = _data["IdentityNo"];
             this.passportNo = _data["PassportNo"];
             this.otpSentOn = _data["OtpSentOn"] ? moment(_data["OtpSentOn"].toString()) : <any>undefined;
@@ -17802,10 +10687,8 @@ export class Retail implements IRetail {
             this.fatherLastName = _data["FatherLastName"];
             this.motherFirstName = _data["MotherFirstName"];
             this.motherLastName = _data["MotherLastName"];
-            this.genderId = _data["GenderId"];
-            this.gender = _data["Gender"] ? Gender.fromJS(_data["Gender"]) : <any>undefined;
-            this.bloodTypeId = _data["BloodTypeId"];
-            this.bloodType = _data["BloodType"] ? BloodType.fromJS(_data["BloodType"]) : <any>undefined;
+            this.gender = _data["Gender"];
+            this.bloodType = _data["BloodType"];
             this.birthDate = _data["BirthDate"] ? moment(_data["BirthDate"].toString()) : <any>undefined;
             this.birthInCountry = _data["BirthInCountry"];
             this.birthPlaceCountry = _data["BirthPlaceCountry"];
@@ -17817,8 +10700,6 @@ export class Retail implements IRetail {
             this.religion = _data["Religion"];
             this.isCitizen = _data["IsCitizen"];
             this.sSN = _data["SSN"];
-            this.sectorId = _data["SectorId"];
-            this.sector = _data["Sector"] ? CorporateCategory.fromJS(_data["Sector"]) : <any>undefined;
             this.job = _data["Job"];
             this.notes = _data["Notes"];
             this.isActive = _data["IsActive"] !== undefined ? _data["IsActive"] : true;
@@ -17837,19 +10718,9 @@ export class Retail implements IRetail {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["Id"] = this.id;
-        data["CreatedOn"] = this.createdOn ? this.createdOn.toISOString() : <any>undefined;
-        data["CreatedById"] = this.createdById;
-        data["CreatedBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
-        data["UpdatedOn"] = this.updatedOn ? this.updatedOn.toISOString() : <any>undefined;
-        data["UpdatedById"] = this.updatedById;
-        data["UpdatedBy"] = this.updatedBy ? this.updatedBy.toJSON() : <any>undefined;
-        data["DeletedOn"] = this.deletedOn ? this.deletedOn.toISOString() : <any>undefined;
-        data["DeletedById"] = this.deletedById;
-        data["DeletedBy"] = this.deletedBy ? this.deletedBy.toJSON() : <any>undefined;
-        data["IsDeleted"] = this.isDeleted;
         data["NationalityId"] = this.nationalityId;
         data["Nationality"] = this.nationality ? this.nationality.toJSON() : <any>undefined;
-        data["Customer"] = this.customer ? this.customer.toJSON() : <any>undefined;
+        data["User"] = this.user ? this.user.toJSON() : <any>undefined;
         data["IdentityNo"] = this.identityNo;
         data["PassportNo"] = this.passportNo;
         data["OtpSentOn"] = this.otpSentOn ? this.otpSentOn.toISOString() : <any>undefined;
@@ -17861,10 +10732,8 @@ export class Retail implements IRetail {
         data["FatherLastName"] = this.fatherLastName;
         data["MotherFirstName"] = this.motherFirstName;
         data["MotherLastName"] = this.motherLastName;
-        data["GenderId"] = this.genderId;
-        data["Gender"] = this.gender ? this.gender.toJSON() : <any>undefined;
-        data["BloodTypeId"] = this.bloodTypeId;
-        data["BloodType"] = this.bloodType ? this.bloodType.toJSON() : <any>undefined;
+        data["Gender"] = this.gender;
+        data["BloodType"] = this.bloodType;
         data["BirthDate"] = this.birthDate ? this.birthDate.toISOString() : <any>undefined;
         data["BirthInCountry"] = this.birthInCountry;
         data["BirthPlaceCountry"] = this.birthPlaceCountry;
@@ -17876,8 +10745,6 @@ export class Retail implements IRetail {
         data["Religion"] = this.religion;
         data["IsCitizen"] = this.isCitizen;
         data["SSN"] = this.sSN;
-        data["SectorId"] = this.sectorId;
-        data["Sector"] = this.sector ? this.sector.toJSON() : <any>undefined;
         data["Job"] = this.job;
         data["Notes"] = this.notes;
         data["IsActive"] = this.isActive;
@@ -17889,19 +10756,9 @@ export class Retail implements IRetail {
 
 export interface IRetail {
     id?: number;
-    createdOn?: moment.Moment | undefined;
-    createdById?: number | undefined;
-    createdBy?: User;
-    updatedOn?: moment.Moment | undefined;
-    updatedById?: number | undefined;
-    updatedBy?: User;
-    deletedOn?: moment.Moment | undefined;
-    deletedById?: number | undefined;
-    deletedBy?: User;
-    isDeleted?: boolean;
     nationalityId?: string | undefined;
     nationality?: Country;
-    customer?: Customer;
+    user?: User;
     identityNo?: string | undefined;
     passportNo?: string | undefined;
     otpSentOn?: moment.Moment | undefined;
@@ -17913,9 +10770,7 @@ export interface IRetail {
     fatherLastName?: string | undefined;
     motherFirstName?: string | undefined;
     motherLastName?: string | undefined;
-    genderId?: number | undefined;
     gender?: Gender;
-    bloodTypeId?: number | undefined;
     bloodType?: BloodType;
     birthDate?: moment.Moment | undefined;
     birthInCountry?: boolean;
@@ -17928,8 +10783,6 @@ export interface IRetail {
     religion?: string | undefined;
     isCitizen?: boolean;
     sSN?: string | undefined;
-    sectorId?: number | undefined;
-    sector?: CorporateCategory;
     job?: string | undefined;
     notes?: string | undefined;
     isActive?: boolean;
@@ -17941,13 +10794,12 @@ export class RetailModel implements IRetailModel {
     id?: number;
     nationalityId?: string | undefined;
     nationality?: CountryModel;
-    customer?: CustomerModel;
+    user?: UserModel;
     identityNo?: string | undefined;
     passportNo?: string | undefined;
     firstName?: string | undefined;
     lastName?: string | undefined;
-    genderId?: number | undefined;
-    gender?: GenderModel;
+    gender?: Gender;
 
     constructor(data?: IRetailModel) {
         if (data) {
@@ -17963,13 +10815,12 @@ export class RetailModel implements IRetailModel {
             this.id = _data["Id"];
             this.nationalityId = _data["NationalityId"];
             this.nationality = _data["Nationality"] ? CountryModel.fromJS(_data["Nationality"]) : <any>undefined;
-            this.customer = _data["Customer"] ? CustomerModel.fromJS(_data["Customer"]) : <any>undefined;
+            this.user = _data["User"] ? UserModel.fromJS(_data["User"]) : <any>undefined;
             this.identityNo = _data["IdentityNo"];
             this.passportNo = _data["PassportNo"];
             this.firstName = _data["FirstName"];
             this.lastName = _data["LastName"];
-            this.genderId = _data["GenderId"];
-            this.gender = _data["Gender"] ? GenderModel.fromJS(_data["Gender"]) : <any>undefined;
+            this.gender = _data["Gender"];
         }
     }
 
@@ -17985,13 +10836,12 @@ export class RetailModel implements IRetailModel {
         data["Id"] = this.id;
         data["NationalityId"] = this.nationalityId;
         data["Nationality"] = this.nationality ? this.nationality.toJSON() : <any>undefined;
-        data["Customer"] = this.customer ? this.customer.toJSON() : <any>undefined;
+        data["User"] = this.user ? this.user.toJSON() : <any>undefined;
         data["IdentityNo"] = this.identityNo;
         data["PassportNo"] = this.passportNo;
         data["FirstName"] = this.firstName;
         data["LastName"] = this.lastName;
-        data["GenderId"] = this.genderId;
-        data["Gender"] = this.gender ? this.gender.toJSON() : <any>undefined;
+        data["Gender"] = this.gender;
         return data;
     }
 }
@@ -18000,77 +10850,12 @@ export interface IRetailModel {
     id?: number;
     nationalityId?: string | undefined;
     nationality?: CountryModel;
-    customer?: CustomerModel;
+    user?: UserModel;
     identityNo?: string | undefined;
     passportNo?: string | undefined;
     firstName?: string | undefined;
     lastName?: string | undefined;
-    genderId?: number | undefined;
-    gender?: GenderModel;
-}
-
-export class Rodyumfix implements IRodyumfix {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-
-    constructor(data?: IRodyumfix) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alis = _data["Alis"];
-            this.satis = _data["Satis"];
-            this.tarih = _data["Tarih"];
-            this.sonkapanis = _data["Sonkapanis"];
-            this.son = _data["Son"];
-            this.endusuk = _data["Endusuk"];
-            this.enyuksek = _data["Enyuksek"];
-            this.gunlukyuzde = _data["Gunlukyuzde"];
-        }
-    }
-
-    static fromJS(data: any): Rodyumfix {
-        data = typeof data === 'object' ? data : {};
-        let result = new Rodyumfix();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alis"] = this.alis;
-        data["Satis"] = this.satis;
-        data["Tarih"] = this.tarih;
-        data["Sonkapanis"] = this.sonkapanis;
-        data["Son"] = this.son;
-        data["Endusuk"] = this.endusuk;
-        data["Enyuksek"] = this.enyuksek;
-        data["Gunlukyuzde"] = this.gunlukyuzde;
-        return data;
-    }
-}
-
-export interface IRodyumfix {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
+    gender?: Gender;
 }
 
 export class Role implements IRole {
@@ -18189,276 +10974,9 @@ export interface IRssFeedModel {
     link: string;
 }
 
-export class Sar implements ISar {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-
-    constructor(data?: ISar) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alis = _data["Alis"];
-            this.satis = _data["Satis"];
-            this.tarih = _data["Tarih"];
-            this.sonkapanis = _data["Sonkapanis"];
-            this.son = _data["Son"];
-            this.endusuk = _data["Endusuk"];
-            this.enyuksek = _data["Enyuksek"];
-            this.gunlukyuzde = _data["Gunlukyuzde"];
-        }
-    }
-
-    static fromJS(data: any): Sar {
-        data = typeof data === 'object' ? data : {};
-        let result = new Sar();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alis"] = this.alis;
-        data["Satis"] = this.satis;
-        data["Tarih"] = this.tarih;
-        data["Sonkapanis"] = this.sonkapanis;
-        data["Son"] = this.son;
-        data["Endusuk"] = this.endusuk;
-        data["Enyuksek"] = this.enyuksek;
-        data["Gunlukyuzde"] = this.gunlukyuzde;
-        return data;
-    }
-}
-
-export interface ISar {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-}
-
-export class ScanType implements IScanType {
-    id?: number;
-    createdOn?: moment.Moment | undefined;
-    createdById?: number | undefined;
-    createdBy?: User;
-    updatedOn?: moment.Moment | undefined;
-    updatedById?: number | undefined;
-    updatedBy?: User;
-    deletedOn?: moment.Moment | undefined;
-    deletedById?: number | undefined;
-    deletedBy?: User;
-    isDeleted?: boolean;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-
-    constructor(data?: IScanType) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["Id"];
-            this.createdOn = _data["CreatedOn"] ? moment(_data["CreatedOn"].toString()) : <any>undefined;
-            this.createdById = _data["CreatedById"];
-            this.createdBy = _data["CreatedBy"] ? User.fromJS(_data["CreatedBy"]) : <any>undefined;
-            this.updatedOn = _data["UpdatedOn"] ? moment(_data["UpdatedOn"].toString()) : <any>undefined;
-            this.updatedById = _data["UpdatedById"];
-            this.updatedBy = _data["UpdatedBy"] ? User.fromJS(_data["UpdatedBy"]) : <any>undefined;
-            this.deletedOn = _data["DeletedOn"] ? moment(_data["DeletedOn"].toString()) : <any>undefined;
-            this.deletedById = _data["DeletedById"];
-            this.deletedBy = _data["DeletedBy"] ? User.fromJS(_data["DeletedBy"]) : <any>undefined;
-            this.isDeleted = _data["IsDeleted"];
-            this.code = _data["Code"];
-            this.description = _data["Description"];
-            this.displayOrder = _data["DisplayOrder"];
-            this.isActive = _data["IsActive"];
-        }
-    }
-
-    static fromJS(data: any): ScanType {
-        data = typeof data === 'object' ? data : {};
-        let result = new ScanType();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Id"] = this.id;
-        data["CreatedOn"] = this.createdOn ? this.createdOn.toISOString() : <any>undefined;
-        data["CreatedById"] = this.createdById;
-        data["CreatedBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
-        data["UpdatedOn"] = this.updatedOn ? this.updatedOn.toISOString() : <any>undefined;
-        data["UpdatedById"] = this.updatedById;
-        data["UpdatedBy"] = this.updatedBy ? this.updatedBy.toJSON() : <any>undefined;
-        data["DeletedOn"] = this.deletedOn ? this.deletedOn.toISOString() : <any>undefined;
-        data["DeletedById"] = this.deletedById;
-        data["DeletedBy"] = this.deletedBy ? this.deletedBy.toJSON() : <any>undefined;
-        data["IsDeleted"] = this.isDeleted;
-        data["Code"] = this.code;
-        data["Description"] = this.description;
-        data["DisplayOrder"] = this.displayOrder;
-        data["IsActive"] = this.isActive;
-        return data;
-    }
-}
-
-export interface IScanType {
-    id?: number;
-    createdOn?: moment.Moment | undefined;
-    createdById?: number | undefined;
-    createdBy?: User;
-    updatedOn?: moment.Moment | undefined;
-    updatedById?: number | undefined;
-    updatedBy?: User;
-    deletedOn?: moment.Moment | undefined;
-    deletedById?: number | undefined;
-    deletedBy?: User;
-    isDeleted?: boolean;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-}
-
-export class ScanTypeModel implements IScanTypeModel {
-    id?: number;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-
-    constructor(data?: IScanTypeModel) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["Id"];
-            this.code = _data["Code"];
-            this.description = _data["Description"];
-            this.displayOrder = _data["DisplayOrder"];
-            this.isActive = _data["IsActive"];
-        }
-    }
-
-    static fromJS(data: any): ScanTypeModel {
-        data = typeof data === 'object' ? data : {};
-        let result = new ScanTypeModel();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Id"] = this.id;
-        data["Code"] = this.code;
-        data["Description"] = this.description;
-        data["DisplayOrder"] = this.displayOrder;
-        data["IsActive"] = this.isActive;
-        return data;
-    }
-}
-
-export interface IScanTypeModel {
-    id?: number;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-}
-
-export class Sek implements ISek {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-
-    constructor(data?: ISek) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alis = _data["Alis"];
-            this.satis = _data["Satis"];
-            this.tarih = _data["Tarih"];
-            this.sonkapanis = _data["Sonkapanis"];
-            this.son = _data["Son"];
-            this.endusuk = _data["Endusuk"];
-            this.enyuksek = _data["Enyuksek"];
-            this.gunlukyuzde = _data["Gunlukyuzde"];
-        }
-    }
-
-    static fromJS(data: any): Sek {
-        data = typeof data === 'object' ? data : {};
-        let result = new Sek();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alis"] = this.alis;
-        data["Satis"] = this.satis;
-        data["Tarih"] = this.tarih;
-        data["Sonkapanis"] = this.sonkapanis;
-        data["Son"] = this.son;
-        data["Endusuk"] = this.endusuk;
-        data["Enyuksek"] = this.enyuksek;
-        data["Gunlukyuzde"] = this.gunlukyuzde;
-        return data;
-    }
-}
-
-export interface ISek {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
+export enum ScanType {
+    FrontSide = "FrontSide",
+    BackSide = "BackSide",
 }
 
 export class SettingModel implements ISettingModel {
@@ -18637,213 +11155,17 @@ export interface IStaticPageModel {
     publishedTill?: moment.Moment | undefined;
 }
 
-export class Store implements IStore {
-    id?: number;
-    createdOn?: moment.Moment | undefined;
-    createdById?: number | undefined;
-    createdBy?: User;
-    updatedOn?: moment.Moment | undefined;
-    updatedById?: number | undefined;
-    updatedBy?: User;
-    deletedOn?: moment.Moment | undefined;
-    deletedById?: number | undefined;
-    deletedBy?: User;
-    isDeleted?: boolean;
-    name?: string | undefined;
-    customer?: Customer;
-    storeInvetories?: StoreInventory[] | undefined;
-
-    constructor(data?: IStore) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["Id"];
-            this.createdOn = _data["CreatedOn"] ? moment(_data["CreatedOn"].toString()) : <any>undefined;
-            this.createdById = _data["CreatedById"];
-            this.createdBy = _data["CreatedBy"] ? User.fromJS(_data["CreatedBy"]) : <any>undefined;
-            this.updatedOn = _data["UpdatedOn"] ? moment(_data["UpdatedOn"].toString()) : <any>undefined;
-            this.updatedById = _data["UpdatedById"];
-            this.updatedBy = _data["UpdatedBy"] ? User.fromJS(_data["UpdatedBy"]) : <any>undefined;
-            this.deletedOn = _data["DeletedOn"] ? moment(_data["DeletedOn"].toString()) : <any>undefined;
-            this.deletedById = _data["DeletedById"];
-            this.deletedBy = _data["DeletedBy"] ? User.fromJS(_data["DeletedBy"]) : <any>undefined;
-            this.isDeleted = _data["IsDeleted"];
-            this.name = _data["Name"];
-            this.customer = _data["Customer"] ? Customer.fromJS(_data["Customer"]) : <any>undefined;
-            if (Array.isArray(_data["StoreInvetories"])) {
-                this.storeInvetories = [] as any;
-                for (let item of _data["StoreInvetories"])
-                    this.storeInvetories!.push(StoreInventory.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): Store {
-        data = typeof data === 'object' ? data : {};
-        let result = new Store();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Id"] = this.id;
-        data["CreatedOn"] = this.createdOn ? this.createdOn.toISOString() : <any>undefined;
-        data["CreatedById"] = this.createdById;
-        data["CreatedBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
-        data["UpdatedOn"] = this.updatedOn ? this.updatedOn.toISOString() : <any>undefined;
-        data["UpdatedById"] = this.updatedById;
-        data["UpdatedBy"] = this.updatedBy ? this.updatedBy.toJSON() : <any>undefined;
-        data["DeletedOn"] = this.deletedOn ? this.deletedOn.toISOString() : <any>undefined;
-        data["DeletedById"] = this.deletedById;
-        data["DeletedBy"] = this.deletedBy ? this.deletedBy.toJSON() : <any>undefined;
-        data["IsDeleted"] = this.isDeleted;
-        data["Name"] = this.name;
-        data["Customer"] = this.customer ? this.customer.toJSON() : <any>undefined;
-        if (Array.isArray(this.storeInvetories)) {
-            data["StoreInvetories"] = [];
-            for (let item of this.storeInvetories)
-                data["StoreInvetories"].push(item.toJSON());
-        }
-        return data;
-    }
-}
-
-export interface IStore {
-    id?: number;
-    createdOn?: moment.Moment | undefined;
-    createdById?: number | undefined;
-    createdBy?: User;
-    updatedOn?: moment.Moment | undefined;
-    updatedById?: number | undefined;
-    updatedBy?: User;
-    deletedOn?: moment.Moment | undefined;
-    deletedById?: number | undefined;
-    deletedBy?: User;
-    isDeleted?: boolean;
-    name?: string | undefined;
-    customer?: Customer;
-    storeInvetories?: StoreInventory[] | undefined;
-}
-
-export class StoreInventory implements IStoreInventory {
-    id?: number;
-    createdOn?: moment.Moment | undefined;
-    createdById?: number | undefined;
-    createdBy?: User;
-    updatedOn?: moment.Moment | undefined;
-    updatedById?: number | undefined;
-    updatedBy?: User;
-    deletedOn?: moment.Moment | undefined;
-    deletedById?: number | undefined;
-    deletedBy?: User;
-    isDeleted?: boolean;
-    storeId?: number;
-    store?: Store;
-    productId?: number;
-    product?: Product;
-    quantity?: number;
-
-    constructor(data?: IStoreInventory) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["Id"];
-            this.createdOn = _data["CreatedOn"] ? moment(_data["CreatedOn"].toString()) : <any>undefined;
-            this.createdById = _data["CreatedById"];
-            this.createdBy = _data["CreatedBy"] ? User.fromJS(_data["CreatedBy"]) : <any>undefined;
-            this.updatedOn = _data["UpdatedOn"] ? moment(_data["UpdatedOn"].toString()) : <any>undefined;
-            this.updatedById = _data["UpdatedById"];
-            this.updatedBy = _data["UpdatedBy"] ? User.fromJS(_data["UpdatedBy"]) : <any>undefined;
-            this.deletedOn = _data["DeletedOn"] ? moment(_data["DeletedOn"].toString()) : <any>undefined;
-            this.deletedById = _data["DeletedById"];
-            this.deletedBy = _data["DeletedBy"] ? User.fromJS(_data["DeletedBy"]) : <any>undefined;
-            this.isDeleted = _data["IsDeleted"];
-            this.storeId = _data["StoreId"];
-            this.store = _data["Store"] ? Store.fromJS(_data["Store"]) : <any>undefined;
-            this.productId = _data["ProductId"];
-            this.product = _data["Product"] ? Product.fromJS(_data["Product"]) : <any>undefined;
-            this.quantity = _data["Quantity"];
-        }
-    }
-
-    static fromJS(data: any): StoreInventory {
-        data = typeof data === 'object' ? data : {};
-        let result = new StoreInventory();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Id"] = this.id;
-        data["CreatedOn"] = this.createdOn ? this.createdOn.toISOString() : <any>undefined;
-        data["CreatedById"] = this.createdById;
-        data["CreatedBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
-        data["UpdatedOn"] = this.updatedOn ? this.updatedOn.toISOString() : <any>undefined;
-        data["UpdatedById"] = this.updatedById;
-        data["UpdatedBy"] = this.updatedBy ? this.updatedBy.toJSON() : <any>undefined;
-        data["DeletedOn"] = this.deletedOn ? this.deletedOn.toISOString() : <any>undefined;
-        data["DeletedById"] = this.deletedById;
-        data["DeletedBy"] = this.deletedBy ? this.deletedBy.toJSON() : <any>undefined;
-        data["IsDeleted"] = this.isDeleted;
-        data["StoreId"] = this.storeId;
-        data["Store"] = this.store ? this.store.toJSON() : <any>undefined;
-        data["ProductId"] = this.productId;
-        data["Product"] = this.product ? this.product.toJSON() : <any>undefined;
-        data["Quantity"] = this.quantity;
-        return data;
-    }
-}
-
-export interface IStoreInventory {
-    id?: number;
-    createdOn?: moment.Moment | undefined;
-    createdById?: number | undefined;
-    createdBy?: User;
-    updatedOn?: moment.Moment | undefined;
-    updatedById?: number | undefined;
-    updatedBy?: User;
-    deletedOn?: moment.Moment | undefined;
-    deletedById?: number | undefined;
-    deletedBy?: User;
-    isDeleted?: boolean;
-    storeId?: number;
-    store?: Store;
-    productId?: number;
-    product?: Product;
-    quantity?: number;
-}
-
 export class Symbol implements ISymbol {
     id?: number;
     createdOn?: moment.Moment | undefined;
     createdById?: number | undefined;
-    createdBy?: User;
     updatedOn?: moment.Moment | undefined;
     updatedById?: number | undefined;
-    updatedBy?: User;
     deletedOn?: moment.Moment | undefined;
     deletedById?: number | undefined;
-    deletedBy?: User;
     isDeleted?: boolean;
     countryId?: string | undefined;
     country?: Country;
-    symbolTypeId?: number;
     symbolType?: SymbolType;
     mediaId?: number | undefined;
     media?: Media;
@@ -18858,9 +11180,11 @@ export class Symbol implements ISymbol {
     isSyncRateEnabled?: boolean;
     isMainCurrency?: boolean;
     isTradeable?: boolean;
+    buyMultiplier?: number;
     buyAddPercent?: number;
     buyAddValue?: number;
     sellAddPercent?: number;
+    sellMultiplier?: number;
     sellAddValue?: number;
 
     constructor(data?: ISymbol) {
@@ -18877,18 +11201,14 @@ export class Symbol implements ISymbol {
             this.id = _data["Id"];
             this.createdOn = _data["CreatedOn"] ? moment(_data["CreatedOn"].toString()) : <any>undefined;
             this.createdById = _data["CreatedById"];
-            this.createdBy = _data["CreatedBy"] ? User.fromJS(_data["CreatedBy"]) : <any>undefined;
             this.updatedOn = _data["UpdatedOn"] ? moment(_data["UpdatedOn"].toString()) : <any>undefined;
             this.updatedById = _data["UpdatedById"];
-            this.updatedBy = _data["UpdatedBy"] ? User.fromJS(_data["UpdatedBy"]) : <any>undefined;
             this.deletedOn = _data["DeletedOn"] ? moment(_data["DeletedOn"].toString()) : <any>undefined;
             this.deletedById = _data["DeletedById"];
-            this.deletedBy = _data["DeletedBy"] ? User.fromJS(_data["DeletedBy"]) : <any>undefined;
             this.isDeleted = _data["IsDeleted"];
             this.countryId = _data["CountryId"];
             this.country = _data["Country"] ? Country.fromJS(_data["Country"]) : <any>undefined;
-            this.symbolTypeId = _data["SymbolTypeId"];
-            this.symbolType = _data["SymbolType"] ? SymbolType.fromJS(_data["SymbolType"]) : <any>undefined;
+            this.symbolType = _data["SymbolType"];
             this.mediaId = _data["MediaId"];
             this.media = _data["Media"] ? Media.fromJS(_data["Media"]) : <any>undefined;
             this.baseSymbolId = _data["BaseSymbolId"];
@@ -18902,9 +11222,11 @@ export class Symbol implements ISymbol {
             this.isSyncRateEnabled = _data["IsSyncRateEnabled"];
             this.isMainCurrency = _data["IsMainCurrency"];
             this.isTradeable = _data["IsTradeable"];
+            this.buyMultiplier = _data["BuyMultiplier"];
             this.buyAddPercent = _data["BuyAddPercent"];
             this.buyAddValue = _data["BuyAddValue"];
             this.sellAddPercent = _data["SellAddPercent"];
+            this.sellMultiplier = _data["SellMultiplier"];
             this.sellAddValue = _data["SellAddValue"];
         }
     }
@@ -18921,18 +11243,14 @@ export class Symbol implements ISymbol {
         data["Id"] = this.id;
         data["CreatedOn"] = this.createdOn ? this.createdOn.toISOString() : <any>undefined;
         data["CreatedById"] = this.createdById;
-        data["CreatedBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
         data["UpdatedOn"] = this.updatedOn ? this.updatedOn.toISOString() : <any>undefined;
         data["UpdatedById"] = this.updatedById;
-        data["UpdatedBy"] = this.updatedBy ? this.updatedBy.toJSON() : <any>undefined;
         data["DeletedOn"] = this.deletedOn ? this.deletedOn.toISOString() : <any>undefined;
         data["DeletedById"] = this.deletedById;
-        data["DeletedBy"] = this.deletedBy ? this.deletedBy.toJSON() : <any>undefined;
         data["IsDeleted"] = this.isDeleted;
         data["CountryId"] = this.countryId;
         data["Country"] = this.country ? this.country.toJSON() : <any>undefined;
-        data["SymbolTypeId"] = this.symbolTypeId;
-        data["SymbolType"] = this.symbolType ? this.symbolType.toJSON() : <any>undefined;
+        data["SymbolType"] = this.symbolType;
         data["MediaId"] = this.mediaId;
         data["Media"] = this.media ? this.media.toJSON() : <any>undefined;
         data["BaseSymbolId"] = this.baseSymbolId;
@@ -18946,9 +11264,11 @@ export class Symbol implements ISymbol {
         data["IsSyncRateEnabled"] = this.isSyncRateEnabled;
         data["IsMainCurrency"] = this.isMainCurrency;
         data["IsTradeable"] = this.isTradeable;
+        data["BuyMultiplier"] = this.buyMultiplier;
         data["BuyAddPercent"] = this.buyAddPercent;
         data["BuyAddValue"] = this.buyAddValue;
         data["SellAddPercent"] = this.sellAddPercent;
+        data["SellMultiplier"] = this.sellMultiplier;
         data["SellAddValue"] = this.sellAddValue;
         return data;
     }
@@ -18958,17 +11278,13 @@ export interface ISymbol {
     id?: number;
     createdOn?: moment.Moment | undefined;
     createdById?: number | undefined;
-    createdBy?: User;
     updatedOn?: moment.Moment | undefined;
     updatedById?: number | undefined;
-    updatedBy?: User;
     deletedOn?: moment.Moment | undefined;
     deletedById?: number | undefined;
-    deletedBy?: User;
     isDeleted?: boolean;
     countryId?: string | undefined;
     country?: Country;
-    symbolTypeId?: number;
     symbolType?: SymbolType;
     mediaId?: number | undefined;
     media?: Media;
@@ -18983,26 +11299,26 @@ export interface ISymbol {
     isSyncRateEnabled?: boolean;
     isMainCurrency?: boolean;
     isTradeable?: boolean;
+    buyMultiplier?: number;
     buyAddPercent?: number;
     buyAddValue?: number;
     sellAddPercent?: number;
+    sellMultiplier?: number;
     sellAddValue?: number;
 }
 
 export class SymbolAlarmModel implements ISymbolAlarmModel {
-    symbolAlarmTypeId?: number;
-    symbolAlarmType?: SymbolAlarmTypeModel;
+    symbolAlarmType?: SymbolAlarmType;
     value?: number;
     isRate?: boolean;
     whileOnStatus?: boolean;
     anyTimeStatus?: boolean;
     validityStatus?: boolean;
-    customerId?: number;
-    customer?: CustomerModel;
+    userId?: number;
+    user?: UserModel;
     symbolId?: number;
     symbol?: SymbolModel;
-    transactionTypeId?: number;
-    transactionType?: TransactionTypeModel;
+    transactionType?: TransactionType;
 
     constructor(data?: ISymbolAlarmModel) {
         if (data) {
@@ -19015,19 +11331,17 @@ export class SymbolAlarmModel implements ISymbolAlarmModel {
 
     init(_data?: any) {
         if (_data) {
-            this.symbolAlarmTypeId = _data["SymbolAlarmTypeId"];
-            this.symbolAlarmType = _data["SymbolAlarmType"] ? SymbolAlarmTypeModel.fromJS(_data["SymbolAlarmType"]) : <any>undefined;
+            this.symbolAlarmType = _data["SymbolAlarmType"];
             this.value = _data["Value"];
             this.isRate = _data["IsRate"];
             this.whileOnStatus = _data["WhileOnStatus"];
             this.anyTimeStatus = _data["AnyTimeStatus"];
             this.validityStatus = _data["ValidityStatus"];
-            this.customerId = _data["CustomerId"];
-            this.customer = _data["Customer"] ? CustomerModel.fromJS(_data["Customer"]) : <any>undefined;
+            this.userId = _data["UserId"];
+            this.user = _data["User"] ? UserModel.fromJS(_data["User"]) : <any>undefined;
             this.symbolId = _data["SymbolId"];
             this.symbol = _data["Symbol"] ? SymbolModel.fromJS(_data["Symbol"]) : <any>undefined;
-            this.transactionTypeId = _data["TransactionTypeId"];
-            this.transactionType = _data["TransactionType"] ? TransactionTypeModel.fromJS(_data["TransactionType"]) : <any>undefined;
+            this.transactionType = _data["TransactionType"];
         }
     }
 
@@ -19040,97 +11354,44 @@ export class SymbolAlarmModel implements ISymbolAlarmModel {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["SymbolAlarmTypeId"] = this.symbolAlarmTypeId;
-        data["SymbolAlarmType"] = this.symbolAlarmType ? this.symbolAlarmType.toJSON() : <any>undefined;
+        data["SymbolAlarmType"] = this.symbolAlarmType;
         data["Value"] = this.value;
         data["IsRate"] = this.isRate;
         data["WhileOnStatus"] = this.whileOnStatus;
         data["AnyTimeStatus"] = this.anyTimeStatus;
         data["ValidityStatus"] = this.validityStatus;
-        data["CustomerId"] = this.customerId;
-        data["Customer"] = this.customer ? this.customer.toJSON() : <any>undefined;
+        data["UserId"] = this.userId;
+        data["User"] = this.user ? this.user.toJSON() : <any>undefined;
         data["SymbolId"] = this.symbolId;
         data["Symbol"] = this.symbol ? this.symbol.toJSON() : <any>undefined;
-        data["TransactionTypeId"] = this.transactionTypeId;
-        data["TransactionType"] = this.transactionType ? this.transactionType.toJSON() : <any>undefined;
+        data["TransactionType"] = this.transactionType;
         return data;
     }
 }
 
 export interface ISymbolAlarmModel {
-    symbolAlarmTypeId?: number;
-    symbolAlarmType?: SymbolAlarmTypeModel;
+    symbolAlarmType?: SymbolAlarmType;
     value?: number;
     isRate?: boolean;
     whileOnStatus?: boolean;
     anyTimeStatus?: boolean;
     validityStatus?: boolean;
-    customerId?: number;
-    customer?: CustomerModel;
+    userId?: number;
+    user?: UserModel;
     symbolId?: number;
     symbol?: SymbolModel;
-    transactionTypeId?: number;
-    transactionType?: TransactionTypeModel;
+    transactionType?: TransactionType;
 }
 
-export class SymbolAlarmTypeModel implements ISymbolAlarmTypeModel {
-    id?: number;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-
-    constructor(data?: ISymbolAlarmTypeModel) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["Id"];
-            this.code = _data["Code"];
-            this.description = _data["Description"];
-            this.displayOrder = _data["DisplayOrder"];
-            this.isActive = _data["IsActive"];
-        }
-    }
-
-    static fromJS(data: any): SymbolAlarmTypeModel {
-        data = typeof data === 'object' ? data : {};
-        let result = new SymbolAlarmTypeModel();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Id"] = this.id;
-        data["Code"] = this.code;
-        data["Description"] = this.description;
-        data["DisplayOrder"] = this.displayOrder;
-        data["IsActive"] = this.isActive;
-        return data;
-    }
-}
-
-export interface ISymbolAlarmTypeModel {
-    id?: number;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
+export enum SymbolAlarmType {
+    Unknown = "Unknown",
 }
 
 export class SymbolModel implements ISymbolModel {
     id?: number;
     countryId?: string | undefined;
     country?: CountryModel;
-    symbolTypeId?: number;
-    symbolType?: SymbolTypeModel;
+    symbolType?: string | undefined;
     isoCode?: string | undefined;
     matriksId?: number;
     matriksCode?: string | undefined;
@@ -19159,8 +11420,7 @@ export class SymbolModel implements ISymbolModel {
             this.id = _data["Id"];
             this.countryId = _data["CountryId"];
             this.country = _data["Country"] ? CountryModel.fromJS(_data["Country"]) : <any>undefined;
-            this.symbolTypeId = _data["SymbolTypeId"];
-            this.symbolType = _data["SymbolType"] ? SymbolTypeModel.fromJS(_data["SymbolType"]) : <any>undefined;
+            this.symbolType = _data["SymbolType"];
             this.isoCode = _data["IsoCode"];
             this.matriksId = _data["MatriksId"];
             this.matriksCode = _data["MatriksCode"];
@@ -19189,8 +11449,7 @@ export class SymbolModel implements ISymbolModel {
         data["Id"] = this.id;
         data["CountryId"] = this.countryId;
         data["Country"] = this.country ? this.country.toJSON() : <any>undefined;
-        data["SymbolTypeId"] = this.symbolTypeId;
-        data["SymbolType"] = this.symbolType ? this.symbolType.toJSON() : <any>undefined;
+        data["SymbolType"] = this.symbolType;
         data["IsoCode"] = this.isoCode;
         data["MatriksId"] = this.matriksId;
         data["MatriksCode"] = this.matriksCode;
@@ -19212,8 +11471,7 @@ export interface ISymbolModel {
     id?: number;
     countryId?: string | undefined;
     country?: CountryModel;
-    symbolTypeId?: number;
-    symbolType?: SymbolTypeModel;
+    symbolType?: string | undefined;
     isoCode?: string | undefined;
     matriksId?: number;
     matriksCode?: string | undefined;
@@ -19231,8 +11489,7 @@ export interface ISymbolModel {
 
 export class SymbolRateModel implements ISymbolRateModel {
     symbolId?: number;
-    symbolTypeId?: number;
-    symbolType?: SymbolTypeModel;
+    symbolType?: string | undefined;
     isoCode?: string | undefined;
     matriksId?: number;
     matriksCode?: string | undefined;
@@ -19267,8 +11524,7 @@ export class SymbolRateModel implements ISymbolRateModel {
     init(_data?: any) {
         if (_data) {
             this.symbolId = _data["SymbolId"];
-            this.symbolTypeId = _data["SymbolTypeId"];
-            this.symbolType = _data["SymbolType"] ? SymbolTypeModel.fromJS(_data["SymbolType"]) : <any>undefined;
+            this.symbolType = _data["SymbolType"];
             this.isoCode = _data["IsoCode"];
             this.matriksId = _data["MatriksId"];
             this.matriksCode = _data["MatriksCode"];
@@ -19303,8 +11559,7 @@ export class SymbolRateModel implements ISymbolRateModel {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["SymbolId"] = this.symbolId;
-        data["SymbolTypeId"] = this.symbolTypeId;
-        data["SymbolType"] = this.symbolType ? this.symbolType.toJSON() : <any>undefined;
+        data["SymbolType"] = this.symbolType;
         data["IsoCode"] = this.isoCode;
         data["MatriksId"] = this.matriksId;
         data["MatriksCode"] = this.matriksCode;
@@ -19332,8 +11587,7 @@ export class SymbolRateModel implements ISymbolRateModel {
 
 export interface ISymbolRateModel {
     symbolId?: number;
-    symbolTypeId?: number;
-    symbolType?: SymbolTypeModel;
+    symbolType?: string | undefined;
     isoCode?: string | undefined;
     matriksId?: number;
     matriksCode?: string | undefined;
@@ -19357,148 +11611,19 @@ export interface ISymbolRateModel {
     capital?: number;
 }
 
-export class SymbolType implements ISymbolType {
-    id?: number;
-    createdOn?: moment.Moment | undefined;
-    createdById?: number | undefined;
-    createdBy?: User;
-    updatedOn?: moment.Moment | undefined;
-    updatedById?: number | undefined;
-    updatedBy?: User;
-    deletedOn?: moment.Moment | undefined;
-    deletedById?: number | undefined;
-    deletedBy?: User;
-    isDeleted?: boolean;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-
-    constructor(data?: ISymbolType) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["Id"];
-            this.createdOn = _data["CreatedOn"] ? moment(_data["CreatedOn"].toString()) : <any>undefined;
-            this.createdById = _data["CreatedById"];
-            this.createdBy = _data["CreatedBy"] ? User.fromJS(_data["CreatedBy"]) : <any>undefined;
-            this.updatedOn = _data["UpdatedOn"] ? moment(_data["UpdatedOn"].toString()) : <any>undefined;
-            this.updatedById = _data["UpdatedById"];
-            this.updatedBy = _data["UpdatedBy"] ? User.fromJS(_data["UpdatedBy"]) : <any>undefined;
-            this.deletedOn = _data["DeletedOn"] ? moment(_data["DeletedOn"].toString()) : <any>undefined;
-            this.deletedById = _data["DeletedById"];
-            this.deletedBy = _data["DeletedBy"] ? User.fromJS(_data["DeletedBy"]) : <any>undefined;
-            this.isDeleted = _data["IsDeleted"];
-            this.code = _data["Code"];
-            this.description = _data["Description"];
-            this.displayOrder = _data["DisplayOrder"];
-            this.isActive = _data["IsActive"];
-        }
-    }
-
-    static fromJS(data: any): SymbolType {
-        data = typeof data === 'object' ? data : {};
-        let result = new SymbolType();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Id"] = this.id;
-        data["CreatedOn"] = this.createdOn ? this.createdOn.toISOString() : <any>undefined;
-        data["CreatedById"] = this.createdById;
-        data["CreatedBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
-        data["UpdatedOn"] = this.updatedOn ? this.updatedOn.toISOString() : <any>undefined;
-        data["UpdatedById"] = this.updatedById;
-        data["UpdatedBy"] = this.updatedBy ? this.updatedBy.toJSON() : <any>undefined;
-        data["DeletedOn"] = this.deletedOn ? this.deletedOn.toISOString() : <any>undefined;
-        data["DeletedById"] = this.deletedById;
-        data["DeletedBy"] = this.deletedBy ? this.deletedBy.toJSON() : <any>undefined;
-        data["IsDeleted"] = this.isDeleted;
-        data["Code"] = this.code;
-        data["Description"] = this.description;
-        data["DisplayOrder"] = this.displayOrder;
-        data["IsActive"] = this.isActive;
-        return data;
-    }
-}
-
-export interface ISymbolType {
-    id?: number;
-    createdOn?: moment.Moment | undefined;
-    createdById?: number | undefined;
-    createdBy?: User;
-    updatedOn?: moment.Moment | undefined;
-    updatedById?: number | undefined;
-    updatedBy?: User;
-    deletedOn?: moment.Moment | undefined;
-    deletedById?: number | undefined;
-    deletedBy?: User;
-    isDeleted?: boolean;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-}
-
-export class SymbolTypeModel implements ISymbolTypeModel {
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-
-    constructor(data?: ISymbolTypeModel) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.code = _data["Code"];
-            this.description = _data["Description"];
-            this.displayOrder = _data["DisplayOrder"];
-            this.isActive = _data["IsActive"];
-        }
-    }
-
-    static fromJS(data: any): SymbolTypeModel {
-        data = typeof data === 'object' ? data : {};
-        let result = new SymbolTypeModel();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Code"] = this.code;
-        data["Description"] = this.description;
-        data["DisplayOrder"] = this.displayOrder;
-        data["IsActive"] = this.isActive;
-        return data;
-    }
-}
-
-export interface ISymbolTypeModel {
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
+export enum SymbolType {
+    Forex = "Forex",
+    Metal = "Metal",
+    Index = "Index",
+    Commodity = "Commodity",
+    Future = "Future",
+    Share = "Share",
+    Crypto = "Crypto",
+    Sarrafiye = "Sarrafiye",
 }
 
 export class SymbolVoteRequestModel implements ISymbolVoteRequestModel {
-    customerId?: number;
+    userId?: number;
     symbolId?: number;
     vote?: boolean;
 
@@ -19513,7 +11638,7 @@ export class SymbolVoteRequestModel implements ISymbolVoteRequestModel {
 
     init(_data?: any) {
         if (_data) {
-            this.customerId = _data["CustomerId"];
+            this.userId = _data["UserId"];
             this.symbolId = _data["SymbolId"];
             this.vote = _data["Vote"];
         }
@@ -19528,7 +11653,7 @@ export class SymbolVoteRequestModel implements ISymbolVoteRequestModel {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["CustomerId"] = this.customerId;
+        data["UserId"] = this.userId;
         data["SymbolId"] = this.symbolId;
         data["Vote"] = this.vote;
         return data;
@@ -19536,7 +11661,7 @@ export class SymbolVoteRequestModel implements ISymbolVoteRequestModel {
 }
 
 export interface ISymbolVoteRequestModel {
-    customerId?: number;
+    userId?: number;
     symbolId?: number;
     vote?: boolean;
 }
@@ -19544,8 +11669,8 @@ export interface ISymbolVoteRequestModel {
 export class SymbolVoteSummaryModel implements ISymbolVoteSummaryModel {
     increasingCount?: number;
     decreasingCount?: number;
-    hasCustomerVote?: boolean;
-    customerVote?: boolean;
+    hasUserVote?: boolean;
+    userVote?: boolean;
 
     constructor(data?: ISymbolVoteSummaryModel) {
         if (data) {
@@ -19560,8 +11685,8 @@ export class SymbolVoteSummaryModel implements ISymbolVoteSummaryModel {
         if (_data) {
             this.increasingCount = _data["IncreasingCount"];
             this.decreasingCount = _data["DecreasingCount"];
-            this.hasCustomerVote = _data["HasCustomerVote"];
-            this.customerVote = _data["CustomerVote"];
+            this.hasUserVote = _data["HasUserVote"];
+            this.userVote = _data["UserVote"];
         }
     }
 
@@ -19576,8 +11701,8 @@ export class SymbolVoteSummaryModel implements ISymbolVoteSummaryModel {
         data = typeof data === 'object' ? data : {};
         data["IncreasingCount"] = this.increasingCount;
         data["DecreasingCount"] = this.decreasingCount;
-        data["HasCustomerVote"] = this.hasCustomerVote;
-        data["CustomerVote"] = this.customerVote;
+        data["HasUserVote"] = this.hasUserVote;
+        data["UserVote"] = this.userVote;
         return data;
     }
 }
@@ -19585,8 +11710,84 @@ export class SymbolVoteSummaryModel implements ISymbolVoteSummaryModel {
 export interface ISymbolVoteSummaryModel {
     increasingCount?: number;
     decreasingCount?: number;
-    hasCustomerVote?: boolean;
-    customerVote?: boolean;
+    hasUserVote?: boolean;
+    userVote?: boolean;
+}
+
+export class TimeSpan implements ITimeSpan {
+    readonly ticks?: number;
+    readonly days?: number;
+    readonly hours?: number;
+    readonly milliseconds?: number;
+    readonly minutes?: number;
+    readonly seconds?: number;
+    readonly totalDays?: number;
+    readonly totalHours?: number;
+    readonly totalMilliseconds?: number;
+    readonly totalMinutes?: number;
+    readonly totalSeconds?: number;
+
+    constructor(data?: ITimeSpan) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            (<any>this).ticks = _data["Ticks"];
+            (<any>this).days = _data["Days"];
+            (<any>this).hours = _data["Hours"];
+            (<any>this).milliseconds = _data["Milliseconds"];
+            (<any>this).minutes = _data["Minutes"];
+            (<any>this).seconds = _data["Seconds"];
+            (<any>this).totalDays = _data["TotalDays"];
+            (<any>this).totalHours = _data["TotalHours"];
+            (<any>this).totalMilliseconds = _data["TotalMilliseconds"];
+            (<any>this).totalMinutes = _data["TotalMinutes"];
+            (<any>this).totalSeconds = _data["TotalSeconds"];
+        }
+    }
+
+    static fromJS(data: any): TimeSpan {
+        data = typeof data === 'object' ? data : {};
+        let result = new TimeSpan();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["Ticks"] = this.ticks;
+        data["Days"] = this.days;
+        data["Hours"] = this.hours;
+        data["Milliseconds"] = this.milliseconds;
+        data["Minutes"] = this.minutes;
+        data["Seconds"] = this.seconds;
+        data["TotalDays"] = this.totalDays;
+        data["TotalHours"] = this.totalHours;
+        data["TotalMilliseconds"] = this.totalMilliseconds;
+        data["TotalMinutes"] = this.totalMinutes;
+        data["TotalSeconds"] = this.totalSeconds;
+        return data;
+    }
+}
+
+export interface ITimeSpan {
+    ticks?: number;
+    days?: number;
+    hours?: number;
+    milliseconds?: number;
+    minutes?: number;
+    seconds?: number;
+    totalDays?: number;
+    totalHours?: number;
+    totalMilliseconds?: number;
+    totalMinutes?: number;
+    totalSeconds?: number;
 }
 
 export class TokenModel implements ITokenModel {
@@ -19629,21 +11830,17 @@ export class Transaction implements ITransaction {
     id?: number;
     createdOn?: moment.Moment | undefined;
     createdById?: number | undefined;
-    createdBy?: User;
     updatedOn?: moment.Moment | undefined;
     updatedById?: number | undefined;
-    updatedBy?: User;
     deletedOn?: moment.Moment | undefined;
     deletedById?: number | undefined;
-    deletedBy?: User;
     isDeleted?: boolean;
-    customerId?: number;
-    customer?: Customer;
+    userId?: number;
+    user?: User;
     symbolId?: number;
     symbol?: Symbol;
     transactionTypeId?: number;
     transactionType?: TransactionType;
-    paymentTypeId?: number;
     paymentType?: PaymentType;
     actionDate?: moment.Moment;
     quantity?: number;
@@ -19670,22 +11867,18 @@ export class Transaction implements ITransaction {
             this.id = _data["Id"];
             this.createdOn = _data["CreatedOn"] ? moment(_data["CreatedOn"].toString()) : <any>undefined;
             this.createdById = _data["CreatedById"];
-            this.createdBy = _data["CreatedBy"] ? User.fromJS(_data["CreatedBy"]) : <any>undefined;
             this.updatedOn = _data["UpdatedOn"] ? moment(_data["UpdatedOn"].toString()) : <any>undefined;
             this.updatedById = _data["UpdatedById"];
-            this.updatedBy = _data["UpdatedBy"] ? User.fromJS(_data["UpdatedBy"]) : <any>undefined;
             this.deletedOn = _data["DeletedOn"] ? moment(_data["DeletedOn"].toString()) : <any>undefined;
             this.deletedById = _data["DeletedById"];
-            this.deletedBy = _data["DeletedBy"] ? User.fromJS(_data["DeletedBy"]) : <any>undefined;
             this.isDeleted = _data["IsDeleted"];
-            this.customerId = _data["CustomerId"];
-            this.customer = _data["Customer"] ? Customer.fromJS(_data["Customer"]) : <any>undefined;
+            this.userId = _data["UserId"];
+            this.user = _data["User"] ? User.fromJS(_data["User"]) : <any>undefined;
             this.symbolId = _data["SymbolId"];
             this.symbol = _data["Symbol"] ? Symbol.fromJS(_data["Symbol"]) : <any>undefined;
             this.transactionTypeId = _data["TransactionTypeId"];
-            this.transactionType = _data["TransactionType"] ? TransactionType.fromJS(_data["TransactionType"]) : <any>undefined;
-            this.paymentTypeId = _data["PaymentTypeId"];
-            this.paymentType = _data["PaymentType"] ? PaymentType.fromJS(_data["PaymentType"]) : <any>undefined;
+            this.transactionType = _data["TransactionType"];
+            this.paymentType = _data["PaymentType"];
             this.actionDate = _data["ActionDate"] ? moment(_data["ActionDate"].toString()) : <any>undefined;
             this.quantity = _data["Quantity"];
             this.amount = _data["Amount"];
@@ -19711,22 +11904,18 @@ export class Transaction implements ITransaction {
         data["Id"] = this.id;
         data["CreatedOn"] = this.createdOn ? this.createdOn.toISOString() : <any>undefined;
         data["CreatedById"] = this.createdById;
-        data["CreatedBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
         data["UpdatedOn"] = this.updatedOn ? this.updatedOn.toISOString() : <any>undefined;
         data["UpdatedById"] = this.updatedById;
-        data["UpdatedBy"] = this.updatedBy ? this.updatedBy.toJSON() : <any>undefined;
         data["DeletedOn"] = this.deletedOn ? this.deletedOn.toISOString() : <any>undefined;
         data["DeletedById"] = this.deletedById;
-        data["DeletedBy"] = this.deletedBy ? this.deletedBy.toJSON() : <any>undefined;
         data["IsDeleted"] = this.isDeleted;
-        data["CustomerId"] = this.customerId;
-        data["Customer"] = this.customer ? this.customer.toJSON() : <any>undefined;
+        data["UserId"] = this.userId;
+        data["User"] = this.user ? this.user.toJSON() : <any>undefined;
         data["SymbolId"] = this.symbolId;
         data["Symbol"] = this.symbol ? this.symbol.toJSON() : <any>undefined;
         data["TransactionTypeId"] = this.transactionTypeId;
-        data["TransactionType"] = this.transactionType ? this.transactionType.toJSON() : <any>undefined;
-        data["PaymentTypeId"] = this.paymentTypeId;
-        data["PaymentType"] = this.paymentType ? this.paymentType.toJSON() : <any>undefined;
+        data["TransactionType"] = this.transactionType;
+        data["PaymentType"] = this.paymentType;
         data["ActionDate"] = this.actionDate ? this.actionDate.toISOString() : <any>undefined;
         data["Quantity"] = this.quantity;
         data["Amount"] = this.amount;
@@ -19745,21 +11934,17 @@ export interface ITransaction {
     id?: number;
     createdOn?: moment.Moment | undefined;
     createdById?: number | undefined;
-    createdBy?: User;
     updatedOn?: moment.Moment | undefined;
     updatedById?: number | undefined;
-    updatedBy?: User;
     deletedOn?: moment.Moment | undefined;
     deletedById?: number | undefined;
-    deletedBy?: User;
     isDeleted?: boolean;
-    customerId?: number;
-    customer?: Customer;
+    userId?: number;
+    user?: User;
     symbolId?: number;
     symbol?: Symbol;
     transactionTypeId?: number;
     transactionType?: TransactionType;
-    paymentTypeId?: number;
     paymentType?: PaymentType;
     actionDate?: moment.Moment;
     quantity?: number;
@@ -19775,14 +11960,12 @@ export interface ITransaction {
 
 export class TransactionModel implements ITransactionModel {
     id?: number;
-    customerId?: number;
-    customer?: CustomerModel;
+    userId?: number;
+    user?: UserModel;
     symbolId?: number;
     symbol?: SymbolModel;
-    transactionTypeId?: number;
-    transactionType?: TransactionTypeModel;
-    paymentTypeId?: number;
-    paymentType?: PaymentTypeModel;
+    transactionType?: TransactionType;
+    paymentType?: PaymentType;
     actionDate?: moment.Moment;
     quantity?: number;
     amount?: number;
@@ -19806,14 +11989,12 @@ export class TransactionModel implements ITransactionModel {
     init(_data?: any) {
         if (_data) {
             this.id = _data["Id"];
-            this.customerId = _data["CustomerId"];
-            this.customer = _data["Customer"] ? CustomerModel.fromJS(_data["Customer"]) : <any>undefined;
+            this.userId = _data["UserId"];
+            this.user = _data["User"] ? UserModel.fromJS(_data["User"]) : <any>undefined;
             this.symbolId = _data["SymbolId"];
             this.symbol = _data["Symbol"] ? SymbolModel.fromJS(_data["Symbol"]) : <any>undefined;
-            this.transactionTypeId = _data["TransactionTypeId"];
-            this.transactionType = _data["TransactionType"] ? TransactionTypeModel.fromJS(_data["TransactionType"]) : <any>undefined;
-            this.paymentTypeId = _data["PaymentTypeId"];
-            this.paymentType = _data["PaymentType"] ? PaymentTypeModel.fromJS(_data["PaymentType"]) : <any>undefined;
+            this.transactionType = _data["TransactionType"];
+            this.paymentType = _data["PaymentType"];
             this.actionDate = _data["ActionDate"] ? moment(_data["ActionDate"].toString()) : <any>undefined;
             this.quantity = _data["Quantity"];
             this.amount = _data["Amount"];
@@ -19837,14 +12018,12 @@ export class TransactionModel implements ITransactionModel {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["Id"] = this.id;
-        data["CustomerId"] = this.customerId;
-        data["Customer"] = this.customer ? this.customer.toJSON() : <any>undefined;
+        data["UserId"] = this.userId;
+        data["User"] = this.user ? this.user.toJSON() : <any>undefined;
         data["SymbolId"] = this.symbolId;
         data["Symbol"] = this.symbol ? this.symbol.toJSON() : <any>undefined;
-        data["TransactionTypeId"] = this.transactionTypeId;
-        data["TransactionType"] = this.transactionType ? this.transactionType.toJSON() : <any>undefined;
-        data["PaymentTypeId"] = this.paymentTypeId;
-        data["PaymentType"] = this.paymentType ? this.paymentType.toJSON() : <any>undefined;
+        data["TransactionType"] = this.transactionType;
+        data["PaymentType"] = this.paymentType;
         data["ActionDate"] = this.actionDate ? this.actionDate.toISOString() : <any>undefined;
         data["Quantity"] = this.quantity;
         data["Amount"] = this.amount;
@@ -19861,14 +12040,12 @@ export class TransactionModel implements ITransactionModel {
 
 export interface ITransactionModel {
     id?: number;
-    customerId?: number;
-    customer?: CustomerModel;
+    userId?: number;
+    user?: UserModel;
     symbolId?: number;
     symbol?: SymbolModel;
-    transactionTypeId?: number;
-    transactionType?: TransactionTypeModel;
-    paymentTypeId?: number;
-    paymentType?: PaymentTypeModel;
+    transactionType?: TransactionType;
+    paymentType?: PaymentType;
     actionDate?: moment.Moment;
     quantity?: number;
     amount?: number;
@@ -19882,7 +12059,7 @@ export interface ITransactionModel {
 }
 
 export class TransactionRequestModel implements ITransactionRequestModel {
-    customerId?: number;
+    userId?: number;
     symbolId?: number;
     transactionTypeId?: number;
     startDate?: moment.Moment;
@@ -19899,7 +12076,7 @@ export class TransactionRequestModel implements ITransactionRequestModel {
 
     init(_data?: any) {
         if (_data) {
-            this.customerId = _data["CustomerId"];
+            this.userId = _data["UserId"];
             this.symbolId = _data["SymbolId"];
             this.transactionTypeId = _data["TransactionTypeId"];
             this.startDate = _data["StartDate"] ? moment(_data["StartDate"].toString()) : <any>undefined;
@@ -19916,7 +12093,7 @@ export class TransactionRequestModel implements ITransactionRequestModel {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["CustomerId"] = this.customerId;
+        data["UserId"] = this.userId;
         data["SymbolId"] = this.symbolId;
         data["TransactionTypeId"] = this.transactionTypeId;
         data["StartDate"] = this.startDate ? this.startDate.toISOString() : <any>undefined;
@@ -19926,219 +12103,19 @@ export class TransactionRequestModel implements ITransactionRequestModel {
 }
 
 export interface ITransactionRequestModel {
-    customerId?: number;
+    userId?: number;
     symbolId?: number;
     transactionTypeId?: number;
     startDate?: moment.Moment;
     endDate?: moment.Moment;
 }
 
-export class TransactionType implements ITransactionType {
-    id?: number;
-    createdOn?: moment.Moment | undefined;
-    createdById?: number | undefined;
-    createdBy?: User;
-    updatedOn?: moment.Moment | undefined;
-    updatedById?: number | undefined;
-    updatedBy?: User;
-    deletedOn?: moment.Moment | undefined;
-    deletedById?: number | undefined;
-    deletedBy?: User;
-    isDeleted?: boolean;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-
-    constructor(data?: ITransactionType) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["Id"];
-            this.createdOn = _data["CreatedOn"] ? moment(_data["CreatedOn"].toString()) : <any>undefined;
-            this.createdById = _data["CreatedById"];
-            this.createdBy = _data["CreatedBy"] ? User.fromJS(_data["CreatedBy"]) : <any>undefined;
-            this.updatedOn = _data["UpdatedOn"] ? moment(_data["UpdatedOn"].toString()) : <any>undefined;
-            this.updatedById = _data["UpdatedById"];
-            this.updatedBy = _data["UpdatedBy"] ? User.fromJS(_data["UpdatedBy"]) : <any>undefined;
-            this.deletedOn = _data["DeletedOn"] ? moment(_data["DeletedOn"].toString()) : <any>undefined;
-            this.deletedById = _data["DeletedById"];
-            this.deletedBy = _data["DeletedBy"] ? User.fromJS(_data["DeletedBy"]) : <any>undefined;
-            this.isDeleted = _data["IsDeleted"];
-            this.code = _data["Code"];
-            this.description = _data["Description"];
-            this.displayOrder = _data["DisplayOrder"];
-            this.isActive = _data["IsActive"];
-        }
-    }
-
-    static fromJS(data: any): TransactionType {
-        data = typeof data === 'object' ? data : {};
-        let result = new TransactionType();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Id"] = this.id;
-        data["CreatedOn"] = this.createdOn ? this.createdOn.toISOString() : <any>undefined;
-        data["CreatedById"] = this.createdById;
-        data["CreatedBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
-        data["UpdatedOn"] = this.updatedOn ? this.updatedOn.toISOString() : <any>undefined;
-        data["UpdatedById"] = this.updatedById;
-        data["UpdatedBy"] = this.updatedBy ? this.updatedBy.toJSON() : <any>undefined;
-        data["DeletedOn"] = this.deletedOn ? this.deletedOn.toISOString() : <any>undefined;
-        data["DeletedById"] = this.deletedById;
-        data["DeletedBy"] = this.deletedBy ? this.deletedBy.toJSON() : <any>undefined;
-        data["IsDeleted"] = this.isDeleted;
-        data["Code"] = this.code;
-        data["Description"] = this.description;
-        data["DisplayOrder"] = this.displayOrder;
-        data["IsActive"] = this.isActive;
-        return data;
-    }
-}
-
-export interface ITransactionType {
-    id?: number;
-    createdOn?: moment.Moment | undefined;
-    createdById?: number | undefined;
-    createdBy?: User;
-    updatedOn?: moment.Moment | undefined;
-    updatedById?: number | undefined;
-    updatedBy?: User;
-    deletedOn?: moment.Moment | undefined;
-    deletedById?: number | undefined;
-    deletedBy?: User;
-    isDeleted?: boolean;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-}
-
-export class TransactionTypeModel implements ITransactionTypeModel {
-    id?: number;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-
-    constructor(data?: ITransactionTypeModel) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["Id"];
-            this.code = _data["Code"];
-            this.description = _data["Description"];
-            this.displayOrder = _data["DisplayOrder"];
-            this.isActive = _data["IsActive"];
-        }
-    }
-
-    static fromJS(data: any): TransactionTypeModel {
-        data = typeof data === 'object' ? data : {};
-        let result = new TransactionTypeModel();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Id"] = this.id;
-        data["Code"] = this.code;
-        data["Description"] = this.description;
-        data["DisplayOrder"] = this.displayOrder;
-        data["IsActive"] = this.isActive;
-        return data;
-    }
-}
-
-export interface ITransactionTypeModel {
-    id?: number;
-    code?: string | undefined;
-    description?: string | undefined;
-    displayOrder?: number;
-    isActive?: boolean;
-}
-
-export class Usd implements IUsd {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
-
-    constructor(data?: IUsd) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.alis = _data["Alis"];
-            this.satis = _data["Satis"];
-            this.tarih = _data["Tarih"];
-            this.sonkapanis = _data["Sonkapanis"];
-            this.son = _data["Son"];
-            this.endusuk = _data["Endusuk"];
-            this.enyuksek = _data["Enyuksek"];
-            this.gunlukyuzde = _data["Gunlukyuzde"];
-        }
-    }
-
-    static fromJS(data: any): Usd {
-        data = typeof data === 'object' ? data : {};
-        let result = new Usd();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["Alis"] = this.alis;
-        data["Satis"] = this.satis;
-        data["Tarih"] = this.tarih;
-        data["Sonkapanis"] = this.sonkapanis;
-        data["Son"] = this.son;
-        data["Endusuk"] = this.endusuk;
-        data["Enyuksek"] = this.enyuksek;
-        data["Gunlukyuzde"] = this.gunlukyuzde;
-        return data;
-    }
-}
-
-export interface IUsd {
-    alis?: string | undefined;
-    satis?: string | undefined;
-    tarih?: string | undefined;
-    sonkapanis?: string | undefined;
-    son?: string | undefined;
-    endusuk?: string | undefined;
-    enyuksek?: string | undefined;
-    gunlukyuzde?: string | undefined;
+export enum TransactionType {
+    Buy = "Buy",
+    Sell = "Sell",
+    Convert = "Convert",
+    Deposit = "Deposit",
+    Withdrawal = "Withdrawal",
 }
 
 export class User implements IUser {
@@ -20158,18 +12135,28 @@ export class User implements IUser {
     lockoutEnabled?: boolean;
     accessFailedCount?: number;
     userGuid?: string;
-    kpayMemberId?: string | undefined;
-    kpayUsername?: string | undefined;
-    customerId?: number | undefined;
-    customer?: Customer;
     version?: number;
     isAcceptKvk?: boolean;
     isAcceptTerms?: boolean;
     isAcceptContact?: boolean;
     isActive?: boolean;
     isDeleted?: boolean;
-    newPhoneNumber?: string | undefined;
     otp?: string | undefined;
+    userType?: UserType;
+    retail?: Retail;
+    corporate?: Corporate;
+    channelType?: number;
+    groupId?: number | undefined;
+    group?: Group;
+    orders?: Order[] | undefined;
+    assets?: Asset[] | undefined;
+    bonuses?: Bonus[] | undefined;
+    coupons?: Coupon[] | undefined;
+    transactions?: Transaction[] | undefined;
+    userAddresses?: UserAddress[] | undefined;
+    userBankAccounts?: UserBankAccount[] | undefined;
+    userDocuments?: UserDocument[] | undefined;
+    userContacts?: UserContact[] | undefined;
     userRoles?: UserRole[] | undefined;
 
     constructor(data?: IUser) {
@@ -20199,18 +12186,64 @@ export class User implements IUser {
             this.lockoutEnabled = _data["LockoutEnabled"];
             this.accessFailedCount = _data["AccessFailedCount"];
             this.userGuid = _data["UserGuid"];
-            this.kpayMemberId = _data["KpayMemberId"];
-            this.kpayUsername = _data["KpayUsername"];
-            this.customerId = _data["CustomerId"];
-            this.customer = _data["Customer"] ? Customer.fromJS(_data["Customer"]) : <any>undefined;
             this.version = _data["Version"];
             this.isAcceptKvk = _data["IsAcceptKvk"];
             this.isAcceptTerms = _data["IsAcceptTerms"];
             this.isAcceptContact = _data["IsAcceptContact"];
             this.isActive = _data["IsActive"];
             this.isDeleted = _data["IsDeleted"];
-            this.newPhoneNumber = _data["NewPhoneNumber"];
             this.otp = _data["Otp"];
+            this.userType = _data["UserType"];
+            this.retail = _data["Retail"] ? Retail.fromJS(_data["Retail"]) : <any>undefined;
+            this.corporate = _data["Corporate"] ? Corporate.fromJS(_data["Corporate"]) : <any>undefined;
+            this.channelType = _data["ChannelType"];
+            this.groupId = _data["GroupId"];
+            this.group = _data["Group"] ? Group.fromJS(_data["Group"]) : <any>undefined;
+            if (Array.isArray(_data["Orders"])) {
+                this.orders = [] as any;
+                for (let item of _data["Orders"])
+                    this.orders!.push(Order.fromJS(item));
+            }
+            if (Array.isArray(_data["Assets"])) {
+                this.assets = [] as any;
+                for (let item of _data["Assets"])
+                    this.assets!.push(Asset.fromJS(item));
+            }
+            if (Array.isArray(_data["Bonuses"])) {
+                this.bonuses = [] as any;
+                for (let item of _data["Bonuses"])
+                    this.bonuses!.push(Bonus.fromJS(item));
+            }
+            if (Array.isArray(_data["Coupons"])) {
+                this.coupons = [] as any;
+                for (let item of _data["Coupons"])
+                    this.coupons!.push(Coupon.fromJS(item));
+            }
+            if (Array.isArray(_data["Transactions"])) {
+                this.transactions = [] as any;
+                for (let item of _data["Transactions"])
+                    this.transactions!.push(Transaction.fromJS(item));
+            }
+            if (Array.isArray(_data["UserAddresses"])) {
+                this.userAddresses = [] as any;
+                for (let item of _data["UserAddresses"])
+                    this.userAddresses!.push(UserAddress.fromJS(item));
+            }
+            if (Array.isArray(_data["UserBankAccounts"])) {
+                this.userBankAccounts = [] as any;
+                for (let item of _data["UserBankAccounts"])
+                    this.userBankAccounts!.push(UserBankAccount.fromJS(item));
+            }
+            if (Array.isArray(_data["UserDocuments"])) {
+                this.userDocuments = [] as any;
+                for (let item of _data["UserDocuments"])
+                    this.userDocuments!.push(UserDocument.fromJS(item));
+            }
+            if (Array.isArray(_data["UserContacts"])) {
+                this.userContacts = [] as any;
+                for (let item of _data["UserContacts"])
+                    this.userContacts!.push(UserContact.fromJS(item));
+            }
             if (Array.isArray(_data["UserRoles"])) {
                 this.userRoles = [] as any;
                 for (let item of _data["UserRoles"])
@@ -20244,18 +12277,64 @@ export class User implements IUser {
         data["LockoutEnabled"] = this.lockoutEnabled;
         data["AccessFailedCount"] = this.accessFailedCount;
         data["UserGuid"] = this.userGuid;
-        data["KpayMemberId"] = this.kpayMemberId;
-        data["KpayUsername"] = this.kpayUsername;
-        data["CustomerId"] = this.customerId;
-        data["Customer"] = this.customer ? this.customer.toJSON() : <any>undefined;
         data["Version"] = this.version;
         data["IsAcceptKvk"] = this.isAcceptKvk;
         data["IsAcceptTerms"] = this.isAcceptTerms;
         data["IsAcceptContact"] = this.isAcceptContact;
         data["IsActive"] = this.isActive;
         data["IsDeleted"] = this.isDeleted;
-        data["NewPhoneNumber"] = this.newPhoneNumber;
         data["Otp"] = this.otp;
+        data["UserType"] = this.userType;
+        data["Retail"] = this.retail ? this.retail.toJSON() : <any>undefined;
+        data["Corporate"] = this.corporate ? this.corporate.toJSON() : <any>undefined;
+        data["ChannelType"] = this.channelType;
+        data["GroupId"] = this.groupId;
+        data["Group"] = this.group ? this.group.toJSON() : <any>undefined;
+        if (Array.isArray(this.orders)) {
+            data["Orders"] = [];
+            for (let item of this.orders)
+                data["Orders"].push(item.toJSON());
+        }
+        if (Array.isArray(this.assets)) {
+            data["Assets"] = [];
+            for (let item of this.assets)
+                data["Assets"].push(item.toJSON());
+        }
+        if (Array.isArray(this.bonuses)) {
+            data["Bonuses"] = [];
+            for (let item of this.bonuses)
+                data["Bonuses"].push(item.toJSON());
+        }
+        if (Array.isArray(this.coupons)) {
+            data["Coupons"] = [];
+            for (let item of this.coupons)
+                data["Coupons"].push(item.toJSON());
+        }
+        if (Array.isArray(this.transactions)) {
+            data["Transactions"] = [];
+            for (let item of this.transactions)
+                data["Transactions"].push(item.toJSON());
+        }
+        if (Array.isArray(this.userAddresses)) {
+            data["UserAddresses"] = [];
+            for (let item of this.userAddresses)
+                data["UserAddresses"].push(item.toJSON());
+        }
+        if (Array.isArray(this.userBankAccounts)) {
+            data["UserBankAccounts"] = [];
+            for (let item of this.userBankAccounts)
+                data["UserBankAccounts"].push(item.toJSON());
+        }
+        if (Array.isArray(this.userDocuments)) {
+            data["UserDocuments"] = [];
+            for (let item of this.userDocuments)
+                data["UserDocuments"].push(item.toJSON());
+        }
+        if (Array.isArray(this.userContacts)) {
+            data["UserContacts"] = [];
+            for (let item of this.userContacts)
+                data["UserContacts"].push(item.toJSON());
+        }
         if (Array.isArray(this.userRoles)) {
             data["UserRoles"] = [];
             for (let item of this.userRoles)
@@ -20282,19 +12361,479 @@ export interface IUser {
     lockoutEnabled?: boolean;
     accessFailedCount?: number;
     userGuid?: string;
-    kpayMemberId?: string | undefined;
-    kpayUsername?: string | undefined;
-    customerId?: number | undefined;
-    customer?: Customer;
     version?: number;
     isAcceptKvk?: boolean;
     isAcceptTerms?: boolean;
     isAcceptContact?: boolean;
     isActive?: boolean;
     isDeleted?: boolean;
-    newPhoneNumber?: string | undefined;
     otp?: string | undefined;
+    userType?: UserType;
+    retail?: Retail;
+    corporate?: Corporate;
+    channelType?: number;
+    groupId?: number | undefined;
+    group?: Group;
+    orders?: Order[] | undefined;
+    assets?: Asset[] | undefined;
+    bonuses?: Bonus[] | undefined;
+    coupons?: Coupon[] | undefined;
+    transactions?: Transaction[] | undefined;
+    userAddresses?: UserAddress[] | undefined;
+    userBankAccounts?: UserBankAccount[] | undefined;
+    userDocuments?: UserDocument[] | undefined;
+    userContacts?: UserContact[] | undefined;
     userRoles?: UserRole[] | undefined;
+}
+
+export class UserAddress implements IUserAddress {
+    id?: number;
+    userId?: number;
+    user?: User;
+    addressId?: number;
+    address?: Address;
+    lastUsedOn?: moment.Moment | undefined;
+    isPrimary?: boolean;
+
+    constructor(data?: IUserAddress) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["Id"];
+            this.userId = _data["UserId"];
+            this.user = _data["User"] ? User.fromJS(_data["User"]) : <any>undefined;
+            this.addressId = _data["AddressId"];
+            this.address = _data["Address"] ? Address.fromJS(_data["Address"]) : <any>undefined;
+            this.lastUsedOn = _data["LastUsedOn"] ? moment(_data["LastUsedOn"].toString()) : <any>undefined;
+            this.isPrimary = _data["IsPrimary"];
+        }
+    }
+
+    static fromJS(data: any): UserAddress {
+        data = typeof data === 'object' ? data : {};
+        let result = new UserAddress();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["Id"] = this.id;
+        data["UserId"] = this.userId;
+        data["User"] = this.user ? this.user.toJSON() : <any>undefined;
+        data["AddressId"] = this.addressId;
+        data["Address"] = this.address ? this.address.toJSON() : <any>undefined;
+        data["LastUsedOn"] = this.lastUsedOn ? this.lastUsedOn.toISOString() : <any>undefined;
+        data["IsPrimary"] = this.isPrimary;
+        return data;
+    }
+}
+
+export interface IUserAddress {
+    id?: number;
+    userId?: number;
+    user?: User;
+    addressId?: number;
+    address?: Address;
+    lastUsedOn?: moment.Moment | undefined;
+    isPrimary?: boolean;
+}
+
+export class UserBankAccount implements IUserBankAccount {
+    id?: number;
+    userId?: number;
+    user?: User;
+    symbolId?: number;
+    symbol?: Symbol;
+    bankId?: number;
+    bank?: Bank;
+    name?: string | undefined;
+    accountNo?: string | undefined;
+    isDeleted?: boolean;
+
+    constructor(data?: IUserBankAccount) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["Id"];
+            this.userId = _data["UserId"];
+            this.user = _data["User"] ? User.fromJS(_data["User"]) : <any>undefined;
+            this.symbolId = _data["SymbolId"];
+            this.symbol = _data["Symbol"] ? Symbol.fromJS(_data["Symbol"]) : <any>undefined;
+            this.bankId = _data["BankId"];
+            this.bank = _data["Bank"] ? Bank.fromJS(_data["Bank"]) : <any>undefined;
+            this.name = _data["Name"];
+            this.accountNo = _data["AccountNo"];
+            this.isDeleted = _data["IsDeleted"];
+        }
+    }
+
+    static fromJS(data: any): UserBankAccount {
+        data = typeof data === 'object' ? data : {};
+        let result = new UserBankAccount();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["Id"] = this.id;
+        data["UserId"] = this.userId;
+        data["User"] = this.user ? this.user.toJSON() : <any>undefined;
+        data["SymbolId"] = this.symbolId;
+        data["Symbol"] = this.symbol ? this.symbol.toJSON() : <any>undefined;
+        data["BankId"] = this.bankId;
+        data["Bank"] = this.bank ? this.bank.toJSON() : <any>undefined;
+        data["Name"] = this.name;
+        data["AccountNo"] = this.accountNo;
+        data["IsDeleted"] = this.isDeleted;
+        return data;
+    }
+}
+
+export interface IUserBankAccount {
+    id?: number;
+    userId?: number;
+    user?: User;
+    symbolId?: number;
+    symbol?: Symbol;
+    bankId?: number;
+    bank?: Bank;
+    name?: string | undefined;
+    accountNo?: string | undefined;
+    isDeleted?: boolean;
+}
+
+export class UserBankAccountModel implements IUserBankAccountModel {
+    id?: number;
+    userId?: number;
+    user?: UserModel;
+    symbolId?: number;
+    symbol?: SymbolModel;
+    bankId?: number;
+    bank?: BankModel;
+    name?: string | undefined;
+    accountNo?: string | undefined;
+
+    constructor(data?: IUserBankAccountModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["Id"];
+            this.userId = _data["UserId"];
+            this.user = _data["User"] ? UserModel.fromJS(_data["User"]) : <any>undefined;
+            this.symbolId = _data["SymbolId"];
+            this.symbol = _data["Symbol"] ? SymbolModel.fromJS(_data["Symbol"]) : <any>undefined;
+            this.bankId = _data["BankId"];
+            this.bank = _data["Bank"] ? BankModel.fromJS(_data["Bank"]) : <any>undefined;
+            this.name = _data["Name"];
+            this.accountNo = _data["AccountNo"];
+        }
+    }
+
+    static fromJS(data: any): UserBankAccountModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new UserBankAccountModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["Id"] = this.id;
+        data["UserId"] = this.userId;
+        data["User"] = this.user ? this.user.toJSON() : <any>undefined;
+        data["SymbolId"] = this.symbolId;
+        data["Symbol"] = this.symbol ? this.symbol.toJSON() : <any>undefined;
+        data["BankId"] = this.bankId;
+        data["Bank"] = this.bank ? this.bank.toJSON() : <any>undefined;
+        data["Name"] = this.name;
+        data["AccountNo"] = this.accountNo;
+        return data;
+    }
+}
+
+export interface IUserBankAccountModel {
+    id?: number;
+    userId?: number;
+    user?: UserModel;
+    symbolId?: number;
+    symbol?: SymbolModel;
+    bankId?: number;
+    bank?: BankModel;
+    name?: string | undefined;
+    accountNo?: string | undefined;
+}
+
+export class UserContact implements IUserContact {
+    id?: number;
+    userId?: number;
+    user?: User;
+    contactType?: ContactType;
+    contactValue?: string | undefined;
+    isPrimary?: boolean;
+    isDeleted?: boolean;
+
+    constructor(data?: IUserContact) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["Id"];
+            this.userId = _data["UserId"];
+            this.user = _data["User"] ? User.fromJS(_data["User"]) : <any>undefined;
+            this.contactType = _data["ContactType"];
+            this.contactValue = _data["ContactValue"];
+            this.isPrimary = _data["IsPrimary"];
+            this.isDeleted = _data["IsDeleted"];
+        }
+    }
+
+    static fromJS(data: any): UserContact {
+        data = typeof data === 'object' ? data : {};
+        let result = new UserContact();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["Id"] = this.id;
+        data["UserId"] = this.userId;
+        data["User"] = this.user ? this.user.toJSON() : <any>undefined;
+        data["ContactType"] = this.contactType;
+        data["ContactValue"] = this.contactValue;
+        data["IsPrimary"] = this.isPrimary;
+        data["IsDeleted"] = this.isDeleted;
+        return data;
+    }
+}
+
+export interface IUserContact {
+    id?: number;
+    userId?: number;
+    user?: User;
+    contactType?: ContactType;
+    contactValue?: string | undefined;
+    isPrimary?: boolean;
+    isDeleted?: boolean;
+}
+
+export class UserDocument implements IUserDocument {
+    id?: number;
+    userId?: number;
+    user?: User;
+    documentTypeId?: number;
+    documentType?: DocumentType;
+    medias?: UserDocumentMedia[] | undefined;
+    countryId?: string | undefined;
+    country?: Country;
+    documentNo?: string | undefined;
+    serialNo?: string | undefined;
+    dateOfIssue?: moment.Moment;
+    dateOfExpiry?: moment.Moment;
+    isVerified?: boolean;
+    verifiedOn?: moment.Moment;
+    isDeleted?: boolean;
+
+    constructor(data?: IUserDocument) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["Id"];
+            this.userId = _data["UserId"];
+            this.user = _data["User"] ? User.fromJS(_data["User"]) : <any>undefined;
+            this.documentTypeId = _data["DocumentTypeId"];
+            this.documentType = _data["DocumentType"];
+            if (Array.isArray(_data["Medias"])) {
+                this.medias = [] as any;
+                for (let item of _data["Medias"])
+                    this.medias!.push(UserDocumentMedia.fromJS(item));
+            }
+            this.countryId = _data["CountryId"];
+            this.country = _data["Country"] ? Country.fromJS(_data["Country"]) : <any>undefined;
+            this.documentNo = _data["DocumentNo"];
+            this.serialNo = _data["SerialNo"];
+            this.dateOfIssue = _data["DateOfIssue"] ? moment(_data["DateOfIssue"].toString()) : <any>undefined;
+            this.dateOfExpiry = _data["DateOfExpiry"] ? moment(_data["DateOfExpiry"].toString()) : <any>undefined;
+            this.isVerified = _data["IsVerified"];
+            this.verifiedOn = _data["VerifiedOn"] ? moment(_data["VerifiedOn"].toString()) : <any>undefined;
+            this.isDeleted = _data["IsDeleted"];
+        }
+    }
+
+    static fromJS(data: any): UserDocument {
+        data = typeof data === 'object' ? data : {};
+        let result = new UserDocument();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["Id"] = this.id;
+        data["UserId"] = this.userId;
+        data["User"] = this.user ? this.user.toJSON() : <any>undefined;
+        data["DocumentTypeId"] = this.documentTypeId;
+        data["DocumentType"] = this.documentType;
+        if (Array.isArray(this.medias)) {
+            data["Medias"] = [];
+            for (let item of this.medias)
+                data["Medias"].push(item.toJSON());
+        }
+        data["CountryId"] = this.countryId;
+        data["Country"] = this.country ? this.country.toJSON() : <any>undefined;
+        data["DocumentNo"] = this.documentNo;
+        data["SerialNo"] = this.serialNo;
+        data["DateOfIssue"] = this.dateOfIssue ? this.dateOfIssue.toISOString() : <any>undefined;
+        data["DateOfExpiry"] = this.dateOfExpiry ? this.dateOfExpiry.toISOString() : <any>undefined;
+        data["IsVerified"] = this.isVerified;
+        data["VerifiedOn"] = this.verifiedOn ? this.verifiedOn.toISOString() : <any>undefined;
+        data["IsDeleted"] = this.isDeleted;
+        return data;
+    }
+}
+
+export interface IUserDocument {
+    id?: number;
+    userId?: number;
+    user?: User;
+    documentTypeId?: number;
+    documentType?: DocumentType;
+    medias?: UserDocumentMedia[] | undefined;
+    countryId?: string | undefined;
+    country?: Country;
+    documentNo?: string | undefined;
+    serialNo?: string | undefined;
+    dateOfIssue?: moment.Moment;
+    dateOfExpiry?: moment.Moment;
+    isVerified?: boolean;
+    verifiedOn?: moment.Moment;
+    isDeleted?: boolean;
+}
+
+export class UserDocumentMedia implements IUserDocumentMedia {
+    id?: number;
+    userDocumentId?: number;
+    userDocument?: UserDocument;
+    mediaId?: number;
+    media?: Media;
+    scanTypeId?: number;
+    scanType?: ScanType;
+
+    constructor(data?: IUserDocumentMedia) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["Id"];
+            this.userDocumentId = _data["UserDocumentId"];
+            this.userDocument = _data["UserDocument"] ? UserDocument.fromJS(_data["UserDocument"]) : <any>undefined;
+            this.mediaId = _data["MediaId"];
+            this.media = _data["Media"] ? Media.fromJS(_data["Media"]) : <any>undefined;
+            this.scanTypeId = _data["ScanTypeId"];
+            this.scanType = _data["ScanType"];
+        }
+    }
+
+    static fromJS(data: any): UserDocumentMedia {
+        data = typeof data === 'object' ? data : {};
+        let result = new UserDocumentMedia();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["Id"] = this.id;
+        data["UserDocumentId"] = this.userDocumentId;
+        data["UserDocument"] = this.userDocument ? this.userDocument.toJSON() : <any>undefined;
+        data["MediaId"] = this.mediaId;
+        data["Media"] = this.media ? this.media.toJSON() : <any>undefined;
+        data["ScanTypeId"] = this.scanTypeId;
+        data["ScanType"] = this.scanType;
+        return data;
+    }
+}
+
+export interface IUserDocumentMedia {
+    id?: number;
+    userDocumentId?: number;
+    userDocument?: UserDocument;
+    mediaId?: number;
+    media?: Media;
+    scanTypeId?: number;
+    scanType?: ScanType;
+}
+
+export class UserDocumentModel implements IUserDocumentModel {
+
+    constructor(data?: IUserDocumentModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+    }
+
+    static fromJS(data: any): UserDocumentModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new UserDocumentModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        return data;
+    }
+}
+
+export interface IUserDocumentModel {
 }
 
 export class UserModel implements IUserModel {
@@ -20413,10 +12952,15 @@ export interface IUserRole {
     role?: Role;
 }
 
+export enum UserType {
+    Retail = "Retail",
+    Corporate = "Corporate",
+    Admin = "Admin",
+}
+
 export class VerifyModel implements IVerifyModel {
-    otp?: string | undefined;
-    authenticatorCode?: string | undefined;
-    phoneNumber?: string | undefined;
+    otp!: string;
+    phoneNumber!: string;
 
     constructor(data?: IVerifyModel) {
         if (data) {
@@ -20430,7 +12974,6 @@ export class VerifyModel implements IVerifyModel {
     init(_data?: any) {
         if (_data) {
             this.otp = _data["Otp"];
-            this.authenticatorCode = _data["AuthenticatorCode"];
             this.phoneNumber = _data["PhoneNumber"];
         }
     }
@@ -20445,16 +12988,14 @@ export class VerifyModel implements IVerifyModel {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["Otp"] = this.otp;
-        data["AuthenticatorCode"] = this.authenticatorCode;
         data["PhoneNumber"] = this.phoneNumber;
         return data;
     }
 }
 
 export interface IVerifyModel {
-    otp?: string | undefined;
-    authenticatorCode?: string | undefined;
-    phoneNumber?: string | undefined;
+    otp: string;
+    phoneNumber: string;
 }
 
 export interface FileParameter {

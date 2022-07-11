@@ -1,22 +1,23 @@
-
 <ion-content>
 
-  <div  class="content">  
-    <ion-segment scrollable class="md-btn-segment"  mode="md" value="cevirici">
-      <ion-segment-button value="tumu"> 
+  <div class="content">
+    <ion-segment scrollable class="md-btn-segment" mode="md" [(ngModel)]="selectedValue" (ionChange)="calculate()">
+      <ion-segment-button value="XPT/XAG">
         <ion-label>Platin/Gümüş</ion-label>
       </ion-segment-button>
-      <ion-segment-button value="cevirici"> 
+      <ion-segment-button value="XPT/XPD">
         <ion-label>Platin/Paladyum</ion-label>
       </ion-segment-button>
-      <ion-segment-button value="haber">
-         <ion-label>Paladyum/Gümüş</ion-label>
-      </ion-segment-button>  
-  </ion-segment>
-  <div style="text-align:center;    margin-top: 50px  ">
-    <img src="../../../../assets/img/icon/carpanlar.svg" alt="" /> 
+      <ion-segment-button value="XPD/XAG">
+        <ion-label>Paladyum/Gümüş</ion-label>
+      </ion-segment-button>
+    </ion-segment>
 
-  </div>
+    <div class="ion-text-center" style="margin-top: 2em;">{{ result | number:'1.2-2'}}</div>
+
+    <div style="text-align:center;    margin-top: 50px  ">
+      <img src="../../../../assets/img/icon/carpanlar.svg" alt="" />
+    </div>
 
   </div>
 </ion-content>

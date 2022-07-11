@@ -15,13 +15,13 @@
         <ion-note>Hesabınıza aktarmak istediğiniz miktarı girin.</ion-note>
       </div>
       <div class="form-items">
-        <ion-item button detail="false" class="item-large-select" lines="none" routerDirection="forward" [routerLink]="['choose-account']">
-          <img slot="start" src="../../../../assets/img/bank/fiba.svg" alt="" />
-          <ion-label>
-            <p>Ev <span>- Fibabanka</span></p>
-            <ion-note>TR99 9999 9999 9999 9999 99</ion-note>
-          </ion-label>
-          <ion-icon slot="end" name="chevron-down-outline"></ion-icon>
+        <ion-item class="item-large-select" lines="none">
+          <ion-select [(ngModel)]="selectedAccountId" placeholder="Hesap Seçiniz" interface="action-sheet" okText="Tamam"
+            cancelText="İptal">
+            <ion-select-option *ngFor="let account of accounts" [value]="account.id">
+              {{account.name}} - {{account.bank?.name}}
+            </ion-select-option>
+          </ion-select>
         </ion-item>
         <ion-item class="item-input" lines="none">
           <p-inputNumber [min]="0" [max]="999999" placeholder="Tutar" (onInput)="valueChange($event)"></p-inputNumber>
@@ -33,7 +33,7 @@
       </div>
     </div>
     <div class="form-footer">
-      <ion-button routerDirection="forward" [routerLink]="['approve-account']" size="block" color="primary">DEVAM
+      <ion-button size="block" color="primary" (click)="goApprove()">DEVAM
       </ion-button>
     </div>
   </div>

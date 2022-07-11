@@ -5,7 +5,6 @@ import { TranslateService } from '@ngx-translate/core';
 import * as moment from 'moment';
 import { AppService } from '../services/app.service';
 import { MarketDataService } from '../services/market-data.service';
-import { MarketSymbolsService } from '../services/market-symbols.service';
 import { TokenRefreshService } from '../services/token-refresh.service';
 
 interface SideMenuItem {
@@ -66,11 +65,12 @@ export class AppComponent {
       header: 'HESABIM',
       collapsable: true,
       items: [
-        { title: "KİMLİK DOĞRULAMA", url: "auth/login", icon: "id-card" },
+        //{ title: "KİMLİK DOĞRULAMA", url: "auth/login", icon: "id-card" },
         { title: "ŞİFRE DEĞİŞTİRME", url: "user/password-change", icon: "key" },
+        //{ title: "DİL DEĞİŞTİR", url: "user/language", icon: "language" },
         { title: "KİŞİSEL BİLGİLERİM", url: "user/profile", icon: "person-circle" },
         { title: "BİLDİRİM AYARLARI", url: "user/notifications/notification-setting", icon: "notifications" },
-        { title: "BLOG", url: "/tabs/home", icon: "create" },
+        //{ title: "GÜVENLİK AYARLARI", url: "user/security", icon: "shield-checkmark" },
         { title: "ÇIKIŞ YAP", url: "/auth/login", icon: "exit" },
       ]
     },
@@ -79,10 +79,9 @@ export class AppComponent {
       header: 'YARDIM',
       collapsable: true,
       items: [
+        { title: "BLOG", url: "/tabs/home", icon: "create" },
         { title: "YARDIM MERKEZİ", url: "user/help", icon: "call" },
-        { title: "DİL SEÇENEĞİ", url: "user/language", icon: "language" },
         { title: "SÖZLEŞMELER", url: "/tabs/home", icon: "receipt" },
-        { title: "GÜVENLİK AYARLARI", url: "user/security", icon: "shield-checkmark" },
       ]
     },
     {
@@ -107,24 +106,23 @@ export class AppComponent {
   constructor(
     public appService: AppService,
     private menu: MenuController,
-   // private coreService: MarketDataService,
-    private coreService: MarketSymbolsService,
+    // private coreService: MarketDataService,
+    private coreService: MarketDataService,
     private tokenService: TokenRefreshService
 
   ) {
     moment.locale('tr')
-    this.coreService.init() 
-    console.log('tok tok',this.appService.accessToken )
+    this.coreService.init()
     if (this.appService.accessToken) {
-      
+      tokenService.init();
     }
     this.initTheme();
   }
-  
+
   openEnd() {
     this.menu.close();
   }
-  
+
   openSegment(menuId) {
     this.activeSideMenuId = menuId;
     console.log(menuId)
@@ -133,7 +131,7 @@ export class AppComponent {
   initTheme() {
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
 
-    if(this.appService.userTheme == 'dark' || prefersDark.matches) {
+    if (this.appService.userTheme == 'dark' || prefersDark.matches) {
       this.appService.userTheme = 'dark';
       document.body.classList.add('dark');
       document.body.setAttribute('data-theme', 'dark');
@@ -148,7 +146,7 @@ export class AppComponent {
   }
 
   toggleTheme() {
-    if(this.appService.userTheme == 'light') {
+    if (this.appService.userTheme == 'light') {
       this.appService.userTheme = 'dark';
       document.body.classList.add('dark');
       document.body.setAttribute('data-theme', 'dark');

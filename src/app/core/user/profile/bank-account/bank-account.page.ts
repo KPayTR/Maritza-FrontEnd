@@ -1,5 +1,5 @@
 import { Component, NgZone, OnInit } from '@angular/core';
-import { MemberApiService, MemberBankAccountDTO } from 'src/app/services/api-hkn-yatirimim.service';
+import { BankaccountApiService, UserBankAccountModel } from 'src/app/services/api-yatirimim.service';
 import { AppService } from 'src/app/services/app.service';
 
 @Component({
@@ -8,16 +8,17 @@ import { AppService } from 'src/app/services/app.service';
   styleUrls: ['./bank-account.page.scss'],
 })
 export class BankAccountPage implements OnInit {
+  accounts: UserBankAccountModel[];
 
-  constructor(  
+  constructor(
     public appService: AppService,
     private zone: NgZone,
-    private cardService:MemberApiService
-    ) { }
-    accounts :MemberBankAccountDTO[];
+    private bankAccountApiService: BankaccountApiService
+  ) { }
+
   ngOnInit() {
-    this.appService.toggleLoader(true).then(()=>{
-      this.cardService.getMemberBankAccounts()
+    this.appService.toggleLoader(true).then(() => {
+      this.bankAccountApiService.getaccounts()
         .subscribe(
           (v) => this.onLoad(v),
           (e) => this.onError(e)
@@ -30,11 +31,10 @@ export class BankAccountPage implements OnInit {
       this.appService.showErrorAlert(e);
     });
   }
-  onLoad(v: MemberBankAccountDTO[]): void {
+  onLoad(v: UserBankAccountModel[]): void {
     this.zone.run(() => {
-      this.appService.toggleLoader(false); 
-      this.accounts=v;
-      console.log(v)
-     });
-  } 
+      this.appService.toggleLoader(false);
+      this.accounts = v;
+    });
+  }
 }
