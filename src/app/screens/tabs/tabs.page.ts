@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { ModalController } from '@ionic/angular';
+import { IonFab, ModalController } from '@ionic/angular';
 import { MenuPage } from 'src/app/core/modals/menu/menu.page';
 
 @Component({
@@ -9,6 +9,7 @@ import { MenuPage } from 'src/app/core/modals/menu/menu.page';
   styleUrls: ['tabs.page.scss']
 })
 export class TabsPage {
+  @ViewChild('fab') fab: IonFab;
 
   constructor(
     private router: Router,
@@ -26,10 +27,12 @@ export class TabsPage {
   }
 
   openBuy() {
-    this.router.navigateByUrl('/app/trade/buy')
+    this.router.navigateByUrl('/app/trade/buy');
+    this.fab.close();
   }
 
   openSell() {
-    this.router.navigateByUrl('/app/trade/sell')
+    this.router.navigateByUrl('/app/trade/sell');
+    this.fab.close();
   }
 }

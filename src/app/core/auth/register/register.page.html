@@ -26,7 +26,8 @@
             <ion-input placeholder="Soyadınız" autocapitalize="words" formControlName="lastName"></ion-input>
           </ion-item>
           <ion-item lines="none" class="item-input">
-            <ion-input (ionChange)="onCheckId($event)" debounce="500" type="tel" maxlength="11" placeholder="TCKN" formControlName="identityNo"></ion-input>
+            <ion-input (ionChange)="onCheckId($event)" debounce="500" type="tel" maxlength="11" placeholder="TCKN"
+              formControlName="identityNo"></ion-input>
             <div class="prefix-error" slot="end">
               <ion-icon *ngIf="isValidId==false" color="danger" name="close-circle-outline"></ion-icon>
               <ion-icon *ngIf="isValidId==true" color="success" name="checkmark-circle-outline"></ion-icon>
@@ -37,7 +38,8 @@
               <span>+90</span>
               <span>|</span>
             </div>
-            <p-inputMask type="tel" (onKeydown)="onClearPhone()" (onComplete)="onBlurPhone()" formControlName="phone" mask="(999) 999 99 99" placeholder="Telefon Numarası">
+            <p-inputMask type="tel" (onKeydown)="onClearPhone()" (onComplete)="onBlurPhone()" formControlName="phone"
+              mask="(999) 999 99 99" placeholder="Telefon Numarası">
             </p-inputMask>
             <div class="prefix-error" slot="end">
               <ion-icon *ngIf="isValidPhone==false" color="danger" name="close-circle-outline"></ion-icon>
@@ -45,7 +47,8 @@
             </div>
           </ion-item>
           <ion-item lines="none" class="item-input">
-            <ion-input (ionChange)="onCheckEmail($event)" debounce="500"  type="email" placeholder="E-Posta Adresiniz" formControlName="email"></ion-input>
+            <ion-input (ionChange)="onCheckEmail($event)" debounce="500" type="email" placeholder="E-Posta Adresiniz"
+              formControlName="email"></ion-input>
             <div class="prefix-error" slot="end">
               <ion-icon *ngIf="isValidMail==false" color="danger" name="close-circle-outline"></ion-icon>
               <ion-icon *ngIf="isValidMail==true" color="success" name="checkmark-circle-outline"></ion-icon>
@@ -133,7 +136,8 @@
               <span>+90</span>
               <span>|</span>
             </div>
-            <p-inputMask type="tel" (onKeydown)="onClearPhone()" (onComplete)="onBlurPhone()" formControlName="phone" mask="(999) 999 99 99" placeholder="Telefon Numarası">
+            <p-inputMask type="tel" (onKeydown)="onClearPhone()" (onComplete)="onBlurPhone()" formControlName="phone"
+              mask="(999) 999 99 99" placeholder="Telefon Numarası">
             </p-inputMask>
             <div class="prefix-error" slot="end">
               <ion-icon *ngIf="isValidPhone==false" color="danger" name="close-circle-outline"></ion-icon>
@@ -141,7 +145,8 @@
             </div>
           </ion-item>
           <ion-item lines="none" class="item-input">
-            <ion-input (ionChange)="onCheckEmail($event)" debounce="500" type="email" placeholder="E-Posta Adresiniz" formControlName="email"></ion-input>
+            <ion-input (ionChange)="onCheckEmail($event)" debounce="500" type="email" placeholder="E-Posta Adresiniz"
+              formControlName="email"></ion-input>
             <div class="prefix-error" slot="end">
               <ion-icon *ngIf="isValidMail==false" color="danger" name="close-circle-outline"></ion-icon>
               <ion-icon *ngIf="isValidMail==true" color="success" name="checkmark-circle-outline"></ion-icon>
