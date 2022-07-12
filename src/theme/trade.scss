@@ -31,6 +31,20 @@ ion-content.trade {
             --background: white;
             color: #b1b1c5;
         }
+
+        ion-item {
+            width: 120px;
+            margin: auto;
+            p {
+                font-size: 16px;
+                font-weight: bold;
+                color: #080a1e;
+            }
+
+            ion-select {
+                font-weight: 600;
+            }
+        }
     }
     .div-input {
         margin: 5% 16px 0;

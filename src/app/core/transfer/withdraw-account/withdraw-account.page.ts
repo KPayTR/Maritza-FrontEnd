@@ -1,6 +1,6 @@
 import { Component, NgZone, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { BankaccountApiService, UserBankAccountModel } from 'src/app/services/api-yatirimim.service';
+import { AssetModel, AssetsApiService, BankaccountApiService, UserBankAccountModel } from 'src/app/services/api-yatirimim.service';
 import { AppService } from 'src/app/services/app.service';
 
 @Component({
@@ -13,11 +13,13 @@ export class WithdrawAccountPage implements OnInit {
   amount: number;
   accounts: UserBankAccountModel[];
   selectedAccountId: number;
+  tlAsset: AssetModel;
 
   constructor(
     public appService: AppService,
     private zone: NgZone,
     private router: Router,
+    private assetsApiService: AssetsApiService,
     private bankAccountApiService: BankaccountApiService
   ) { }
 
@@ -25,7 +27,7 @@ export class WithdrawAccountPage implements OnInit {
     this.appService.toggleLoader(true).then(() => {
       this.bankAccountApiService.getaccounts()
         .subscribe(
-          (v) => this.onLoad(v),
+          (v) => this.onAccountsLoad(v),
           (e) => this.onError(e)
         )
     })
@@ -38,11 +40,28 @@ export class WithdrawAccountPage implements OnInit {
     });
   }
 
-  onLoad(v: UserBankAccountModel[]): void {
+  onAccountsLoad(v: UserBankAccountModel[]): void {
     this.zone.run(() => {
       this.accounts = v;
-      this.appService.toggleLoader(false);
     });
+
+    this.loadWallet();
+  }
+
+  loadWallet() {
+    this.assetsApiService.getwallet()
+      .subscribe(
+        v => this.onWalletLoad(v),
+        e => {
+          this.appService.toggleLoader(false)
+          this.appService.showToast('Veri yüklenemedi.', 'bottom')
+        }
+      )
+  }
+
+  onWalletLoad(v: AssetModel[]): void {
+    this.appService.toggleLoader(false)
+    this.tlAsset = v.find(x => x.symbol.isMainCurrency);
   }
 
   valueChange(event: any) {

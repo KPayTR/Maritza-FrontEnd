@@ -125,7 +125,7 @@ export class Wallet implements OnInit {
 
   ngOnInit(): void {
     this.appService.toggleLoader(true).then(() => {
-      this.assetsApiService.getwallet(this.appService.user.id)
+      this.assetsApiService.getwallet()
         .subscribe(
           v => this.initData(v),
           e => {
