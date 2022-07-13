@@ -8,8 +8,8 @@ interface ExtendedCapacitorConfig extends CapacitorConfig {
 const config: ExtendedCapacitorConfig = {
   appId: 'com.yatirimim.trader',
   appName: 'Yatırımım Trader',
-  versionName: "1.0.1",
-  versionCode: 10101,
+  versionName: "1.2.0",
+  versionCode: 10200,
   webDir: 'www',
   bundledWebRuntime: false,
   plugins: {
