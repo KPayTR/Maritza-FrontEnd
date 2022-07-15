@@ -60,7 +60,7 @@ export class MarketDataService {
     this.zone.run(() => {
       this.appService.showErrorAlert(e);
       console.log("marketdata err", e)
-      this.router.navigate(["/auth/login"]);
+    //  this.router.navigate(["/auth/login"]);
       this.appService.toggleLoader(false);
     });
   }

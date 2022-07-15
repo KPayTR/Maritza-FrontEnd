@@ -10,7 +10,7 @@ const routes: Routes = [
   
   {
     path: 'user',
-    canActivate: [AuthGuard],
+    //canActivate: [AuthGuard],
     loadChildren: () => import('./user/user.module').then( m => m.UserPageModule)
   },
   {
@@ -42,7 +42,7 @@ const routes: Routes = [
   },
   {
     path:"transfer",
-    canActivate: [AuthGuard],
+    //canActivate: [AuthGuard],
     children:[
       {
         path: 'deposit-credit-card',
