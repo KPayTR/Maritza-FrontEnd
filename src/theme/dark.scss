@@ -3,6 +3,11 @@ img {
 }
 
 .dark-app {
+
+    ion-tabs {
+        background: #21252f !important;
+    }
+    
     .invertable {
         filter: brightness(0) invert(1);
     }

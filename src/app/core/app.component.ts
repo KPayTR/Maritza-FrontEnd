@@ -131,7 +131,17 @@ export class AppComponent {
   initTheme() {
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
 
-    if (this.appService.userTheme == 'dark' || prefersDark.matches) {
+    if(this.appService.userTheme == 'dark') {
+      document.body.classList.add('dark');
+      document.body.setAttribute('data-theme', 'dark');
+      document.documentElement.classList.add('dark-app');
+    }
+    if(this.appService.userTheme == 'light') {
+      document.body.classList.remove('dark');
+      document.body.setAttribute('data-theme', 'light');
+      document.documentElement.classList.remove('dark-app');
+    }
+    else if (prefersDark.matches) {
       this.appService.userTheme = 'dark';
       document.body.classList.add('dark');
       document.body.setAttribute('data-theme', 'dark');
