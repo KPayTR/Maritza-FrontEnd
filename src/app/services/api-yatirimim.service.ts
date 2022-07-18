@@ -25,7 +25,7 @@ export class AnalysisApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
     /**
@@ -103,7 +103,7 @@ export class AssetsApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
     /**
@@ -245,14 +245,14 @@ export class AuthApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
     /**
      * @param body (optional) 
      * @return Success
      */
-    login(body: LoginModel | undefined): Observable<void> {
+    login(body: LoginModel | undefined): Observable<AuthenticatorModel> {
         let url_ = this.baseUrl + "/api/auth/auth/login";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -264,6 +264,7 @@ export class AuthApiService {
             responseType: "blob",
             headers: new HttpHeaders({
                 "Content-Type": "application/json",
+                "Accept": "text/plain"
             })
         };
 
@@ -274,14 +275,14 @@ export class AuthApiService {
                 try {
                     return this.processLogin(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<void>;
+                    return _observableThrow(e) as any as Observable<AuthenticatorModel>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<void>;
+                return _observableThrow(response_) as any as Observable<AuthenticatorModel>;
         }));
     }
 
-    protected processLogin(response: HttpResponseBase): Observable<void> {
+    protected processLogin(response: HttpResponseBase): Observable<AuthenticatorModel> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -290,7 +291,10 @@ export class AuthApiService {
         let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
         if (status === 200) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return _observableOf<void>(null as any);
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = AuthenticatorModel.fromJS(resultData200);
+            return _observableOf(result200);
             }));
         } else if (status === 400) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
@@ -311,7 +315,7 @@ export class AuthApiService {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<void>(null as any);
+        return _observableOf<AuthenticatorModel>(null as any);
     }
 
     /**
@@ -868,7 +872,7 @@ export class BankApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
     /**
@@ -938,7 +942,7 @@ export class BankaccountApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
     /**
@@ -1121,10 +1125,7 @@ export class BankaccountApiService {
             }));
         } else if (status === 403) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result403: any = null;
-            let resultData403 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result403 = ProblemDetails.fromJS(resultData403);
-            return throwException("Forbidden", status, _responseText, _headers, result403);
+            return throwException("Forbidden", status, _responseText, _headers);
             }));
         } else if (status === 400) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
@@ -1198,10 +1199,7 @@ export class BankaccountApiService {
             }));
         } else if (status === 403) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result403: any = null;
-            let resultData403 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result403 = ProblemDetails.fromJS(resultData403);
-            return throwException("Forbidden", status, _responseText, _headers, result403);
+            return throwException("Forbidden", status, _responseText, _headers);
             }));
         } else if (status === 400) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
@@ -1271,10 +1269,7 @@ export class BankaccountApiService {
             }));
         } else if (status === 403) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result403: any = null;
-            let resultData403 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result403 = ProblemDetails.fromJS(resultData403);
-            return throwException("Forbidden", status, _responseText, _headers, result403);
+            return throwException("Forbidden", status, _responseText, _headers);
             }));
         } else if (status === 400) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
@@ -1307,7 +1302,7 @@ export class CardApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
     /**
@@ -1356,10 +1351,7 @@ export class CardApiService {
             }));
         } else if (status === 403) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result403: any = null;
-            let resultData403 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result403 = ProblemDetails.fromJS(resultData403);
-            return throwException("Forbidden", status, _responseText, _headers, result403);
+            return throwException("Forbidden", status, _responseText, _headers);
             }));
         } else if (status === 400) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
@@ -1435,10 +1427,7 @@ export class CardApiService {
             }));
         } else if (status === 403) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result403: any = null;
-            let resultData403 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result403 = ProblemDetails.fromJS(resultData403);
-            return throwException("Forbidden", status, _responseText, _headers, result403);
+            return throwException("Forbidden", status, _responseText, _headers);
             }));
         } else if (status === 400) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
@@ -1508,10 +1497,7 @@ export class CardApiService {
             }));
         } else if (status === 403) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result403: any = null;
-            let resultData403 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result403 = ProblemDetails.fromJS(resultData403);
-            return throwException("Forbidden", status, _responseText, _headers, result403);
+            return throwException("Forbidden", status, _responseText, _headers);
             }));
         } else if (status === 400) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
@@ -1581,10 +1567,7 @@ export class CardApiService {
             }));
         } else if (status === 403) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result403: any = null;
-            let resultData403 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result403 = ProblemDetails.fromJS(resultData403);
-            return throwException("Forbidden", status, _responseText, _headers, result403);
+            return throwException("Forbidden", status, _responseText, _headers);
             }));
         } else if (status === 400) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
@@ -1617,7 +1600,7 @@ export class CommissionApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
     /**
@@ -1687,7 +1670,7 @@ export class CorporateApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
     /**
@@ -1891,7 +1874,7 @@ export class ReadApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
     /**
@@ -1969,7 +1952,7 @@ export class CountryApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
     /**
@@ -2039,7 +2022,7 @@ export class CreditcardpaymentApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
     /**
@@ -2241,14 +2224,14 @@ export class DepositsApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
     /**
      * @param body (optional) 
      * @return Success
      */
-    addphysical(body: Request | undefined): Observable<Request> {
+    addphysical(body: RequestModel | undefined): Observable<RequestModel> {
         let url_ = this.baseUrl + "/api/finance/deposits/addphysical";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -2271,14 +2254,14 @@ export class DepositsApiService {
                 try {
                     return this.processAddphysical(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<Request>;
+                    return _observableThrow(e) as any as Observable<RequestModel>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<Request>;
+                return _observableThrow(response_) as any as Observable<RequestModel>;
         }));
     }
 
-    protected processAddphysical(response: HttpResponseBase): Observable<Request> {
+    protected processAddphysical(response: HttpResponseBase): Observable<RequestModel> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -2289,7 +2272,7 @@ export class DepositsApiService {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Request.fromJS(resultData200);
+            result200 = RequestModel.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status === 400) {
@@ -2305,14 +2288,14 @@ export class DepositsApiService {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<Request>(null as any);
+        return _observableOf<RequestModel>(null as any);
     }
 
     /**
      * @param body (optional) 
      * @return Success
      */
-    adddigital(body: Request | undefined): Observable<Request> {
+    adddigital(body: RequestModel | undefined): Observable<RequestModel> {
         let url_ = this.baseUrl + "/api/finance/deposits/adddigital";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -2335,14 +2318,14 @@ export class DepositsApiService {
                 try {
                     return this.processAdddigital(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<Request>;
+                    return _observableThrow(e) as any as Observable<RequestModel>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<Request>;
+                return _observableThrow(response_) as any as Observable<RequestModel>;
         }));
     }
 
-    protected processAdddigital(response: HttpResponseBase): Observable<Request> {
+    protected processAdddigital(response: HttpResponseBase): Observable<RequestModel> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -2353,7 +2336,7 @@ export class DepositsApiService {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Request.fromJS(resultData200);
+            result200 = RequestModel.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status === 400) {
@@ -2369,14 +2352,14 @@ export class DepositsApiService {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<Request>(null as any);
+        return _observableOf<RequestModel>(null as any);
     }
 
     /**
      * @param id (optional) 
      * @return Success
      */
-    getbyid(id: number | undefined): Observable<Request> {
+    getbyid(id: number | undefined): Observable<RequestModel> {
         let url_ = this.baseUrl + "/api/finance/deposits/getbyid?";
         if (id === null)
             throw new Error("The parameter 'id' cannot be null.");
@@ -2399,14 +2382,14 @@ export class DepositsApiService {
                 try {
                     return this.processGetbyid(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<Request>;
+                    return _observableThrow(e) as any as Observable<RequestModel>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<Request>;
+                return _observableThrow(response_) as any as Observable<RequestModel>;
         }));
     }
 
-    protected processGetbyid(response: HttpResponseBase): Observable<Request> {
+    protected processGetbyid(response: HttpResponseBase): Observable<RequestModel> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -2417,7 +2400,7 @@ export class DepositsApiService {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Request.fromJS(resultData200);
+            result200 = RequestModel.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status === 400) {
@@ -2433,7 +2416,7 @@ export class DepositsApiService {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<Request>(null as any);
+        return _observableOf<RequestModel>(null as any);
     }
 
     getdetailbyid(id: number | undefined): Observable<void> {
@@ -2492,7 +2475,7 @@ export class DepositsApiService {
      * @param userId (optional) 
      * @return Success
      */
-    getdigitalrequestlist(userId: number | undefined): Observable<Request[]> {
+    getdigitalrequestlist(userId: number | undefined): Observable<RequestModel[]> {
         let url_ = this.baseUrl + "/api/finance/deposits/getdigitalrequestlist?";
         if (userId === null)
             throw new Error("The parameter 'userId' cannot be null.");
@@ -2515,14 +2498,14 @@ export class DepositsApiService {
                 try {
                     return this.processGetdigitalrequestlist(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<Request[]>;
+                    return _observableThrow(e) as any as Observable<RequestModel[]>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<Request[]>;
+                return _observableThrow(response_) as any as Observable<RequestModel[]>;
         }));
     }
 
-    protected processGetdigitalrequestlist(response: HttpResponseBase): Observable<Request[]> {
+    protected processGetdigitalrequestlist(response: HttpResponseBase): Observable<RequestModel[]> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -2536,7 +2519,7 @@ export class DepositsApiService {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(Request.fromJS(item));
+                    result200!.push(RequestModel.fromJS(item));
             }
             else {
                 result200 = <any>null;
@@ -2556,14 +2539,14 @@ export class DepositsApiService {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<Request[]>(null as any);
+        return _observableOf<RequestModel[]>(null as any);
     }
 
     /**
      * @param userId (optional) 
      * @return Success
      */
-    getphysicalrequestlist(userId: number | undefined): Observable<Request[]> {
+    getphysicalrequestlist(userId: number | undefined): Observable<RequestModel[]> {
         let url_ = this.baseUrl + "/api/finance/deposits/getphysicalrequestlist?";
         if (userId === null)
             throw new Error("The parameter 'userId' cannot be null.");
@@ -2586,14 +2569,14 @@ export class DepositsApiService {
                 try {
                     return this.processGetphysicalrequestlist(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<Request[]>;
+                    return _observableThrow(e) as any as Observable<RequestModel[]>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<Request[]>;
+                return _observableThrow(response_) as any as Observable<RequestModel[]>;
         }));
     }
 
-    protected processGetphysicalrequestlist(response: HttpResponseBase): Observable<Request[]> {
+    protected processGetphysicalrequestlist(response: HttpResponseBase): Observable<RequestModel[]> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -2607,7 +2590,7 @@ export class DepositsApiService {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(Request.fromJS(item));
+                    result200!.push(RequestModel.fromJS(item));
             }
             else {
                 result200 = <any>null;
@@ -2627,14 +2610,14 @@ export class DepositsApiService {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<Request[]>(null as any);
+        return _observableOf<RequestModel[]>(null as any);
     }
 
     /**
      * @param body (optional) 
      * @return Success
      */
-    update(body: Request | undefined): Observable<Request> {
+    update(body: RequestModel | undefined): Observable<RequestModel> {
         let url_ = this.baseUrl + "/api/finance/deposits/update";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -2657,14 +2640,14 @@ export class DepositsApiService {
                 try {
                     return this.processUpdate(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<Request>;
+                    return _observableThrow(e) as any as Observable<RequestModel>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<Request>;
+                return _observableThrow(response_) as any as Observable<RequestModel>;
         }));
     }
 
-    protected processUpdate(response: HttpResponseBase): Observable<Request> {
+    protected processUpdate(response: HttpResponseBase): Observable<RequestModel> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -2675,7 +2658,7 @@ export class DepositsApiService {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Request.fromJS(resultData200);
+            result200 = RequestModel.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status === 400) {
@@ -2691,7 +2674,7 @@ export class DepositsApiService {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<Request>(null as any);
+        return _observableOf<RequestModel>(null as any);
     }
 }
 
@@ -2703,7 +2686,7 @@ export class KnowledgebaseApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
     /**
@@ -2773,7 +2756,7 @@ export class MatriksApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
     /**
@@ -3169,7 +3152,7 @@ export class NotificationApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
     /**
@@ -3316,7 +3299,7 @@ export class OrderApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
     /**
@@ -3968,7 +3951,7 @@ export class PostApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
     /**
@@ -4038,7 +4021,7 @@ export class ProvinceApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
     /**
@@ -4108,7 +4091,7 @@ export class RetailApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
     /**
@@ -4378,7 +4361,7 @@ export class RssfeedApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
     /**
@@ -4448,7 +4431,7 @@ export class SettingApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
     /**
@@ -4518,7 +4501,7 @@ export class SlideApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
     /**
@@ -4593,7 +4576,7 @@ export class StaticpageApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
     /**
@@ -4663,7 +4646,7 @@ export class SymbolsApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
     /**
@@ -5063,7 +5046,7 @@ export class TradingviewApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
     /**
@@ -5169,7 +5152,7 @@ export class TransactionsApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
     /**
@@ -5252,7 +5235,7 @@ export class UserdocumentApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
     /**
@@ -5524,7 +5507,7 @@ export class WithdrawalsApiService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(MARITZA_API_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://192.168.253.92:5000";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
     /**
@@ -5595,7 +5578,7 @@ export class WithdrawalsApiService {
      * @param body (optional) 
      * @return Success
      */
-    addphysical(body: Request | undefined): Observable<RequestModel> {
+    addphysical(body: RequestModel | undefined): Observable<RequestModel> {
         let url_ = this.baseUrl + "/api/finance/withdrawals/addphysical";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -5659,7 +5642,7 @@ export class WithdrawalsApiService {
      * @param body (optional) 
      * @return Success
      */
-    adddigital(body: Request | undefined): Observable<RequestModel> {
+    adddigital(body: RequestModel | undefined): Observable<RequestModel> {
         let url_ = this.baseUrl + "/api/finance/withdrawals/adddigital";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -6368,6 +6351,42 @@ export interface IAssetModel {
     symbol?: SymbolModel;
     quantity?: number;
     price?: number;
+}
+
+export class AuthenticatorModel implements IAuthenticatorModel {
+    authenticatorKey?: string | undefined;
+
+    constructor(data?: IAuthenticatorModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.authenticatorKey = _data["AuthenticatorKey"];
+        }
+    }
+
+    static fromJS(data: any): AuthenticatorModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new AuthenticatorModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["AuthenticatorKey"] = this.authenticatorKey;
+        return data;
+    }
+}
+
+export interface IAuthenticatorModel {
+    authenticatorKey?: string | undefined;
 }
 
 export class Bank implements IBank {
@@ -8178,6 +8197,7 @@ export interface IKnowledgeBaseModel {
 export class LoginModel implements ILoginModel {
     phoneNumber?: string | undefined;
     password?: string | undefined;
+    isVerified?: boolean;
 
     constructor(data?: ILoginModel) {
         if (data) {
@@ -8192,6 +8212,7 @@ export class LoginModel implements ILoginModel {
         if (_data) {
             this.phoneNumber = _data["PhoneNumber"];
             this.password = _data["Password"];
+            this.isVerified = _data["IsVerified"];
         }
     }
 
@@ -8206,6 +8227,7 @@ export class LoginModel implements ILoginModel {
         data = typeof data === 'object' ? data : {};
         data["PhoneNumber"] = this.phoneNumber;
         data["Password"] = this.password;
+        data["IsVerified"] = this.isVerified;
         return data;
     }
 }
@@ -8213,6 +8235,7 @@ export class LoginModel implements ILoginModel {
 export interface ILoginModel {
     phoneNumber?: string | undefined;
     password?: string | undefined;
+    isVerified?: boolean;
 }
 
 export class MarketItemModel implements IMarketItemModel {
@@ -9550,58 +9573,6 @@ export interface IPostModel {
     category?: PostCategoryModel;
 }
 
-export class ProblemDetails implements IProblemDetails {
-    type?: string | undefined;
-    title?: string | undefined;
-    status?: number | undefined;
-    detail?: string | undefined;
-    instance?: string | undefined;
-
-    constructor(data?: IProblemDetails) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.type = _data["type"];
-            this.title = _data["title"];
-            this.status = _data["status"];
-            this.detail = _data["detail"];
-            this.instance = _data["instance"];
-        }
-    }
-
-    static fromJS(data: any): ProblemDetails {
-        data = typeof data === 'object' ? data : {};
-        let result = new ProblemDetails();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["type"] = this.type;
-        data["title"] = this.title;
-        data["status"] = this.status;
-        data["detail"] = this.detail;
-        data["instance"] = this.instance;
-        return data;
-    }
-}
-
-export interface IProblemDetails {
-    type?: string | undefined;
-    title?: string | undefined;
-    status?: number | undefined;
-    detail?: string | undefined;
-    instance?: string | undefined;
-}
-
 export class Product implements IProduct {
     id?: number;
     createdOn?: moment.Moment | undefined;
@@ -10554,7 +10525,6 @@ export class Retail implements IRetail {
     user?: User;
     identityNo?: string | undefined;
     passportNo?: string | undefined;
-    otpSentOn?: moment.Moment | undefined;
     firstName?: string | undefined;
     lastName?: string | undefined;
     normalizedFirstName?: string | undefined;
@@ -10578,9 +10548,6 @@ export class Retail implements IRetail {
     sSN?: string | undefined;
     job?: string | undefined;
     notes?: string | undefined;
-    isActive?: boolean;
-    isVerifiedCitizen?: boolean;
-    isVerifiedForeign?: boolean;
 
     constructor(data?: IRetail) {
         if (data) {
@@ -10588,9 +10555,6 @@ export class Retail implements IRetail {
                 if (data.hasOwnProperty(property))
                     (<any>this)[property] = (<any>data)[property];
             }
-        }
-        if (!data) {
-            this.isActive = true;
         }
     }
 
@@ -10602,7 +10566,6 @@ export class Retail implements IRetail {
             this.user = _data["User"] ? User.fromJS(_data["User"]) : <any>undefined;
             this.identityNo = _data["IdentityNo"];
             this.passportNo = _data["PassportNo"];
-            this.otpSentOn = _data["OtpSentOn"] ? moment(_data["OtpSentOn"].toString()) : <any>undefined;
             this.firstName = _data["FirstName"];
             this.lastName = _data["LastName"];
             this.normalizedFirstName = _data["NormalizedFirstName"];
@@ -10626,9 +10589,6 @@ export class Retail implements IRetail {
             this.sSN = _data["SSN"];
             this.job = _data["Job"];
             this.notes = _data["Notes"];
-            this.isActive = _data["IsActive"] !== undefined ? _data["IsActive"] : true;
-            this.isVerifiedCitizen = _data["IsVerifiedCitizen"];
-            this.isVerifiedForeign = _data["IsVerifiedForeign"];
         }
     }
 
@@ -10647,7 +10607,6 @@ export class Retail implements IRetail {
         data["User"] = this.user ? this.user.toJSON() : <any>undefined;
         data["IdentityNo"] = this.identityNo;
         data["PassportNo"] = this.passportNo;
-        data["OtpSentOn"] = this.otpSentOn ? this.otpSentOn.toISOString() : <any>undefined;
         data["FirstName"] = this.firstName;
         data["LastName"] = this.lastName;
         data["NormalizedFirstName"] = this.normalizedFirstName;
@@ -10671,9 +10630,6 @@ export class Retail implements IRetail {
         data["SSN"] = this.sSN;
         data["Job"] = this.job;
         data["Notes"] = this.notes;
-        data["IsActive"] = this.isActive;
-        data["IsVerifiedCitizen"] = this.isVerifiedCitizen;
-        data["IsVerifiedForeign"] = this.isVerifiedForeign;
         return data;
     }
 }
@@ -10685,7 +10641,6 @@ export interface IRetail {
     user?: User;
     identityNo?: string | undefined;
     passportNo?: string | undefined;
-    otpSentOn?: moment.Moment | undefined;
     firstName?: string | undefined;
     lastName?: string | undefined;
     normalizedFirstName?: string | undefined;
@@ -10709,9 +10664,6 @@ export interface IRetail {
     sSN?: string | undefined;
     job?: string | undefined;
     notes?: string | undefined;
-    isActive?: boolean;
-    isVerifiedCitizen?: boolean;
-    isVerifiedForeign?: boolean;
 }
 
 export class RetailModel implements IRetailModel {
@@ -11639,7 +11591,7 @@ export interface ISymbolVoteSummaryModel {
 }
 
 export class TimeSpan implements ITimeSpan {
-    readonly ticks?: number;
+    ticks?: number;
     readonly days?: number;
     readonly hours?: number;
     readonly milliseconds?: number;
@@ -11662,7 +11614,7 @@ export class TimeSpan implements ITimeSpan {
 
     init(_data?: any) {
         if (_data) {
-            (<any>this).ticks = _data["Ticks"];
+            this.ticks = _data["Ticks"];
             (<any>this).days = _data["Days"];
             (<any>this).hours = _data["Hours"];
             (<any>this).milliseconds = _data["Milliseconds"];
@@ -12066,6 +12018,7 @@ export class User implements IUser {
     isActive?: boolean;
     isDeleted?: boolean;
     otp?: string | undefined;
+    otpSentOn?: moment.Moment | undefined;
     userType?: UserType;
     retail?: Retail;
     corporate?: Corporate;
@@ -12117,6 +12070,7 @@ export class User implements IUser {
             this.isActive = _data["IsActive"];
             this.isDeleted = _data["IsDeleted"];
             this.otp = _data["Otp"];
+            this.otpSentOn = _data["OtpSentOn"] ? moment(_data["OtpSentOn"].toString()) : <any>undefined;
             this.userType = _data["UserType"];
             this.retail = _data["Retail"] ? Retail.fromJS(_data["Retail"]) : <any>undefined;
             this.corporate = _data["Corporate"] ? Corporate.fromJS(_data["Corporate"]) : <any>undefined;
@@ -12208,6 +12162,7 @@ export class User implements IUser {
         data["IsActive"] = this.isActive;
         data["IsDeleted"] = this.isDeleted;
         data["Otp"] = this.otp;
+        data["OtpSentOn"] = this.otpSentOn ? this.otpSentOn.toISOString() : <any>undefined;
         data["UserType"] = this.userType;
         data["Retail"] = this.retail ? this.retail.toJSON() : <any>undefined;
         data["Corporate"] = this.corporate ? this.corporate.toJSON() : <any>undefined;
@@ -12292,6 +12247,7 @@ export interface IUser {
     isActive?: boolean;
     isDeleted?: boolean;
     otp?: string | undefined;
+    otpSentOn?: moment.Moment | undefined;
     userType?: UserType;
     retail?: Retail;
     corporate?: Corporate;
@@ -12883,7 +12839,8 @@ export enum UserType {
 }
 
 export class VerifyModel implements IVerifyModel {
-    otp!: string;
+    otp?: string | undefined;
+    authenticatorCode?: string | undefined;
     phoneNumber!: string;
 
     constructor(data?: IVerifyModel) {
@@ -12898,6 +12855,7 @@ export class VerifyModel implements IVerifyModel {
     init(_data?: any) {
         if (_data) {
             this.otp = _data["Otp"];
+            this.authenticatorCode = _data["AuthenticatorCode"];
             this.phoneNumber = _data["PhoneNumber"];
         }
     }
@@ -12912,13 +12870,15 @@ export class VerifyModel implements IVerifyModel {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["Otp"] = this.otp;
+        data["AuthenticatorCode"] = this.authenticatorCode;
         data["PhoneNumber"] = this.phoneNumber;
         return data;
     }
 }
 
 export interface IVerifyModel {
-    otp: string;
+    otp?: string | undefined;
+    authenticatorCode?: string | undefined;
     phoneNumber: string;
 }
 
