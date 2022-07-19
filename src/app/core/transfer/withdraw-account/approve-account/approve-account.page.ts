@@ -44,7 +44,7 @@ export class ApproveAccountPage implements OnInit {
   }
 
   approve() {
-    const model = new Request();
+    const model = new RequestModel();
     model.symbolId = 5;
     model.price = this.amount;
     model.userBankAccountId = this.accountId;

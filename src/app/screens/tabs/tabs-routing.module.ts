@@ -19,7 +19,6 @@ const routes: Routes = [
       },
       {
         path: 'analysis',
-        canActivate: [AuthGuard],
         loadChildren: () => import('../analysis/analysis.module').then(m => m.AnalysisPageModule)
       },
       {
