@@ -74,7 +74,7 @@ export function createTranslateLoader(http: HttpClient) {
     AssetsApiService,
     CardApiService,
     CommissionApiService,
-    //{ provide: MARITZA_API_URL, useValue:"http://192.168.253.92:5000"},
+   // { provide: MARITZA_API_URL, useValue:"http://192.168.38.144:5000"},
     { provide: MARITZA_API_URL, useValue:"https://api.yatirimim.com"},
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },

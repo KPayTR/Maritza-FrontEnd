@@ -52,6 +52,7 @@ export class LoginPage {
   }
   onLogin(): void {
     this.zone.run(() => {
+      console.log("gel")
       this.appService.toggleLoader(false);
       this.appService.userPhone = this.tempUser.phoneNumber;
       this.appService.userPass = this.tempUser.password;
@@ -61,6 +62,8 @@ export class LoginPage {
 
   onError(e: any): void {
     this.zone.run(() => {
+      console.log("git",e)
+
       this.appService.toggleLoader(false);
       this.appService.showErrorAlert(e);
     });

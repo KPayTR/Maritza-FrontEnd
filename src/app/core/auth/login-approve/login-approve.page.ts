@@ -75,6 +75,7 @@ export class LoginApprovePage {
 
   onAuth(v: TokenModel): void {
     this.appService.toggleLoader(false);
+    console.log("access ",v.token)
     this.appService.accessToken = v.token;
     this.router.navigate(['/app/home']);
   }

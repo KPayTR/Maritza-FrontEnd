@@ -34,6 +34,8 @@ export class WithdrawAccountPage implements OnInit {
   }
 
   onError(e: any): void {
+    console.log("banks erroro", e)
+
     this.zone.run(() => {
       this.appService.toggleLoader(false);
       this.appService.showErrorAlert(e);
@@ -41,6 +43,7 @@ export class WithdrawAccountPage implements OnInit {
   }
 
   onAccountsLoad(v: UserBankAccountModel[]): void {
+    console.log("banks", v)
     this.zone.run(() => {
       this.accounts = v;
     });
